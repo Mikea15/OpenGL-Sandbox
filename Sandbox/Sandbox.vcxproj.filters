@@ -1,0 +1,457 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Core">
+      <UniqueIdentifier>{fb275755-354b-4800-90f2-183f3fa22188}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Managers">
+      <UniqueIdentifier>{47ff5676-1283-494e-b1e7-4972e3e0a1b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components">
+      <UniqueIdentifier>{b1e663d8-127c-4608-894d-c90a0cb919bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\States">
+      <UniqueIdentifier>{f802df9c-6248-413d-a2fe-c620fe6207ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{bc118736-8b67-4a2b-9566-8d784d4a6059}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components\System">
+      <UniqueIdentifier>{0cf9758b-b224-4708-84b7-7d078b0bf1c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Dependencies">
+      <UniqueIdentifier>{b554500d-bbb1-4e24-870c-5f5276bc49df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Dependencies\stb_image">
+      <UniqueIdentifier>{1fe10d94-17c5-4c25-a37b-8bd7d26ac618}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Systems">
+      <UniqueIdentifier>{38f41eb9-4b12-458b-a9c8-81a04a23ca7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Systems\Camera">
+      <UniqueIdentifier>{6dca1904-888a-4851-a05e-030366ea0e5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Systems\Rendering">
+      <UniqueIdentifier>{452af3bb-448d-4f11-8174-3b048e0f9977}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Dependencies\imgui">
+      <UniqueIdentifier>{47c13fd8-3e81-4300-a223-c94201cd06df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Systems\Rendering\Primitives">
+      <UniqueIdentifier>{1d7cc3e8-51ca-4e12-9bcf-b602a13f08de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\skybox">
+      <UniqueIdentifier>{4cd7640b-13de-409d-8a92-edc1f435098e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders\unlit">
+      <UniqueIdentifier>{2f2b7057-7815-42ec-8ba7-e975582884ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Components\Rendering">
+      <UniqueIdentifier>{5342eb32-9dad-42c4-9ada-5a4065568b20}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\SDLHandler.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Managers\SystemComponentManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Components\System\FpsCounterSystemComponent.cpp">
+      <Filter>Source Files\Components\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\std_image\std_image.cpp">
+      <Filter>Source Files\Dependencies\stb_image</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\MultipleLightsState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Model.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Rendering\Mesh.cpp">
+      <Filter>Source Files\Systems\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\imgui\imgui.cpp">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\imgui\imgui_demo.cpp">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\imgui\imgui_draw.cpp">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\imgui\imgui_impl_opengl3.cpp">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dependencies\imgui\imgui_impl_sdl.cpp">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Camera\Camera.cpp">
+      <Filter>Source Files\Systems\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\InstancingState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\AdvancedLighting.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\ImGuiHander.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Rendering\Primitives.cpp">
+      <Filter>Source Files\Systems\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\ShadowMappingState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Rendering\Primitives\Quad.cpp">
+      <Filter>Source Files\Systems\Rendering\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Rendering\Primitives\Cube.cpp">
+      <Filter>Source Files\Systems\Rendering\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Transform.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Managers\SceneManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Rendering\Skybox.cpp">
+      <Filter>Source Files\Systems\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Rendering\Plane.cpp">
+      <Filter>Source Files\Systems\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Entity.cpp">
+      <Filter>Source Files\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Managers\ShaderManager.cpp">
+      <Filter>Source Files\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Rendering\TextureBuffer.cpp">
+      <Filter>Source Files\Systems\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\BloomEffectState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\DefaultState.cpp">
+      <Filter>Source Files\States</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Components\System\SceneCameraComponent.cpp">
+      <Filter>Source Files\Components\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Components\System\SceneSwitcherSystemComponent.cpp">
+      <Filter>Source Files\Components\System</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Core\Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Managers\AssetManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Light.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\DeferredRendering.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\SSAOState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\States\IBLSpecState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Managers\Profiler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Components\System\ProfilerSystemComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Rendering\Shader.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Game.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\State.h">
+      <Filter>Source Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\SDLHandler.h">
+      <Filter>Source Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Managers\SystemComponentManager.h">
+      <Filter>Source Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Components\System\FpsCounterSystemComponent.h">
+      <Filter>Source Files\Components\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\std_image\stb_image.h">
+      <Filter>Source Files\Dependencies\stb_image</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Camera\Camera.h">
+      <Filter>Source Files\Systems\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\MultipleLightsState.h">
+      <Filter>Source Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Rendering\Mesh.h">
+      <Filter>Source Files\Systems\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Model.h">
+      <Filter>Source Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\imgui\imconfig.h">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\imgui\imgui.h">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\imgui\imgui_internal.h">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\imgui\stb_rect_pack.h">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\imgui\stb_textedit.h">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\imgui\stb_truetype.h">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\imgui\imgui_impl_sdl.h">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Dependencies\imgui\imgui_impl_opengl3.h">
+      <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\InstancingState.h">
+      <Filter>Source Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\AdvancedLighting.h">
+      <Filter>Source Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\ImGuiHander.h">
+      <Filter>Source Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Rendering\Primitives.h">
+      <Filter>Source Files\Systems\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\ShadowMappingState.h">
+      <Filter>Source Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\Utils.h">
+      <Filter>Source Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Rendering\Primitives\Quad.h">
+      <Filter>Source Files\Systems\Rendering\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Rendering\Primitives\Cube.h">
+      <Filter>Source Files\Systems\Rendering\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Transform.h">
+      <Filter>Source Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Managers\SceneManager.h">
+      <Filter>Source Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Rendering\Skybox.h">
+      <Filter>Source Files\Systems\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Rendering\Plane.h">
+      <Filter>Source Files\Systems\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Entity.h">
+      <Filter>Source Files\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Managers\ShaderManager.h">
+      <Filter>Source Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Rendering\TextureBuffer.h">
+      <Filter>Source Files\Systems\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\BloomEffectState.h">
+      <Filter>Source Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\DefaultState.h">
+      <Filter>Source Files\States</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Components\System\SceneCameraComponent.h">
+      <Filter>Source Files\Components\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Components\System\SceneSwitcherSystemComponent.h">
+      <Filter>Source Files\Components\System</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Rendering\Vertex.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Rendering\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Managers\AssetManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Light.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\DeferredRendering.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\SSAOState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\IBLSpecState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Managers\Profiler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Components\System\ProfilerSystemComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Rendering\Shader.h">
+      <Filter>Source Files\Core</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\Shaders\yellow.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\advanced_glsl.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\instancing.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\instancing.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\simpleDepthShader.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\point_shadows.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\point_shadows.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\light_box.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\skybox\horizon_sun.fs">
+      <Filter>Shaders\skybox</Filter>
+    </None>
+    <None Include="Source\Shaders\horizontal_gradient.fs">
+      <Filter>Shaders\skybox</Filter>
+    </None>
+    <None Include="Source\Shaders\lighting_casters.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\lighting_casters.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\lighting_maps.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\lighting_maps.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\model_loading.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\model_loading.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\lit\advancedLighting.fs" />
+    <None Include="Source\Shaders\lit\blinnPhong.fs" />
+    <None Include="Source\Shaders\lit\default.vs" />
+    <None Include="Source\Shaders\lit\default_simple.vs" />
+    <None Include="Source\Shaders\lit\multiple_lights.fs" />
+    <None Include="Source\Shaders\lit\multiple_lights.vs" />
+    <None Include="Source\Shaders\lit\refraction.fs" />
+    <None Include="Source\Shaders\lit\refraction.vs" />
+    <None Include="Source\Shaders\lit\standard.vs" />
+    <None Include="Source\Shaders\postfx\bloom.fs" />
+    <None Include="Source\Shaders\postfx\bloom.vs" />
+    <None Include="Source\Shaders\postfx\bloom_final.fs" />
+    <None Include="Source\Shaders\postfx\bloom_final.vs" />
+    <None Include="Source\Shaders\postfx\blur.fs" />
+    <None Include="Source\Shaders\postfx\blur.vs" />
+    <None Include="Source\Shaders\postfx\hdr.fs" />
+    <None Include="Source\Shaders\postfx\hdr.vs" />
+    <None Include="Source\Shaders\screen\framebuffer.fs" />
+    <None Include="Source\Shaders\screen\framebuffer.vs" />
+    <None Include="Source\Shaders\screen\fullscreenTexture.fs" />
+    <None Include="Source\Shaders\screen\fullscreenTexture.vs" />
+    <None Include="Source\Shaders\shadows\point_shadows_depth.fs" />
+    <None Include="Source\Shaders\shadows\point_shadows_depth.gs" />
+    <None Include="Source\Shaders\shadows\point_shadows_depth.vs" />
+    <None Include="Source\Shaders\skybox\skybox.vs" />
+    <None Include="Source\Shaders\skybox\cubemaps.fs" />
+    <None Include="Source\Shaders\skybox\cubemaps.vs" />
+    <None Include="Source\Shaders\skybox\horizontal_gradient.fs" />
+    <None Include="Source\Shaders\skybox\skybox.fs" />
+    <None Include="Source\Shaders\unlit\color.fs" />
+    <None Include="Source\Shaders\lighting.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\lighting.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\lamp.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\lamp.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Source\Shaders\unlit\textured.fs" />
+    <None Include="Source\Shaders\deferred_light.fs" />
+    <None Include="Source\Shaders\deferred_light.vs" />
+    <None Include="Source\Shaders\deferred_shading.fs" />
+    <None Include="Source\Shaders\deferred_shading.vs" />
+    <None Include="Source\Shaders\gbuffer.fs" />
+    <None Include="Source\Shaders\gbuffer.vs" />
+    <None Include="Source\Shaders\screen\ssao.fs" />
+    <None Include="Source\Shaders\screen\ssao.vs" />
+    <None Include="Source\Shaders\screen\ssao_blur.fs" />
+    <None Include="Source\Shaders\ssao_geometry.fs" />
+    <None Include="Source\Shaders\ssao_geometry.vs" />
+    <None Include="Source\Shaders\ssao_lighting.fs" />
+    <None Include="Source\Shaders\pbr\background.fs" />
+    <None Include="Source\Shaders\pbr\background.vs" />
+    <None Include="Source\Shaders\pbr\brdf.fs" />
+    <None Include="Source\Shaders\pbr\brdf.vs" />
+    <None Include="Source\Shaders\pbr\cubemap.vs" />
+    <None Include="Source\Shaders\pbr\equirectangular_to_cubemap.fs" />
+    <None Include="Source\Shaders\pbr\irradiance_convolution.fs" />
+    <None Include="Source\Shaders\pbr\pbr.fs" />
+    <None Include="Source\Shaders\pbr\pbr.vs" />
+    <None Include="Source\Shaders\pbr\prefilter.fs" />
+  </ItemGroup>
+</Project>

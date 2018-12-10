@@ -10,6 +10,10 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+.mayaSwatches/
+autosave/
+workspace.mel
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/

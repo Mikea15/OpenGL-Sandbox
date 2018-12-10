@@ -1,0 +1,102 @@
+#include "DefaultState.h"
+
+#include "Game.h"
+#include "Core/Utils.h"
+#include "Systems/Rendering/Primitives.h"
+
+
+void DefaultState::Init(Game* game)
+{
+	m_windowParams = game->GetWindowParameters();
+	m_sdlHandler = game->GetSDLHandler();
+
+	m_sceneCameraComp = &game->GetSystemComponentManager()->GetComponent<SceneCameraComponent>();
+	m_assetManager = &game->GetAssetManager();
+
+	// configure global opengl state
+	// -----------------------------
+	glEnable(GL_DEPTH_TEST);
+
+	skybox = Skybox();
+	skyboxShader = shaderManager.LoadShader("gradientSkybox", "skybox/skybox.vs", "skybox/horizon_sun.fs");	
+}
+
+void DefaultState::HandleInput(SDL_Event * event)
+{
+	PROFILE("HandleInput");
+}
+
+void DefaultState::Update(float deltaTime)
+{
+	PROFILE("Update");
+}
+
+void DefaultState::Render(float alpha)
+{
+	PROFILE("Render");
+	// render
+	// ------
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glViewport(0, 0, m_windowParams.Width, m_windowParams.Height);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	glm::mat4 projection = m_sceneCameraComp->GetCamera().ProjectionMatrix();
+	glm::mat4 view = m_sceneCameraComp->GetCamera().View();
+
+	// render skybox last. but before transparent objects
+	skyboxShader.Use();
+	skyboxShader.SetMat4("projection", projection);
+	skyboxShader.SetMat4("view", view);
+	skyboxShader.SetVec3("TopColor", skyboxSettings.topColor);
+	skyboxShader.SetFloat("TopExponent", skyboxSettings.topExp);
+	skyboxShader.SetVec3("HorizonColor", skyboxSettings.horizonColor);
+	skyboxShader.SetVec3("BottomColor", skyboxSettings.bottomColor);
+	skyboxShader.SetFloat("BottomExponent", skyboxSettings.bottomExp);
+	skyboxShader.SetFloat("SkyIntensity", skyboxSettings.skyIntensity);
+	skyboxShader.SetVec3("SunColor", skyboxSettings.sunColor);
+	skyboxShader.SetFloat("SunIntensity", skyboxSettings.sunIntensity);
+	skyboxShader.SetFloat("SunAlpha", skyboxSettings.sunAlpha);
+	skyboxShader.SetFloat("SunBeta", skyboxSettings.sunBeta);
+	skyboxShader.SetFloat("SunAzimuth", skyboxSettings.sunAzimuth);
+	skyboxShader.SetFloat("SunAltitude", skyboxSettings.sunAltitude);
+
+	skybox.Draw(skyboxShader);
+}
+
+void DefaultState::RenderUI()
+{
+	PROFILE("RenderUI");
+	ImGui::Begin("Skybox Settings"); ImGui::BeginGroup();
+
+	auto colorSliderUpdate = [&](const std::string& name, glm::vec3& outColor)
+	{
+		float color[3] = { outColor.x, outColor.y, outColor.z };
+		ImGui::ColorEdit3(name.c_str(), color, ImGuiColorEditFlags_RGB);
+		outColor = glm::vec3(color[0], color[1], color[2]);
+	};
+
+
+	colorSliderUpdate("Top Color", skyboxSettings.topColor);
+	ImGui::SliderFloat("Top Exponent", &skyboxSettings.topExp, 0.0f, 100.0f);
+	ImGui::Separator();
+	colorSliderUpdate("Horizon Color", skyboxSettings.horizonColor);
+	ImGui::Separator();
+	colorSliderUpdate("Bottom Color", skyboxSettings.bottomColor);
+	ImGui::SliderFloat("Bottom Exponent", &skyboxSettings.bottomExp, 0.0f, 100.0f);
+	ImGui::Separator();
+	ImGui::SliderFloat("Sky Intensity", &skyboxSettings.skyIntensity, 0.0f, 2.0f);
+	colorSliderUpdate("Sun Color", skyboxSettings.sunColor);
+	ImGui::Separator();
+	ImGui::SliderFloat("Sun Intensity", &skyboxSettings.sunIntensity, 0.0f, 3.0f);
+	ImGui::SliderFloat("Sun Alpha", &skyboxSettings.sunAlpha, 0.0f, 1000.0f);
+	ImGui::SliderFloat("Sun Beta", &skyboxSettings.sunBeta, 0.0f, 1.0f);
+	ImGui::SliderFloat("Sun Azimuth (deg)", &skyboxSettings.sunAzimuth, 0.0f, 360.0f);
+	ImGui::SliderFloat("Sun Altitude (deg)", &skyboxSettings.sunAltitude, 0.0f, 360.0f);
+
+
+	ImGui::EndGroup(); ImGui::End();
+}
+
+void DefaultState::Cleanup()
+{
+}
