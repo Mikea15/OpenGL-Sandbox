@@ -26,6 +26,8 @@ private:
 	Shader brdfShader;
 	Shader backgroundShader;
 
+	Shader wireframeShader;
+
 	// load PBR material textures
 	// --------------------------
 	// rusted iron
@@ -109,5 +111,10 @@ private:
 	float gridSpacing = 2.5f;
 	std::vector<glm::vec3> positions;
 	Transform scratchTransform;
+
+	unsigned int hdrFBO;
+	unsigned int colorBuffer;
+	unsigned int rboDepth;
+	Camera topDownCamera;
 };
 

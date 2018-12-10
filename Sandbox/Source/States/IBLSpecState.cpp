@@ -32,6 +32,10 @@ void IBLSpecState::Init(Game* game)
 	brdfShader = shaderManager.LoadShader("brdfShader", "pbr/brdf.vs", "pbr/brdf.fs");
 	backgroundShader = shaderManager.LoadShader("backgroundShader", "pbr/background.vs", "pbr/background.fs");
 
+	wireframeShader = shaderManager.LoadShader("wireframeSimple", "unlit/simple.vs", "unlit/color.fs");
+	wireframeShader.Use();
+	wireframeShader.SetVec3("Color", glm::vec3(0, 0, 1.0));
+
 	pbrShader.Use();
 	pbrShader.SetInt("irradianceMap", 0);
 	pbrShader.SetInt("prefilterMap", 1);
@@ -296,7 +300,7 @@ void IBLSpecState::Init(Game* game)
 	glViewport(0, 0, m_windowParams.Width, m_windowParams.Height);
 
 	// create a 3d grid of cubes.
-	gX = gY = gZ = 4;
+	gX = gY = gZ = 10;
 	int gXStart = -static_cast<int>(gX / 2.0f);
 	int gYStart = -static_cast<int>(gX / 2.0f);
 	int gZStart = -static_cast<int>(gX / 2.0f);
@@ -311,6 +315,43 @@ void IBLSpecState::Init(Game* game)
 			}
 		}
 	}
+
+	// configure (floating point) framebuffers
+	// ---------------------------------------
+	glGenFramebuffers(1, &hdrFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
+	// create 2 floating point color buffers (1 for normal rendering, other for brightness treshold values)
+	glGenTextures(1, &colorBuffer);
+	glBindTexture(GL_TEXTURE_2D, colorBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, m_windowParams.Width, m_windowParams.Height, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);  // we clamp to the edge as the blur filter would otherwise sample repeated texture values!
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	// attach texture to framebuffer
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorBuffer, 0);
+	
+
+	// create and attach depth buffer (renderbuffer)
+	glGenRenderbuffers(1, &rboDepth);
+	glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_windowParams.Width, m_windowParams.Height);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+
+	// tell OpenGL which color attachments we'll use (of this framebuffer) for rendering 
+	unsigned int attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
+	glDrawBuffers(2, attachments);
+
+	// finally check if framebuffer is complete
+	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		std::cout << "Framebuffer not complete!" << std::endl;
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	
+	topDownCamera.SetFov(m_sceneCameraComp->GetCamera().GetFov());
+	topDownCamera.SetNearFarPlane(
+		m_sceneCameraComp->GetCamera().GetNearPlane(),
+		m_sceneCameraComp->GetCamera().GetFarPlane()
+	);
 }
 
 void IBLSpecState::HandleInput(SDL_Event* event)
@@ -322,11 +363,22 @@ void IBLSpecState::Update(float deltaTime)
 {
 	DefaultState::Update(deltaTime);
 
+
+	glm::vec3 camPos = m_sceneCameraComp->GetCamera().GetPosition();
+	glm::vec3 camPosOverHead = camPos + glm::vec3(0, 1, 0) * 10.0f;
+
+	topDownCamera.SetPosition(camPosOverHead);
+	topDownCamera.m_horizontalAngle = m_sceneCameraComp->GetCamera().m_horizontalAngle;
+	topDownCamera.m_verticalAngle = -90;
+	topDownCamera.Update(deltaTime);
+
 	rotatingT.RotateLocal(glm::vec3(0, 1, 0), 15.0f * deltaTime);
 }
 
 void IBLSpecState::Render(float alpha)
 {
+	glViewport(0, 0, m_windowParams.Width, m_windowParams.Height);
+
 	// configure transformation matrices
 	glm::mat4 view = m_sceneCameraComp->GetCamera().GetViewMatrix();
 	glm::mat4 projection = m_sceneCameraComp->GetCamera().ProjectionMatrix();
@@ -502,6 +554,50 @@ void IBLSpecState::Render(float alpha)
 	// render BRDF map to screen
 	// brdfShader.Use();
 	// Primitives::RenderQuad();
+
+	// render top down view in wireframe
+	{
+		// 1. render scene into floating point framebuffer
+		// -----------------------------------------------
+		glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
+
+		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+		// configure transformation matrices
+		glm::mat4 view = topDownCamera.GetViewMatrix();
+		glm::mat4 projection = topDownCamera.ProjectionMatrix();
+		glm::vec3 cameraPosition = topDownCamera.GetPosition();
+
+		wireframeShader.Use();
+		wireframeShader.SetMat4("view", view);
+		wireframeShader.SetMat4("projection", projection);
+
+		// draw 3d grid of cubes.
+		const unsigned int size = positions.size();
+		for (unsigned int i = 0; i < size; ++i)
+		{
+			wireframeShader.SetVec3("Color", glm::vec3(1.0f, 1.0f, 1.0f));
+
+			if (!m_sceneCameraComp->GetCamera().IsVisible(positions[i]))
+			{
+				wireframeShader.SetVec3("Color", glm::vec3(0.1f, 0.1f, 0.1f));
+			}
+
+			scratchTransform.SetPosition(positions[i]);
+			wireframeShader.SetMat4("model", scratchTransform.GetModelMat());
+
+			Primitives::RenderSphere();
+		}
+
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	}
+
+
 }
 
 void IBLSpecState::RenderUI()
@@ -515,6 +611,7 @@ void IBLSpecState::RenderUI()
 	const float width = 250.0f;
 	const float height = width * screenRatio;
 	ImGui::Image((void*)(intptr_t)brdfLUTTexture, ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0)); ImGui::NextColumn();
+	ImGui::Image((void*)(intptr_t)colorBuffer, ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0)); ImGui::NextColumn();
 
 	ImGui::End();
 }

@@ -453,5 +453,6 @@
     <None Include="Source\Shaders\pbr\pbr.fs" />
     <None Include="Source\Shaders\pbr\pbr.vs" />
     <None Include="Source\Shaders\pbr\prefilter.fs" />
+    <None Include="Source\Shaders\unlit\simple.vs" />
   </ItemGroup>
 </Project>

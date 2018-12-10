@@ -302,6 +302,7 @@
     <None Include="Source\Shaders\ssao_geometry.vs" />
     <None Include="Source\Shaders\ssao_lighting.fs" />
     <None Include="Source\Shaders\unlit\color.fs" />
+    <None Include="Source\Shaders\unlit\simple.vs" />
     <None Include="Source\Shaders\unlit\textured.fs" />
     <None Include="Source\Shaders\yellow.fs" />
   </ItemGroup>
