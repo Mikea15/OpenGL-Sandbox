@@ -75,6 +75,9 @@ void Camera::Update(float deltaTime)
 		m_nearPlane,
 		m_farPlane
 	);
+
+	m_frustum.SetCameraDefinitions(m_position, m_direction, m_right, m_up);
+	m_frustum.SetCameraInternals(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
 }
 
 void Camera::UpdateFOV(float fovChange)

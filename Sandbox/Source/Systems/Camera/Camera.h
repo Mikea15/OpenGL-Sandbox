@@ -9,6 +9,8 @@
 
 #include <vector>
 
+#include "Frustum.h"
+
 
 class Camera
 {
@@ -95,5 +97,7 @@ public:
 	bool m_hasSpeedBoost;
 	float m_speedBoost;
 	glm::vec2 m_mouseSensitivity;
+
+	Frustum m_frustum;
 };
 

@@ -192,6 +192,9 @@
     <ClCompile Include="Source\Systems\Rendering\Shader.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Systems\Camera\Frustum.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Game.h">
@@ -337,6 +340,9 @@
     </ClInclude>
     <ClInclude Include="Source\Systems\Rendering\Shader.h">
       <Filter>Source Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Camera\Frustum.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -377,8 +377,6 @@ void IBLSpecState::Update(float deltaTime)
 
 void IBLSpecState::Render(float alpha)
 {
-	glViewport(0, 0, m_windowParams.Width, m_windowParams.Height);
-
 	// configure transformation matrices
 	glm::mat4 view = m_sceneCameraComp->GetCamera().GetViewMatrix();
 	glm::mat4 projection = m_sceneCameraComp->GetCamera().ProjectionMatrix();
@@ -541,6 +539,8 @@ void IBLSpecState::Render(float alpha)
 		Primitives::RenderSphere();
 	}
 
+	
+
 	// render skybox (render as last to prevent overdraw)
 	backgroundShader.Use();
 	backgroundShader.SetMat4("projection", projection);
@@ -592,12 +592,16 @@ void IBLSpecState::Render(float alpha)
 			Primitives::RenderSphere();
 		}
 
+		// Draw Camera Frustum
+		Transform cameraTransform;
+		cameraTransform.SetPosition(cameraPosition);
+		wireframeShader.SetMat4("model", cameraTransform.GetModelMat());
+		m_sceneCameraComp->GetCamera().m_frustum.DrawPlanes();
+
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
-
-
 }
 
 void IBLSpecState::RenderUI()

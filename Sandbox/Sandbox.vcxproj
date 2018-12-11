@@ -136,6 +136,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Systems\Camera\Frustum.cpp" />
     <ClCompile Include="Source\Components\System\ProfilerSystemComponent.cpp" />
     <ClCompile Include="Source\Managers\Profiler.cpp" />
     <ClCompile Include="Source\States\DeferredRendering.cpp" />
@@ -181,6 +182,7 @@
     <ClCompile Include="Source\Systems\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Systems\Camera\Frustum.h" />
     <ClInclude Include="Source\Components\System\ProfilerSystemComponent.h" />
     <ClInclude Include="Source\Managers\Profiler.h" />
     <ClInclude Include="Source\States\DeferredRendering.h" />
