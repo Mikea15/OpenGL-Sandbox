@@ -77,8 +77,8 @@ void ShadowMappingState::Init(Game* game)
 	woodTexture = assetManager.LoadTexture("Data/Images/wood.png", false).id;
 	uvTexture = assetManager.LoadTexture("Data/Objects/default/uv_grid.jpg", false).id;
 
-	m_plane = Plane();
-	m_plane.GenerateMesh();
+	m_terrain = Terrain();
+	m_terrain.GenerateMesh();
 	planeTransform = Transform();
 	planeTransform.Translate(glm::vec3(-10.0f, 0.0f, -10.0f));
 	
@@ -240,7 +240,7 @@ void ShadowMappingState::Render(float alpha)
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, uvTexture);
 	multipleLightsShader.SetMat4("model", planeTransform.GetModelMat());
-	m_plane.GetMesh().Draw(multipleLightsShader);
+	m_terrain.GetMesh().Draw(multipleLightsShader);
 	glActiveTexture(GL_TEXTURE0);
 
 	reflectionShader.Use();
@@ -375,26 +375,26 @@ void ShadowMappingState::RenderUI()
 
 	ImGui::BeginGroup();
 	ImGui::Text("Terrain Size");
-	glm::vec2 planeSize = m_plane.GetPlaneSize();
+	glm::vec2 planeSize = m_terrain.GetPlaneSize();
 	ImGui::SliderFloat("Width", &planeSize.x, 1.0f, 256.0f);
 	ImGui::SliderFloat("Length", &planeSize.y, 1.0f, 256.0f);
 
-	float heightSize = m_plane.GetHeightSize();
+	float heightSize = m_terrain.GetHeightSize();
 	ImGui::SliderFloat("Height", &heightSize, 1.0f, 64.0f);
-	if (heightSize != m_plane.GetHeightSize())
+	if (heightSize != m_terrain.GetHeightSize())
 	{
-		m_plane.SetHeightSize(heightSize);
-		m_plane.UpdateHeightMap();
+		m_terrain.SetHeightSize(heightSize);
+		m_terrain.UpdateHeightMap();
 	}
 
-	if (planeSize != m_plane.GetPlaneSize())
+	if (planeSize != m_terrain.GetPlaneSize())
 	{
-		m_plane.SetPlaneSize(planeSize);
+		m_terrain.SetTerrainSize(planeSize);
 	}
 
 	if (ImGui::Button("Regenerate Terrain")) 
 	{
-		m_plane.GenerateMesh();
+		m_terrain.GenerateMesh();
 	}
 
 	ImGui::EndGroup();
@@ -402,13 +402,13 @@ void ShadowMappingState::RenderUI()
 	ImGui::BeginGroup();
 	ImGui::Text("Heightmap Settings");
 
-	HeightmapParams currentParams = m_plane.GetHeightMapParams();
+	HeightmapParams currentParams = m_terrain.GetHeightMapParams();
 	ImGui::SliderInt("Octaves", &currentParams.octaves, 1, 10);
 	ImGui::SliderFloat("Lacunarity", &currentParams.lacunarity, 0.0f, 1.0f);
 	ImGui::SliderFloat("Persistence", &currentParams.persistence, 0, 3);
-	if (currentParams != m_plane.GetHeightMapParams())
+	if (currentParams != m_terrain.GetHeightMapParams())
 	{
-		m_plane.SetHeightMapParams(currentParams);
+		m_terrain.SetHeightMapParams(currentParams);
 	}
 
 	ImGui::EndGroup();

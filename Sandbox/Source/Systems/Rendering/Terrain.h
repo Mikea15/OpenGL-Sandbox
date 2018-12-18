@@ -27,13 +27,13 @@ struct HeightmapParams
 
 };
 
-class Plane
+class Terrain
 {
 public:
-	Plane();
-	~Plane() = default;
+	Terrain();
+	~Terrain() = default;
 
-	void SetPlaneSize(const glm::vec2& size);
+	void SetTerrainSize(const glm::vec2& size);
 	glm::vec2& GetPlaneSize() { return m_planeSize; }
 
 	void SetHeightMapParams(HeightmapParams params);

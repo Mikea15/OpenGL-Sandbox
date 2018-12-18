@@ -1,6 +1,6 @@
-#include "Plane.h"
+#include "Terrain.h"
 
-Plane::Plane()
+Terrain::Terrain()
 	: m_tileSize(1.0f)
 	, m_planeSize(20.0f, 20.0f)
 	, m_heightSize(1.0f)
@@ -8,18 +8,18 @@ Plane::Plane()
 	m_heightmapParams = { 2, 1.0f / 24.f, 2.3f };
 }
 
-void Plane::SetPlaneSize(const glm::vec2& size)
+void Terrain::SetTerrainSize(const glm::vec2& size)
 {
 	m_planeSize = size;
 }
 
-void Plane::SetHeightMapParams(HeightmapParams params)
+void Terrain::SetHeightMapParams(HeightmapParams params)
 {
 	m_heightmapParams = params;
 	UpdateHeightMap();
 }
 
-void Plane::GenerateMesh()
+void Terrain::GenerateMesh()
 {
 	int nTiles = static_cast<int>(m_planeSize.x * m_planeSize.y);
 	int length = static_cast<int>(m_planeSize.x);
@@ -98,7 +98,7 @@ void Plane::GenerateMesh()
 	m_mesh.CreateBuffers();
 }
 
-void Plane::CalculateNormals()
+void Terrain::CalculateNormals()
 {
 	auto& vertices = m_mesh.GetVertices();
 	auto& indices = m_mesh.GetIndices();
@@ -123,7 +123,7 @@ void Plane::CalculateNormals()
 	}
 }
 
-void Plane::UpdateHeightMap()
+void Terrain::UpdateHeightMap()
 {
 	int length = static_cast<int>(m_planeSize.x);
 	int width = static_cast<int>(m_planeSize.y);
@@ -149,7 +149,7 @@ void Plane::UpdateHeightMap()
 	m_mesh.CreateBuffers();
 }
 
-glm::vec3 Plane::CalculateNormalFromIndices(const std::vector<Vertex>& vertices, int a, int b, int c)
+glm::vec3 Terrain::CalculateNormalFromIndices(const std::vector<Vertex>& vertices, int a, int b, int c)
 {
 	glm::vec3 pA = vertices[a].Position;
 	glm::vec3 pB = vertices[b].Position;
@@ -161,7 +161,7 @@ glm::vec3 Plane::CalculateNormalFromIndices(const std::vector<Vertex>& vertices,
 	return glm::normalize(glm::cross(ab, ac));
 }
 
-float Plane::GetPerlinNoise(const glm::vec2 & pos)
+float Terrain::GetPerlinNoise(const glm::vec2 & pos)
 {
 	float total = 0.0f;
 	float frequency = 1.0f;

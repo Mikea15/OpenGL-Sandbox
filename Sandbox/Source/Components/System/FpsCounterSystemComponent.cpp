@@ -44,7 +44,15 @@ void FpsCounterSystemComponent::PreUpdate(float frameTime)
 	m_minFps = (m_framesPerSecond < m_minFps) ? m_framesPerSecond : m_minFps;
 	m_maxFps = (m_framesPerSecond > m_maxFps) ? m_framesPerSecond : m_maxFps;
 
-	m_msBuffer[m_currentMsBufferIndex] = frameTimeMS;
+	m_lastFrameTimeMS = frameTimeMS;
+}
+
+void FpsCounterSystemComponent::Update(float deltaTime)
+{
+	m_lastDeltaTime = deltaTime;
+	++m_updateCicles;
+
+	m_msBuffer[m_currentMsBufferIndex] = m_lastFrameTimeMS;
 	if (m_currentMsBufferIndex < nMsBuffer - 1)
 	{
 		m_currentMsBufferIndex++;
@@ -69,14 +77,6 @@ void FpsCounterSystemComponent::PreUpdate(float frameTime)
 			m_fpsBuffer[i] = m_fpsBuffer[i + 1];
 		}
 	}
-
-	m_lastFrameTimeMS = frameTimeMS;
-}
-
-void FpsCounterSystemComponent::Update(float deltaTime)
-{
-	m_lastDeltaTime = deltaTime;
-	++m_updateCicles;
 }
 
 void FpsCounterSystemComponent::Render(float alpha)

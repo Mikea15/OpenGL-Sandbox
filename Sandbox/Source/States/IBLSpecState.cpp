@@ -14,7 +14,6 @@ IBLSpecState::~IBLSpecState()
 
 void IBLSpecState::Init(Game* game)
 {
-
 	DefaultState::Init(game);
 
 	// configure global opengl state
@@ -24,6 +23,8 @@ void IBLSpecState::Init(Game* game)
 	glDepthFunc(GL_LEQUAL);
 	// enable seamless cubemap sampling for lower mip levels in the pre-filter map.
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
+	m_qTree = QuadTree(glm::vec3(0.0f), 30.0f);
 
 	pbrShader = shaderManager.LoadShader("pbrShader", "pbr/pbr.vs", "pbr/pbr.fs");
 	equirectangularToCubemapShader = shaderManager.LoadShader("equirectangularToCubemapShader", "pbr/cubemap.vs", "pbr/equirectangular_to_cubemap.fs");
@@ -58,49 +59,49 @@ void IBLSpecState::Init(Game* game)
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/rusted_iron/metallic.png", false, &ironMetallicMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/rusted_iron/roughness.png", false, &ironRoughnessMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/rusted_iron/ao.png", false, &ironAOMap);
-	
+
 	// gold
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/gold/albedo.png", false, &goldAlbedoMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/gold/normal.png", false, &goldNormalMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/gold/metallic.png", false, &goldMetallicMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/gold/roughness.png", false, &goldRoughnessMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/gold/ao.png", false, &goldAOMap);
-	
+
 	// grass
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/grass/albedo.png", false, &grassAlbedoMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/grass/normal.png", false, &grassNormalMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/grass/metallic.png", false, &grassMetallicMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/grass/roughness.png", false, &grassRoughnessMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/grass/ao.png", false, &grassAOMap);
-	
+
 	// plastic
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/plastic/albedo.png", false, &plasticAlbedoMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/plastic/normal.png", false, &plasticNormalMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/plastic/metallic.png", false, &plasticMetallicMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/plastic/roughness.png", false, &plasticRoughnessMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/plastic/ao.png", false, &plasticAOMap);
-	
+
 	// wall
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/wall/albedo.png", false, &wallAlbedoMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/wall/normal.png", false, &wallNormalMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/wall/metallic.png", false, &wallMetallicMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/wall/roughness.png", false, &wallRoughnessMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/wall/ao.png", false, &wallAOMap);
-	
+
 	// marble
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/marble/albedo.png", false, &marbleAlbedoMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/marble/normal.png", false, &marbleNormalMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/marble/height.png", false, &marbleHeightMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/marble/roughness.png", false, &marbleRoughnessMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/marble/ao.png", false, &marbleAOMap);
-	
+
 	// granite
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/cliffgranite/albedo.png", false, &graniteAlbedoMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/cliffgranite/normal.png", false, &graniteNormalMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/cliffgranite/height.png", false, &graniteHeightMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/cliffgranite/roughness.png", false, &graniteRoughnessMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/cliffgranite/ao.png", false, &graniteAOMap);
-	
+
 	// leather
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/leather/albedo.png", false, &leatherAlbedoMap);
 	m_assetManager->LoadTextureAsync("Data/Images/pbr/leather/normal.png", false, &leatherNormalMap);
@@ -129,7 +130,7 @@ void IBLSpecState::Init(Game* game)
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
 
 	hdrTexture = m_assetManager->LoadHDRTexure("Data/Images/pbr/newport_loft.hdr");
-	
+
 	// pbr: setup cubemap to render to and attach to framebuffer
 	// ---------------------------------------------------------
 	glGenTextures(1, &envCubemap);
@@ -292,6 +293,7 @@ void IBLSpecState::Init(Game* game)
 	// initialize static shader uniforms before rendering
 	// --------------------------------------------------
 	glm::mat4 projection = m_sceneCameraComp->GetCamera().ProjectionMatrix();
+	
 	pbrShader.Use();
 	pbrShader.SetMat4("projection", projection);
 	backgroundShader.Use();
@@ -301,17 +303,22 @@ void IBLSpecState::Init(Game* game)
 
 	// create a 3d grid of cubes.
 	gX = gY = gZ = 10;
-	int gXStart = -static_cast<int>(gX / 2.0f);
-	int gYStart = -static_cast<int>(gX / 2.0f);
-	int gZStart = -static_cast<int>(gX / 2.0f);
-	for (int gXStart = 0; gXStart < gX; gXStart++)
+	gY = 1;
+
+	// int gXStart = -static_cast<int>(gX / 2.0f);
+	// int gYStart = (gY > 2) ? -static_cast<int>(gY / 2.0f) : 0;
+	// int gZStart = (gZ > 2) ? -static_cast<int>(gZ / 2.0f) : 0;
+	for (int gXStart = -5; gXStart < gX; gXStart++)
 	{
 		for (int gYStart = 0; gYStart < gY; gYStart++)
 		{
-			for (int gZStart = 0; gZStart < gZ; gZStart++)
+			for (int gZStart = -5; gZStart < gZ; gZStart++)
 			{
 				glm::vec3 v3 = glm::vec3(gXStart, gYStart, gZStart) * gridSpacing;
 				positions.push_back(v3);
+				visible.push_back(ContainmentType::Disjoint);
+
+				m_qTree.Insert(v3);
 			}
 		}
 	}
@@ -330,7 +337,7 @@ void IBLSpecState::Init(Game* game)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	// attach texture to framebuffer
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, colorBuffer, 0);
-	
+
 
 	// create and attach depth buffer (renderbuffer)
 	glGenRenderbuffers(1, &rboDepth);
@@ -346,12 +353,13 @@ void IBLSpecState::Init(Game* game)
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "Framebuffer not complete!" << std::endl;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	
+
 	topDownCamera.SetFov(m_sceneCameraComp->GetCamera().GetFov());
 	topDownCamera.SetNearFarPlane(
 		m_sceneCameraComp->GetCamera().GetNearPlane(),
 		m_sceneCameraComp->GetCamera().GetFarPlane()
 	);
+
 }
 
 void IBLSpecState::HandleInput(SDL_Event* event)
@@ -363,10 +371,10 @@ void IBLSpecState::Update(float deltaTime)
 {
 	DefaultState::Update(deltaTime);
 
-
 	glm::vec3 camPos = m_sceneCameraComp->GetCamera().GetPosition();
-	glm::vec3 camPosOverHead = camPos + glm::vec3(0, 1, 0) * 10.0f;
+	glm::vec3 camPosOverHead = camPos + glm::vec3(0, 1, 0) * 3.0f;
 
+	topDownCamera.m_resolution = glm::vec2(m_windowParams.Width, m_windowParams.Height);
 	topDownCamera.SetPosition(camPosOverHead);
 	topDownCamera.m_horizontalAngle = m_sceneCameraComp->GetCamera().m_horizontalAngle;
 	topDownCamera.m_verticalAngle = -90;
@@ -469,7 +477,7 @@ void IBLSpecState::Render(float alpha)
 	// marble
 	glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, marbleAlbedoMap);
 	glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, marbleNormalMap);
-	
+
 	glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, marbleRoughnessMap);
 	glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, marbleAOMap);
 	glActiveTexture(GL_TEXTURE8); glBindTexture(GL_TEXTURE_2D, marbleHeightMap);
@@ -483,7 +491,7 @@ void IBLSpecState::Render(float alpha)
 	// granite
 	glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, graniteAlbedoMap);
 	glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, graniteNormalMap);
-	
+
 	glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, graniteRoughnessMap);
 	glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, graniteAOMap);
 	glActiveTexture(GL_TEXTURE8); glBindTexture(GL_TEXTURE_2D, graniteHeightMap);
@@ -497,7 +505,7 @@ void IBLSpecState::Render(float alpha)
 	// leather
 	glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, leatherAlbedoMap);
 	glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, leatherNormalMap);
-	
+
 	glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, leatherRoughnessMap);
 	glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, leatherAOMap);
 	glActiveTexture(GL_TEXTURE8); glBindTexture(GL_TEXTURE_2D, leatherHeightMap);
@@ -511,7 +519,7 @@ void IBLSpecState::Render(float alpha)
 	// render light source (simply re-render sphere at light positions)
 	// this looks a bit off as we use the same shader, but it'll make their positions obvious and 
 	// keeps the codeprint small.
-	
+
 	for (unsigned int i = 0; i < lightPositions.size(); ++i)
 	{
 		Transform lightTransform;
@@ -524,11 +532,13 @@ void IBLSpecState::Render(float alpha)
 		Primitives::RenderSphere();
 	}
 
+
 	// draw 3d grid of cubes.
 	const unsigned int size = positions.size();
 	for (unsigned int i = 0; i < size; ++i)
 	{
-		if (!m_sceneCameraComp->GetCamera().IsVisible(positions[i]))
+		visible[i] = m_sceneCameraComp->GetCamera().m_frustum.SphereInFrustrum(positions[i], 1.0f);
+		if ( visible[i] == ContainmentType::Disjoint )
 		{
 			continue;
 		}
@@ -538,8 +548,39 @@ void IBLSpecState::Render(float alpha)
 
 		Primitives::RenderSphere();
 	}
-
 	
+	std::vector<BoundingBox> quadTreeVis;
+	m_qTree.GetAllBoundingBoxes(quadTreeVis);
+	const unsigned int qSize = quadTreeVis.size();
+	for (unsigned int i = 0; i < qSize; ++i)
+	{
+		Transform origin;
+		origin.SetPosition(quadTreeVis[i].GetPosition());
+		origin.SetScale(glm::vec3(quadTreeVis[i].GetSize()));
+
+		wireframeShader.Use();
+		wireframeShader.SetMat4("view", view);
+		wireframeShader.SetMat4("projection", projection);
+		wireframeShader.SetVec3("Color", glm::vec3(0.1, 0.8, 0.2));
+		wireframeShader.SetMat4("model", origin.GetModelMat());
+		Primitives::RenderCube(true);
+	}
+
+
+	Transform origin;
+	wireframeShader.Use();
+	wireframeShader.SetMat4("view", view);
+	wireframeShader.SetMat4("projection", projection);
+	wireframeShader.SetVec3("Color", glm::vec3(0.1, 0.8, 0.2));
+	wireframeShader.SetMat4("model", origin.GetModelMat());
+	Primitives::RenderCube(true);
+
+	origin.Scale(0.1f);
+	wireframeShader.SetMat4("view", view);
+	wireframeShader.SetMat4("projection", projection);
+	wireframeShader.SetVec3("Color", glm::vec3(0.1, 0.8, 0.2));
+	wireframeShader.SetMat4("model", origin.GetModelMat());
+	Primitives::RenderCube();
 
 	// render skybox (render as last to prevent overdraw)
 	backgroundShader.Use();
@@ -570,8 +611,10 @@ void IBLSpecState::Render(float alpha)
 		glm::mat4 view = topDownCamera.GetViewMatrix();
 		glm::mat4 projection = topDownCamera.ProjectionMatrix();
 		glm::vec3 cameraPosition = topDownCamera.GetPosition();
+		glm::mat4 ortho = topDownCamera.OrthographicMatrix();
 
 		wireframeShader.Use();
+		wireframeShader.SetVec3("Color", glm::vec3(0, 0, 1.0));
 		wireframeShader.SetMat4("view", view);
 		wireframeShader.SetMat4("projection", projection);
 
@@ -579,11 +622,19 @@ void IBLSpecState::Render(float alpha)
 		const unsigned int size = positions.size();
 		for (unsigned int i = 0; i < size; ++i)
 		{
-			wireframeShader.SetVec3("Color", glm::vec3(1.0f, 1.0f, 1.0f));
-
-			if (!m_sceneCameraComp->GetCamera().IsVisible(positions[i]))
+			switch (visible[i])
 			{
+			case ContainmentType::Contains:
+				wireframeShader.SetVec3("Color", glm::vec3(0.1f, 0.9f, 0.1f));
+				break;
+			case ContainmentType::Intersect:
+				wireframeShader.SetVec3("Color", glm::vec3(1.0f, 1.0f, 1.0f));
+				break;
+			case ContainmentType::Disjoint:
+				// continue;
 				wireframeShader.SetVec3("Color", glm::vec3(0.1f, 0.1f, 0.1f));
+				break;
+			default: break;
 			}
 
 			scratchTransform.SetPosition(positions[i]);
@@ -591,12 +642,6 @@ void IBLSpecState::Render(float alpha)
 
 			Primitives::RenderSphere();
 		}
-
-		// Draw Camera Frustum
-		Transform cameraTransform;
-		cameraTransform.SetPosition(cameraPosition);
-		wireframeShader.SetMat4("model", cameraTransform.GetModelMat());
-		m_sceneCameraComp->GetCamera().m_frustum.DrawPlanes();
 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 

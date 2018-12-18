@@ -138,9 +138,6 @@
     <ClCompile Include="Source\Systems\Rendering\Skybox.cpp">
       <Filter>Source Files\Systems\Rendering</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Systems\Rendering\Plane.cpp">
-      <Filter>Source Files\Systems\Rendering</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Systems\Entity.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
@@ -193,6 +190,18 @@
       <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\Systems\Camera\Frustum.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Rendering\Terrain.cpp">
+      <Filter>Source Files\Systems\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Physics\BoundingBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Physics\BoundingSphere.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\QuadTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -284,9 +293,6 @@
     <ClInclude Include="Source\Systems\Rendering\Skybox.h">
       <Filter>Source Files\Systems\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Systems\Rendering\Plane.h">
-      <Filter>Source Files\Systems\Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Systems\Entity.h">
       <Filter>Source Files\Systems</Filter>
     </ClInclude>
@@ -342,6 +348,18 @@
       <Filter>Source Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Systems\Camera\Frustum.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Rendering\Terrain.h">
+      <Filter>Source Files\Systems\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Physics\BoundingBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Physics\BoundingSphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\QuadTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

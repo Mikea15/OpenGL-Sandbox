@@ -136,6 +136,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Systems\QuadTree.cpp" />
+    <ClCompile Include="Source\Systems\Physics\BoundingSphere.cpp" />
+    <ClCompile Include="Source\Systems\Physics\BoundingBox.cpp" />
     <ClCompile Include="Source\Systems\Camera\Frustum.cpp" />
     <ClCompile Include="Source\Components\System\ProfilerSystemComponent.cpp" />
     <ClCompile Include="Source\Managers\Profiler.cpp" />
@@ -173,7 +176,7 @@
     <ClCompile Include="Source\Systems\Entity.cpp" />
     <ClCompile Include="Source\Systems\Model.cpp" />
     <ClCompile Include="Source\Systems\Rendering\Mesh.cpp" />
-    <ClCompile Include="Source\Systems\Rendering\Plane.cpp" />
+    <ClCompile Include="Source\Systems\Rendering\Terrain.cpp" />
     <ClCompile Include="Source\Systems\Rendering\Primitives.cpp" />
     <ClCompile Include="Source\Systems\Rendering\Primitives\Cube.cpp" />
     <ClCompile Include="Source\Systems\Rendering\Primitives\Quad.cpp" />
@@ -182,6 +185,9 @@
     <ClCompile Include="Source\Systems\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Systems\QuadTree.h" />
+    <ClInclude Include="Source\Systems\Physics\BoundingSphere.h" />
+    <ClInclude Include="Source\Systems\Physics\BoundingBox.h" />
     <ClInclude Include="Source\Systems\Camera\Frustum.h" />
     <ClInclude Include="Source\Components\System\ProfilerSystemComponent.h" />
     <ClInclude Include="Source\Managers\Profiler.h" />
@@ -222,7 +228,7 @@
     <ClInclude Include="Source\Systems\Entity.h" />
     <ClInclude Include="Source\Systems\Model.h" />
     <ClInclude Include="Source\Systems\Rendering\Mesh.h" />
-    <ClInclude Include="Source\Systems\Rendering\Plane.h" />
+    <ClInclude Include="Source\Systems\Rendering\Terrain.h" />
     <ClInclude Include="Source\Systems\Rendering\Primitives.h" />
     <ClInclude Include="Source\Systems\Rendering\Primitives\Cube.h" />
     <ClInclude Include="Source\Systems\Rendering\Primitives\Quad.h" />

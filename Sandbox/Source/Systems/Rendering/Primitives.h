@@ -8,7 +8,8 @@
 class Primitives
 {
 public:
-	static void RenderCube();
+	static void RenderPoint();
+	static void RenderCube(bool wireframe = false);
 	static void RenderQuad();
 	static void RenderSphere();
 
@@ -17,4 +18,5 @@ public:
 
 	static unsigned int indexCount;
 	static unsigned int sphereVAO;
+	static unsigned int pointVao, pointVbo;
 };

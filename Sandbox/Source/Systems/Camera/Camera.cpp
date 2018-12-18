@@ -3,6 +3,9 @@
 
 #include <iostream>
 
+#include "../Transform.h"
+
+
 static const float MaxVerticalAngle = 85.0f; //must be less than 90 to avoid gimbal lock
 
 Camera::Camera()
@@ -26,7 +29,7 @@ Camera::Camera()
 	, m_speedBoost(2.0f)
 	, m_mouseSensitivity(0.15f, 0.15f)
 {
-
+	m_frustum = Frustum(m_viewMatrix);
 }
 
 void Camera::ChangeFov(float delta)
@@ -76,8 +79,13 @@ void Camera::Update(float deltaTime)
 		m_farPlane
 	);
 
-	m_frustum.SetCameraDefinitions(m_position, m_direction, m_right, m_up);
-	m_frustum.SetCameraInternals(m_fov, m_aspectRatio, m_nearPlane, m_farPlane);
+	m_orthographicMatrix = glm::ortho(
+		-m_resolution.x * 0.5f, m_resolution.x * 0.5f,
+		-m_resolution.y * 0.5f, m_resolution.y * 0.5f, 
+		m_nearPlane, 20.0f
+	);
+
+	m_frustum.SetViewProjectionMatrix( m_projectionMatrix * m_viewMatrix );
 }
 
 void Camera::UpdateFOV(float fovChange)

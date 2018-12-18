@@ -70,6 +70,7 @@ public:
 		
 	glm::mat4 ViewProjectionMatrix();
 	glm::mat4 ProjectionMatrix();
+	const glm::mat4& OrthographicMatrix() const { return m_orthographicMatrix; }
 	glm::mat4 View();
 
 	void normalizeAngles();
@@ -78,10 +79,13 @@ public:
 	glm::vec3 m_positionChange;
 	glm::mat4 m_viewMatrix;
 	glm::mat4 m_projectionMatrix;
+	glm::mat4 m_orthographicMatrix;
 
 	glm::vec3 m_direction;
 	glm::vec3 m_up;
 	glm::vec3 m_right;
+
+	glm::vec2 m_resolution;
 
 	float m_horizontalAngle;
 	float m_verticalAngle;

@@ -18,7 +18,7 @@
 
 #include "Systems/Entity.h"
 #include "Systems/Rendering/Skybox.h"
-#include "Systems/Rendering/Plane.h"
+#include "Systems/Rendering/Terrain.h"
 #include "Systems/Rendering/Primitives/Quad.h"
 #include "Systems/Rendering/TextureBuffer.h"
 
@@ -69,7 +69,7 @@ private:
 	
 	glm::vec2 m_planeSize;
 	bool m_planeSizeChanged = false;
-	Plane m_plane;
+	Terrain m_terrain;
 	Transform planeTransform;
 
 	Skybox m_skybox;
