@@ -5,6 +5,7 @@
 #include "DefaultState.h"
 
 #include "Systems/QuadTree.h"
+#include "Systems/Octree.h"
 
 class IBLSpecState
 	: public DefaultState
@@ -22,7 +23,11 @@ public:
 
 private:
 	QuadTree m_qTree;
+	Octree m_oTree;
+	bool showQtree = false;
+	bool showOctree = false;
 
+	Shader debugInstanced;
 	Shader pbrShader;
 	Shader equirectangularToCubemapShader;
 	Shader irradianceShader;
@@ -112,7 +117,7 @@ private:
 
 	int gX, gY, gZ;
 	int gridSize = 50;
-	float gridSpacing = 5.0f;
+	float gridSpacing = 2.5f;
 	std::vector<glm::vec3> positions;
 	std::vector<ContainmentType> visible;
 	Transform scratchTransform;

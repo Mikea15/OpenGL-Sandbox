@@ -2,6 +2,8 @@
 
 #include "Game.h"
 
+#include <random>
+
 IBLSpecState::IBLSpecState()
 {
 
@@ -24,8 +26,10 @@ void IBLSpecState::Init(Game* game)
 	// enable seamless cubemap sampling for lower mip levels in the pre-filter map.
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
-	m_qTree = QuadTree(glm::vec3(0.0f), 30.0f);
+	m_qTree = QuadTree(glm::vec3(0.0f), 50.0f);
+	m_oTree = Octree(glm::vec3(0.0f), 50.0f);
 
+	debugInstanced = shaderManager.LoadShader("debugInstanced", "instancing.vs", "unlit/color.fs");
 	pbrShader = shaderManager.LoadShader("pbrShader", "pbr/pbr.vs", "pbr/pbr.fs");
 	equirectangularToCubemapShader = shaderManager.LoadShader("equirectangularToCubemapShader", "pbr/cubemap.vs", "pbr/equirectangular_to_cubemap.fs");
 	irradianceShader = shaderManager.LoadShader("irradianceShader", "pbr/cubemap.vs", "pbr/irradiance_convolution.fs");
@@ -293,7 +297,7 @@ void IBLSpecState::Init(Game* game)
 	// initialize static shader uniforms before rendering
 	// --------------------------------------------------
 	glm::mat4 projection = m_sceneCameraComp->GetCamera().ProjectionMatrix();
-	
+
 	pbrShader.Use();
 	pbrShader.SetMat4("projection", projection);
 	backgroundShader.Use();
@@ -302,23 +306,28 @@ void IBLSpecState::Init(Game* game)
 	glViewport(0, 0, m_windowParams.Width, m_windowParams.Height);
 
 	// create a 3d grid of cubes.
-	gX = gY = gZ = 10;
-	gY = 1;
+	gX = gY = gZ = 2;
+	// gY = 1;
+
+	std::random_device rd; // obtain a random number from hardware
+	std::mt19937 eng(rd()); // seed the generator
+	std::uniform_int_distribution<> distr(-20, 20); // define the range
 
 	// int gXStart = -static_cast<int>(gX / 2.0f);
 	// int gYStart = (gY > 2) ? -static_cast<int>(gY / 2.0f) : 0;
 	// int gZStart = (gZ > 2) ? -static_cast<int>(gZ / 2.0f) : 0;
-	for (int gXStart = -5; gXStart < gX; gXStart++)
+	for (int gXStart = -gX; gXStart < gX; gXStart++)
 	{
-		for (int gYStart = 0; gYStart < gY; gYStart++)
+		for (int gYStart = -gY; gYStart < gY; gYStart++)
 		{
-			for (int gZStart = -5; gZStart < gZ; gZStart++)
+			for (int gZStart = -gZ; gZStart < gZ; gZStart++)
 			{
-				glm::vec3 v3 = glm::vec3(gXStart, gYStart, gZStart) * gridSpacing;
+				glm::vec3 v3 = glm::vec3(distr(eng), distr(eng), distr(eng)) * gridSpacing;
 				positions.push_back(v3);
 				visible.push_back(ContainmentType::Disjoint);
 
 				m_qTree.Insert(v3);
+				m_oTree.Insert(v3);
 			}
 		}
 	}
@@ -374,8 +383,8 @@ void IBLSpecState::Update(float deltaTime)
 	glm::vec3 camPos = m_sceneCameraComp->GetCamera().GetPosition();
 	glm::vec3 camPosOverHead = camPos + glm::vec3(0, 1, 0) * 3.0f;
 
-	topDownCamera.m_resolution = glm::vec2(m_windowParams.Width, m_windowParams.Height);
-	topDownCamera.SetPosition(camPosOverHead);
+	topDownCamera.m_resolution = glm::vec2(m_windowParams.Width, m_windowParams.Height) * 0.045f;
+	topDownCamera.SetPosition(glm::vec3(0.0f, 10.0f, 0.0f));
 	topDownCamera.m_horizontalAngle = m_sceneCameraComp->GetCamera().m_horizontalAngle;
 	topDownCamera.m_verticalAngle = -90;
 	topDownCamera.Update(deltaTime);
@@ -538,7 +547,7 @@ void IBLSpecState::Render(float alpha)
 	for (unsigned int i = 0; i < size; ++i)
 	{
 		visible[i] = m_sceneCameraComp->GetCamera().m_frustum.SphereInFrustrum(positions[i], 1.0f);
-		if ( visible[i] == ContainmentType::Disjoint )
+		if (visible[i] == ContainmentType::Disjoint)
 		{
 			continue;
 		}
@@ -548,24 +557,51 @@ void IBLSpecState::Render(float alpha)
 
 		Primitives::RenderSphere();
 	}
-	
-	std::vector<BoundingBox> quadTreeVis;
-	m_qTree.GetAllBoundingBoxes(quadTreeVis);
-	const unsigned int qSize = quadTreeVis.size();
-	for (unsigned int i = 0; i < qSize; ++i)
-	{
-		Transform origin;
-		origin.SetPosition(quadTreeVis[i].GetPosition());
-		origin.SetScale(glm::vec3(quadTreeVis[i].GetSize()));
 
-		wireframeShader.Use();
-		wireframeShader.SetMat4("view", view);
-		wireframeShader.SetMat4("projection", projection);
-		wireframeShader.SetVec3("Color", glm::vec3(0.1, 0.8, 0.2));
-		wireframeShader.SetMat4("model", origin.GetModelMat());
-		Primitives::RenderCube(true);
+	if (showQtree)
+	{
+		std::vector<Rect> quadTreeVis;
+		m_qTree.GetAllBoundingBoxes(quadTreeVis);
+		const unsigned int qSize = quadTreeVis.size();
+		for (unsigned int i = 0; i < qSize; ++i)
+		{
+			Transform origin;
+			auto pos2D = quadTreeVis[i].GetPosition();
+
+			origin.SetPosition(glm::vec3(pos2D.x, 0.0f, pos2D.y));
+			origin.RotateLocal(glm::vec3(1.0f, 0.0f, 0.0f), 90.0f);
+			origin.SetScale(glm::vec3(quadTreeVis[i].GetSize()));
+
+			wireframeShader.Use();
+			wireframeShader.SetMat4("view", view);
+			wireframeShader.SetMat4("projection", projection);
+			wireframeShader.SetVec3("Color", glm::vec3(0.1, 0.8, 0.2));
+			wireframeShader.SetMat4("model", origin.GetModelMat());
+			Primitives::RenderQuad(true);
+		}
 	}
 
+	if (showOctree)
+	{
+		std::vector<BoundingBox> ocTreeVis;
+		m_oTree.GetAllBoundingBoxes(ocTreeVis);
+		const unsigned int qSize = ocTreeVis.size();
+		for (unsigned int i = 0; i < qSize; ++i)
+		{
+			Transform origin;
+			auto pos = ocTreeVis[i].GetPosition();
+
+			origin.SetPosition(pos);
+			origin.SetScale(glm::vec3(ocTreeVis[i].GetSize()));
+
+			wireframeShader.Use();
+			wireframeShader.SetMat4("view", view);
+			wireframeShader.SetMat4("projection", projection);
+			wireframeShader.SetVec3("Color", glm::vec3(0.1, 0.8, 0.2));
+			wireframeShader.SetMat4("model", origin.GetModelMat());
+			Primitives::RenderCube(true);
+		}
+	}
 
 	Transform origin;
 	wireframeShader.Use();
@@ -616,7 +652,7 @@ void IBLSpecState::Render(float alpha)
 		wireframeShader.Use();
 		wireframeShader.SetVec3("Color", glm::vec3(0, 0, 1.0));
 		wireframeShader.SetMat4("view", view);
-		wireframeShader.SetMat4("projection", projection);
+		wireframeShader.SetMat4("projection", ortho);
 
 		// draw 3d grid of cubes.
 		const unsigned int size = positions.size();
@@ -631,7 +667,7 @@ void IBLSpecState::Render(float alpha)
 				wireframeShader.SetVec3("Color", glm::vec3(1.0f, 1.0f, 1.0f));
 				break;
 			case ContainmentType::Disjoint:
-				// continue;
+				continue;
 				wireframeShader.SetVec3("Color", glm::vec3(0.1f, 0.1f, 0.1f));
 				break;
 			default: break;
@@ -652,6 +688,14 @@ void IBLSpecState::Render(float alpha)
 void IBLSpecState::RenderUI()
 {
 	DefaultState::RenderUI();
+
+	ImGui::Begin("Spatial Data Structures");
+
+	ImGui::Checkbox("Show Quadtree", &showQtree);
+	ImGui::Checkbox("Show Octree", &showOctree);
+
+	ImGui::End();
+
 	ImGui::Begin("Show Buffers");
 	const float screenRatio = m_windowParams.Height / static_cast<float>(m_windowParams.Width);
 
@@ -659,7 +703,6 @@ void IBLSpecState::RenderUI()
 
 	const float width = 250.0f;
 	const float height = width * screenRatio;
-	ImGui::Image((void*)(intptr_t)brdfLUTTexture, ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0)); ImGui::NextColumn();
 	ImGui::Image((void*)(intptr_t)colorBuffer, ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0)); ImGui::NextColumn();
 
 	ImGui::End();

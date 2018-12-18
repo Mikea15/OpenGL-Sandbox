@@ -50,9 +50,17 @@ void Primitives::RenderCube(bool wireframe)
 	}
 }
 
-void Primitives::RenderQuad()
+void Primitives::RenderQuad(bool wireframe)
 {
-	quad.Draw();
+	if (wireframe)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	}
+	quad.Draw(); 
+	if (wireframe)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
 }
 
 void Primitives::RenderSphere()

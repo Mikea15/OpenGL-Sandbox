@@ -6,16 +6,15 @@ QuadTree::QuadTree()
 {
 }
 
-QuadTree::QuadTree(const glm::vec2& origin, float size)
-	: m_position(origin), size(size), m_storePos(0.0f)
+QuadTree::QuadTree(const glm::vec2& origin, float halfSize)
+	: m_position(origin), m_halfSize(halfSize), m_storePos(0.0f)
 	, m_topLeft(nullptr)
 	, m_topRight(nullptr)
 	, m_bottomLeft(nullptr)
 	, m_bottomRight(nullptr)
 {
 	// point on quadTree plane
-	const glm::vec3 ptOnPlane = glm::vec3(m_position.x, 0.0f, m_position.y);
-	m_box = BoundingBox(ptOnPlane, size);
+	m_bounds = Rect(m_position, halfSize);
 }
 
 QuadTree::~QuadTree()
@@ -24,30 +23,30 @@ QuadTree::~QuadTree()
 
 void QuadTree::Subdivide()
 {
-	float halfSize = size * 0.5f;
-	glm::vec2 topLeftPos		= m_position + glm::vec2(-halfSize, halfSize);
-	glm::vec2 topRightPos		= m_position + glm::vec2(halfSize, halfSize);
-	glm::vec2 bottomLeftPos		= m_position + glm::vec2(-halfSize, -halfSize);
-	glm::vec2 bottomRightPos	= m_position + glm::vec2(halfSize, -halfSize);
+	const glm::vec2 tl = (m_position + (m_position + glm::vec2(-m_halfSize, m_halfSize))) * 0.5f;
+	const glm::vec2 tr = (m_position + (m_position + glm::vec2(m_halfSize, m_halfSize))) * 0.5f;
+	const glm::vec2 bl = (m_position + (m_position + glm::vec2(-m_halfSize, -m_halfSize))) * 0.5f;
+	const glm::vec2 br = (m_position + (m_position + glm::vec2(m_halfSize, -m_halfSize))) * 0.5f;
 
-	m_topLeft		= std::make_shared<QuadTree>(topLeftPos, halfSize);
-	m_topRight		= std::make_shared<QuadTree>(topRightPos, halfSize);
-	m_bottomLeft	= std::make_shared<QuadTree>(bottomLeftPos, halfSize);
-	m_bottomRight	= std::make_shared<QuadTree>(bottomRightPos, halfSize);
+	m_topLeft = std::make_shared<QuadTree>(tl,		m_halfSize * 0.5f);
+	m_topRight = std::make_shared<QuadTree>(tr,		m_halfSize * 0.5f);
+	m_bottomLeft = std::make_shared<QuadTree>(bl,	m_halfSize * 0.5f);
+	m_bottomRight = std::make_shared<QuadTree>(br,	m_halfSize * 0.5f);
 }
 
 bool QuadTree::Insert(const glm::vec3& pos)
 {
 	// use on the QuadTree Plane
-	const glm::vec3 p = glm::vec3(pos.x, 0.0f, pos.z);
-	if( !m_box.Intersect(p) )
+	const glm::vec3 pos0 = glm::vec3(pos.x, 0.0f, pos.z);
+	const glm::vec2 p = glm::vec2(pos.x, pos.z);
+	if (!m_bounds.Intersect(p))
 	{
 		return false;
 	}
 
 	if (m_storePos == glm::vec3(0.0f) && m_topLeft == nullptr)
 	{
-		m_storePos = p;
+		m_storePos = pos0;
 		return true;
 	}
 
@@ -56,23 +55,23 @@ bool QuadTree::Insert(const glm::vec3& pos)
 		Subdivide();
 	}
 
-	if (m_topLeft->Insert(p)) return true;
-	if (m_topRight->Insert(p)) return true;
-	if (m_bottomLeft->Insert(p)) return true;
-	if (m_bottomRight->Insert(p)) return true;
+	if (m_topLeft->Insert(pos0)) return true;
+	if (m_topRight->Insert(pos0)) return true;
+	if (m_bottomLeft->Insert(pos0)) return true;
+	if (m_bottomRight->Insert(pos0)) return true;
 
 	return false;
 }
 
-void QuadTree::Search(BoundingBox range, std::vector<glm::vec3>& outResult)
+void QuadTree::Search(const Rect& range, std::vector<glm::vec3>& outResult)
 {
-	if (!m_box.Intersect(range))
+	if (!m_bounds.Intersect(range))
 	{
 		return;
 	}
 
 	// check objects at this bounds level#
-	if (range.Intersect(glm::vec3(m_storePos.x, m_position.y, m_storePos.z))) 
+	if (range.Intersect(glm::vec2(m_storePos.x, m_storePos.z)))
 	{
 		outResult.push_back(m_storePos);
 	}
@@ -88,9 +87,9 @@ void QuadTree::Search(BoundingBox range, std::vector<glm::vec3>& outResult)
 	m_bottomRight->Search(range, outResult);
 }
 
-void QuadTree::GetAllBoundingBoxes(std::vector<BoundingBox>& outResult)
+void QuadTree::GetAllBoundingBoxes(std::vector<Rect>& outResult)
 {
-	outResult.push_back(m_box);
+	outResult.push_back(m_bounds);
 
 	if (m_topLeft == nullptr) return;
 

@@ -10,7 +10,7 @@ class Primitives
 public:
 	static void RenderPoint();
 	static void RenderCube(bool wireframe = false);
-	static void RenderQuad();
+	static void RenderQuad(bool wireframe = false);
 	static void RenderSphere();
 
 	static Cube cube;

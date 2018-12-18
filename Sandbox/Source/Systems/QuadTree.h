@@ -1,11 +1,11 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 #include <glm/glm.hpp>
 
-#include "Entity.h"
-#include "Physics/BoundingBox.h"
+#include "Physics/Rect.h"
 
 
 
@@ -13,24 +13,21 @@ class QuadTree
 {
 public:
 	QuadTree();
-	QuadTree(const glm::vec2& origin, float size);
+	QuadTree(const glm::vec2& origin, float halfSize);
 	~QuadTree();
 
 	void Subdivide();
 	bool Insert(const glm::vec3& pos);
-	void Search(BoundingBox range, std::vector<glm::vec3>& outResult);
+	void Search(const Rect& range, std::vector<glm::vec3>& outResult);
 
-	void GetAllBoundingBoxes(std::vector<BoundingBox>& outResult);
+	void GetAllBoundingBoxes(std::vector<Rect>& outResult);
 
 private:
 	glm::vec2 m_position;
-	float size;
-
-	BoundingBox m_box;
+	float m_halfSize;
+	Rect m_bounds;
 
 	glm::vec3 m_storePos;
-
-	std::shared_ptr<QuadTree> m_parent;
 
 	std::shared_ptr<QuadTree> m_topLeft;
 	std::shared_ptr<QuadTree> m_topRight;

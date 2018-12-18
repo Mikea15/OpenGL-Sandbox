@@ -136,6 +136,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Systems\Octree.cpp" />
+    <ClCompile Include="Source\Systems\Physics\Rect.cpp" />
     <ClCompile Include="Source\Systems\QuadTree.cpp" />
     <ClCompile Include="Source\Systems\Physics\BoundingSphere.cpp" />
     <ClCompile Include="Source\Systems\Physics\BoundingBox.cpp" />
@@ -185,6 +187,8 @@
     <ClCompile Include="Source\Systems\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Systems\Octree.h" />
+    <ClInclude Include="Source\Systems\Physics\Rect.h" />
     <ClInclude Include="Source\Systems\QuadTree.h" />
     <ClInclude Include="Source\Systems\Physics\BoundingSphere.h" />
     <ClInclude Include="Source\Systems\Physics\BoundingBox.h" />
