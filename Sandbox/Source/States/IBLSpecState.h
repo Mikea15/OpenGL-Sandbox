@@ -115,6 +115,8 @@ private:
 	unsigned int prefilterMap;
 	unsigned int brdfLUTTexture;
 
+	unsigned int vertexCountStats = 0;
+
 	int gX, gY, gZ;
 	int gridSize = 50;
 	float gridSpacing = 2.5f;
@@ -126,5 +128,9 @@ private:
 	unsigned int colorBuffer;
 	unsigned int rboDepth;
 	Camera topDownCamera;
+
+	bool includeCamPosIntoTrees = false;
+	float includeFreq = 0.3f;
+	float camPushPosTime = 0.0f;
 };
 

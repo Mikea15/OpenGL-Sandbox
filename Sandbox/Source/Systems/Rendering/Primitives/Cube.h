@@ -1,5 +1,7 @@
 #pragma once
 
+#include <GL/glew.h>
+
 class Cube
 {
 public:
@@ -7,6 +9,9 @@ public:
 
 	void Init();
 	void Draw();
+	void DrawInstanced(unsigned int count);
+
+	unsigned int GetVertexCount() const { return 36; }
 
 private:
 	unsigned int m_VAO;

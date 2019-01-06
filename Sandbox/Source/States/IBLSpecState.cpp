@@ -306,7 +306,7 @@ void IBLSpecState::Init(Game* game)
 	glViewport(0, 0, m_windowParams.Width, m_windowParams.Height);
 
 	// create a 3d grid of cubes.
-	gX = gY = gZ = 2;
+	gX = gY = gZ = 1;
 	// gY = 1;
 
 	std::random_device rd; // obtain a random number from hardware
@@ -380,8 +380,23 @@ void IBLSpecState::Update(float deltaTime)
 {
 	DefaultState::Update(deltaTime);
 
+
 	glm::vec3 camPos = m_sceneCameraComp->GetCamera().GetPosition();
 	glm::vec3 camPosOverHead = camPos + glm::vec3(0, 1, 0) * 3.0f;
+	
+	if (includeCamPosIntoTrees) 
+	{
+		camPushPosTime += deltaTime;
+		if (camPushPosTime > includeFreq)
+		{
+			positions.push_back(camPos);
+			m_qTree.Insert(camPos);
+			m_oTree.Insert(camPos);
+			visible.push_back(ContainmentType::Disjoint);
+			camPushPosTime = 0.0f;
+		}
+	}
+
 
 	topDownCamera.m_resolution = glm::vec2(m_windowParams.Width, m_windowParams.Height) * 0.045f;
 	topDownCamera.SetPosition(glm::vec3(0.0f, 10.0f, 0.0f));
@@ -394,6 +409,8 @@ void IBLSpecState::Update(float deltaTime)
 
 void IBLSpecState::Render(float alpha)
 {
+	vertexCountStats = 0;
+
 	// configure transformation matrices
 	glm::mat4 view = m_sceneCameraComp->GetCamera().GetViewMatrix();
 	glm::mat4 projection = m_sceneCameraComp->GetCamera().ProjectionMatrix();
@@ -429,6 +446,7 @@ void IBLSpecState::Render(float alpha)
 		t.SetOrientation(rotatingT.GetOrientation());
 		pbrShader.SetMat4("model", t.GetModelMat());
 		Primitives::RenderSphere();
+		vertexCountStats += Primitives::sphere.GetVertexCount();
 	}
 
 	// gold
@@ -442,6 +460,7 @@ void IBLSpecState::Render(float alpha)
 		t.SetPosition(glm::vec3(-3.0, 0.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
 		pbrShader.SetMat4("model", t.GetModelMat());
 		Primitives::RenderSphere();
+		vertexCountStats += Primitives::sphere.GetVertexCount();
 	}
 
 	// grass
@@ -455,6 +474,7 @@ void IBLSpecState::Render(float alpha)
 		t.SetPosition(glm::vec3(-1.0, 0.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
 		pbrShader.SetMat4("model", t.GetModelMat());
 		Primitives::RenderSphere();
+		vertexCountStats += Primitives::sphere.GetVertexCount();
 	}
 
 	// plastic
@@ -468,6 +488,7 @@ void IBLSpecState::Render(float alpha)
 		t.SetPosition(glm::vec3(1.0, 0.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
 		pbrShader.SetMat4("model", t.GetModelMat());
 		Primitives::RenderSphere();
+		vertexCountStats += Primitives::sphere.GetVertexCount();
 	}
 
 	// wall
@@ -481,6 +502,7 @@ void IBLSpecState::Render(float alpha)
 		t.SetPosition(glm::vec3(3.0, 0.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
 		pbrShader.SetMat4("model", t.GetModelMat());
 		Primitives::RenderSphere();
+		vertexCountStats += Primitives::sphere.GetVertexCount();
 	}
 
 	// marble
@@ -495,6 +517,7 @@ void IBLSpecState::Render(float alpha)
 		t.SetPosition(glm::vec3(-1.0, 2.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
 		pbrShader.SetMat4("model", t.GetModelMat());
 		Primitives::RenderSphere();
+		vertexCountStats += Primitives::sphere.GetVertexCount();
 	}
 
 	// granite
@@ -509,6 +532,7 @@ void IBLSpecState::Render(float alpha)
 		t.SetPosition(glm::vec3(1.0, 2.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
 		pbrShader.SetMat4("model", t.GetModelMat());
 		Primitives::RenderSphere();
+		vertexCountStats += Primitives::sphere.GetVertexCount();
 	}
 
 	// leather
@@ -523,6 +547,7 @@ void IBLSpecState::Render(float alpha)
 		t.SetPosition(glm::vec3(3.0, 2.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
 		pbrShader.SetMat4("model", t.GetModelMat());
 		Primitives::RenderSphere();
+		vertexCountStats += Primitives::sphere.GetVertexCount();
 	}
 
 	// render light source (simply re-render sphere at light positions)
@@ -539,6 +564,7 @@ void IBLSpecState::Render(float alpha)
 		pbrShader.SetVec3("lightColors[" + std::to_string(i) + "]", lightColors[i]);
 
 		Primitives::RenderSphere();
+		vertexCountStats += Primitives::sphere.GetVertexCount();
 	}
 
 
@@ -556,6 +582,7 @@ void IBLSpecState::Render(float alpha)
 		pbrShader.SetMat4("model", scratchTransform.GetModelMat());
 
 		Primitives::RenderSphere();
+		vertexCountStats += Primitives::sphere.GetVertexCount();
 	}
 
 	if (showQtree)
@@ -578,6 +605,7 @@ void IBLSpecState::Render(float alpha)
 			wireframeShader.SetVec3("Color", glm::vec3(0.1, 0.8, 0.2));
 			wireframeShader.SetMat4("model", origin.GetModelMat());
 			Primitives::RenderQuad(true);
+			vertexCountStats += Primitives::quad.GetVertexCount();
 		}
 	}
 
@@ -600,6 +628,7 @@ void IBLSpecState::Render(float alpha)
 			wireframeShader.SetVec3("Color", glm::vec3(0.1, 0.8, 0.2));
 			wireframeShader.SetMat4("model", origin.GetModelMat());
 			Primitives::RenderCube(true);
+			vertexCountStats += Primitives::cube.GetVertexCount();
 		}
 	}
 
@@ -610,6 +639,7 @@ void IBLSpecState::Render(float alpha)
 	wireframeShader.SetVec3("Color", glm::vec3(0.1, 0.8, 0.2));
 	wireframeShader.SetMat4("model", origin.GetModelMat());
 	Primitives::RenderCube(true);
+	vertexCountStats += Primitives::cube.GetVertexCount();
 
 	origin.Scale(0.1f);
 	wireframeShader.SetMat4("view", view);
@@ -617,6 +647,7 @@ void IBLSpecState::Render(float alpha)
 	wireframeShader.SetVec3("Color", glm::vec3(0.1, 0.8, 0.2));
 	wireframeShader.SetMat4("model", origin.GetModelMat());
 	Primitives::RenderCube();
+	vertexCountStats += Primitives::cube.GetVertexCount();
 
 	// render skybox (render as last to prevent overdraw)
 	backgroundShader.Use();
@@ -627,6 +658,7 @@ void IBLSpecState::Render(float alpha)
 	// glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap); // display irradiance map
 	// glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap); // display prefilter map
 	Primitives::RenderCube();
+	vertexCountStats += Primitives::cube.GetVertexCount();
 
 	// render BRDF map to screen
 	// brdfShader.Use();
@@ -676,7 +708,8 @@ void IBLSpecState::Render(float alpha)
 			scratchTransform.SetPosition(positions[i]);
 			wireframeShader.SetMat4("model", scratchTransform.GetModelMat());
 
-			Primitives::RenderSphere();
+			Primitives::RenderSphere(true);
+			vertexCountStats += Primitives::sphere.GetVertexCount();
 		}
 
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -688,6 +721,19 @@ void IBLSpecState::Render(float alpha)
 void IBLSpecState::RenderUI()
 {
 	DefaultState::RenderUI();
+
+	ImGui::Begin("Rendering Stats");
+
+	ImGui::Text("Vertex Count: %d", vertexCountStats);
+
+	ImGui::End();
+
+	ImGui::Begin("Camera Q/O Tree Magic");
+
+	ImGui::Checkbox("Insert Camera Positions", &includeCamPosIntoTrees);
+	ImGui::SliderFloat("Include Freq (s): %f", &includeFreq, 0.2f, 2.0f);
+
+	ImGui::End();
 
 	ImGui::Begin("Spatial Data Structures");
 

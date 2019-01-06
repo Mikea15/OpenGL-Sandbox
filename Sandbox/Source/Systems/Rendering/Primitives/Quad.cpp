@@ -40,3 +40,14 @@ void Quad::Draw()
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	glBindVertexArray(0);
 }
+
+void Quad::DrawInstanced(unsigned int count)
+{
+	if (m_VAO == 0)
+	{
+		Init();
+	}
+	glBindVertexArray(m_VAO);
+	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, count);
+	glBindVertexArray(0);
+}

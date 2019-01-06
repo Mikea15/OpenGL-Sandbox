@@ -1,6 +1,6 @@
 
 #include "Cube.h"
-#include <GL/glew.h>
+
 
 Cube::Cube()
 	: m_VAO(0)
@@ -79,12 +79,25 @@ void Cube::Init()
 
 void Cube::Draw()
 {
-	if (m_VAO == 0) 
+	if (m_VAO == 0)
 	{
 		Init();
 	}
 
 	glBindVertexArray(m_VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+}
+
+
+void Cube::DrawInstanced(unsigned int count)
+{
+	if (m_VAO == 0)
+	{
+		Init();
+	}
+
+	glBindVertexArray(m_VAO);
+	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 36, count);
 	glBindVertexArray(0);
 }

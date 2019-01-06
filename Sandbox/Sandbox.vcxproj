@@ -185,6 +185,7 @@
     <ClCompile Include="Source\Systems\Rendering\Skybox.cpp" />
     <ClCompile Include="Source\Systems\Rendering\TextureBuffer.cpp" />
     <ClCompile Include="Source\Systems\Transform.cpp" />
+    <ClCompile Include="Source\Systems\Rendering\Primitives\Sphere.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Systems\Octree.h" />
@@ -241,6 +242,7 @@
     <ClInclude Include="Source\Systems\Rendering\Skybox.h" />
     <ClInclude Include="Source\Systems\Rendering\Vertex.h" />
     <ClInclude Include="Source\Systems\Transform.h" />
+    <ClInclude Include="Source\Systems\Rendering\Primitives\Sphere.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Shaders\advanced_glsl.vs" />
