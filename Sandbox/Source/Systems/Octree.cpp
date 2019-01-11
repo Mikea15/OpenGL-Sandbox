@@ -117,6 +117,8 @@ void Octree::Search(const BoundingFrustum& frustum, std::vector<glm::vec3>& outR
 	}
 
 	// check objects at this bounds level#
+	// while no BoundingSphere, this BoundingBox is a Generous aproximation of the spheres.
+	// if (frustum.Contains(BoundingBox(m_storePos, 1.0f)) != ContainmentType::Disjoint)
 	if (frustum.Contains(m_storePos) != ContainmentType::Disjoint)
 	{
 		outResult.push_back(m_storePos);
