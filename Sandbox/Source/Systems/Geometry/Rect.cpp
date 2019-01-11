@@ -1,6 +1,5 @@
+
 #include "Rect.h"
-
-
 
 Rect::Rect()
 	: m_origin(0.0f), m_halfSize(0.0f)

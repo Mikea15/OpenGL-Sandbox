@@ -29,7 +29,7 @@ Camera::Camera()
 	, m_speedBoost(2.0f)
 	, m_mouseSensitivity(0.15f, 0.15f)
 {
-	m_frustum = Frustum(m_viewMatrix);
+	m_frustum = BoundingFrustum(m_viewMatrix);
 }
 
 void Camera::ChangeFov(float delta)

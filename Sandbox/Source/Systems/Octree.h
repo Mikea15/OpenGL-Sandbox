@@ -5,7 +5,10 @@
 
 #include <glm/glm.hpp>
 
-#include "Physics/BoundingBox.h"
+#include "Geometry/BoundingBox.h"
+
+class BoundingFrustum;
+
 
 class Octree
 {
@@ -17,6 +20,7 @@ public:
 	void Subdivide();
 	bool Insert(const glm::vec3& pos);
 	void Search(const BoundingBox& aabb, std::vector<glm::vec3>& outResult);
+	void Search(const BoundingFrustum& frustum, std::vector<glm::vec3>& outResult);
 
 	void GetAllBoundingBoxes(std::vector<BoundingBox>& outResult);
 

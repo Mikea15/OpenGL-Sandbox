@@ -1,6 +1,7 @@
 #include "Octree.h"
 
 
+#include "Geometry/BoundingFrustum.h"
 
 Octree::Octree()
 	: Octree(glm::vec3(0.0f), 0.0f)
@@ -51,7 +52,7 @@ void Octree::Subdivide()
 
 bool Octree::Insert(const glm::vec3& position)
 {
-	if (!m_bounds.Intersect(position))
+	if( m_bounds.Contains(position) == ContainmentType::Disjoint )
 	{
 		return false;
 	}
@@ -81,13 +82,13 @@ bool Octree::Insert(const glm::vec3& position)
 
 void Octree::Search(const BoundingBox& aabb, std::vector<glm::vec3>& outResult)
 {
-	if (!m_bounds.Intersect(aabb))
+	if (m_bounds.Contains(aabb) == ContainmentType::Disjoint)
 	{
 		return;
 	}
 
 	// check objects at this bounds level#
-	if (aabb.Intersect(m_storePos))
+	if (aabb.Contains(m_storePos) != ContainmentType::Disjoint)
 	{
 		outResult.push_back(m_storePos);
 	}
@@ -106,6 +107,35 @@ void Octree::Search(const BoundingBox& aabb, std::vector<glm::vec3>& outResult)
 	m_downFrontRight->Search(aabb, outResult);
 	m_downBackLeft->Search(aabb, outResult);
 	m_downBackRight->Search(aabb, outResult);
+}
+
+void Octree::Search(const BoundingFrustum& frustum, std::vector<glm::vec3>& outResult)
+{
+	if (frustum.Contains(m_bounds) == ContainmentType::Disjoint)
+	{
+		return;
+	}
+
+	// check objects at this bounds level#
+	if (frustum.Contains(m_storePos) != ContainmentType::Disjoint)
+	{
+		outResult.push_back(m_storePos);
+	}
+
+	if (m_upFrontLeft == nullptr)
+	{
+		return;
+	}
+
+	m_upFrontLeft->Search(frustum, outResult);
+	m_upFrontRight->Search(frustum, outResult);
+	m_upBackLeft->Search(frustum, outResult);
+	m_upBackRight->Search(frustum, outResult);
+
+	m_downFrontLeft->Search(frustum, outResult);
+	m_downFrontRight->Search(frustum, outResult);
+	m_downBackLeft->Search(frustum, outResult);
+	m_downBackRight->Search(frustum, outResult);
 }
 
 void Octree::GetAllBoundingBoxes(std::vector<BoundingBox>& outResult)

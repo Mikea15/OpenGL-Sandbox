@@ -9,7 +9,7 @@
 
 #include <vector>
 
-#include "Frustum.h"
+#include "../Geometry/BoundingFrustum.h"
 
 
 class Camera
@@ -102,6 +102,6 @@ public:
 	float m_speedBoost;
 	glm::vec2 m_mouseSensitivity;
 
-	Frustum m_frustum;
+	BoundingFrustum m_frustum;
 };
 

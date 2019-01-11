@@ -4,6 +4,11 @@
 
 #include <glm/glm.hpp>
 
+#include "GeomDefines.h"
+
+class Plane;
+class BoundingFrustum;
+
 class BoundingBox
 {
 public:
@@ -13,8 +18,18 @@ public:
 	BoundingBox(const glm::vec3& origin, const glm::vec3& min, const glm::vec3& max);
 	~BoundingBox();
 
-	bool Intersect(const glm::vec3& point) const;
-	bool Intersect(const BoundingBox& aabb) const;
+	// bool Contains(const glm::vec3& point) const;
+	// bool Contains(const BoundingBox& aabb) const;
+
+	ContainmentType Contains(const BoundingBox& box) const;
+	ContainmentType Contains(const BoundingFrustum& frustum) const;
+	ContainmentType Contains(const glm::vec3& point) const;
+
+	//! Intersects BoundingSphere
+	bool Intersects(const glm::vec3& point, float r) const;
+	bool Intersects(const BoundingBox& aabb) const;
+	bool Intersects(const BoundingFrustum& frustum) const;
+	PlaneIntersectionType Intersects(const Plane& plane) const;
 
 	const glm::vec3& GetPosition() const { return m_origin; }
 	const float GetSize() const { return m_halfSize; }

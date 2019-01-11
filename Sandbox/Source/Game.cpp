@@ -22,6 +22,7 @@ Game::Game()
 	m_sdlHandler = Core::SDLHandler(m_winParams);
 	m_uiHandler = Core::ImGuiHandler();
 
+
 	m_systemComponentManager = std::make_unique<SystemComponentManager>();
 	m_systemComponentManager->AddComponent<SceneCameraComponent>();
 	m_systemComponentManager->AddComponent<FpsCounterSystemComponent>();
@@ -59,7 +60,6 @@ int Game::Execute()
 	InitSystem();
 
 	m_currentTime = std::chrono::high_resolution_clock::now();
-	double time = 0.0f;
 	double accumulator = 0.0;
 
 	while (m_isRunning)
@@ -92,15 +92,20 @@ int Game::Execute()
 		while (SDL_PollEvent(&event))
 		{
 			m_uiHandler.HandleInput(&event);
-
-			if (event.type == SDL_QUIT)
+			if (event.type == SDL_QUIT) 
+			{
 				m_isRunning = false;
+			}
 			if (event.type == SDL_WINDOWEVENT
 				&& event.window.event == SDL_WINDOWEVENT_CLOSE
 				&& event.window.windowID == SDL_GetWindowID(m_sdlHandler.GetSDLWindow()))
+			{
 				m_isRunning = false;
+			}
 			if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_ESCAPE)
+			{
 				m_isRunning = false;
+			}
 
 			// System Components
 			m_systemComponentManager->HandleInput(&event);
@@ -122,7 +127,6 @@ int Game::Execute()
 			// Update
 			m_currentState->Update(m_deltaTime);
 
-			time += m_deltaTime;
 			accumulator -= m_deltaTime;
 		}
 

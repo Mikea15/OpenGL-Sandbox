@@ -20,7 +20,7 @@ namespace Core
 
 		int DisplayIndex = 0;
 
-		std::string WindowName = "Zero Engine";
+		std::string WindowName = "Sandbox";
 
 		int EnableVSync = 0; // 1 - enabled . 0 - disabled
 

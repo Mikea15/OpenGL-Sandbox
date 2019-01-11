@@ -306,16 +306,13 @@ void IBLSpecState::Init(Game* game)
 	glViewport(0, 0, m_windowParams.Width, m_windowParams.Height);
 
 	// create a 3d grid of cubes.
-	gX = gY = gZ = 1;
+	gX = gY = gZ = 3;
 	// gY = 1;
 
 	std::random_device rd; // obtain a random number from hardware
 	std::mt19937 eng(rd()); // seed the generator
 	std::uniform_int_distribution<> distr(-20, 20); // define the range
 
-	// int gXStart = -static_cast<int>(gX / 2.0f);
-	// int gYStart = (gY > 2) ? -static_cast<int>(gY / 2.0f) : 0;
-	// int gZStart = (gZ > 2) ? -static_cast<int>(gZ / 2.0f) : 0;
 	for (int gXStart = -gX; gXStart < gX; gXStart++)
 	{
 		for (int gYStart = -gY; gYStart < gY; gYStart++)
@@ -380,7 +377,6 @@ void IBLSpecState::Update(float deltaTime)
 {
 	DefaultState::Update(deltaTime);
 
-
 	glm::vec3 camPos = m_sceneCameraComp->GetCamera().GetPosition();
 	glm::vec3 camPosOverHead = camPos + glm::vec3(0, 1, 0) * 3.0f;
 	
@@ -389,14 +385,14 @@ void IBLSpecState::Update(float deltaTime)
 		camPushPosTime += deltaTime;
 		if (camPushPosTime > includeFreq)
 		{
-			positions.push_back(camPos);
-			m_qTree.Insert(camPos);
-			m_oTree.Insert(camPos);
+			glm::vec3 positionToAdd = camPos + m_sceneCameraComp->GetCamera().m_direction * 2.0f;
+			positions.push_back(positionToAdd);
+			m_qTree.Insert(positionToAdd);
+			m_oTree.Insert(positionToAdd);
 			visible.push_back(ContainmentType::Disjoint);
 			camPushPosTime = 0.0f;
 		}
 	}
-
 
 	topDownCamera.m_resolution = glm::vec2(m_windowParams.Width, m_windowParams.Height) * 0.045f;
 	topDownCamera.SetPosition(glm::vec3(0.0f, 10.0f, 0.0f));
@@ -567,23 +563,22 @@ void IBLSpecState::Render(float alpha)
 		vertexCountStats += Primitives::sphere.GetVertexCount();
 	}
 
-
 	// draw 3d grid of cubes.
-	const unsigned int size = positions.size();
-	for (unsigned int i = 0; i < size; ++i)
-	{
-		visible[i] = m_sceneCameraComp->GetCamera().m_frustum.SphereInFrustrum(positions[i], 1.0f);
-		if (visible[i] == ContainmentType::Disjoint)
-		{
-			continue;
-		}
-
-		scratchTransform.SetPosition(positions[i]);
-		pbrShader.SetMat4("model", scratchTransform.GetModelMat());
-
-		Primitives::RenderSphere();
-		vertexCountStats += Primitives::sphere.GetVertexCount();
-	}
+	// const unsigned int size = positions.size();
+	// for (unsigned int i = 0; i < size; ++i)
+	// {
+	// 	visible[i] = m_sceneCameraComp->GetCamera().m_frustum.SphereInFrustrum(positions[i], 1.0f);
+	// 	if (visible[i] == ContainmentType::Disjoint)
+	// 	{
+	// 		continue;
+	// 	}
+	// 
+	// 	scratchTransform.SetPosition(positions[i]);
+	// 	pbrShader.SetMat4("model", scratchTransform.GetModelMat());
+	// 
+	// 	Primitives::RenderSphere();
+	// 	vertexCountStats += Primitives::sphere.GetVertexCount();
+	// }
 
 	if (showQtree)
 	{
@@ -606,6 +601,41 @@ void IBLSpecState::Render(float alpha)
 			wireframeShader.SetMat4("model", origin.GetModelMat());
 			Primitives::RenderQuad(true);
 			vertexCountStats += Primitives::quad.GetVertexCount();
+		}
+	}
+
+	{
+		// Camera Box
+		auto bb = BoundingBox(cameraPosition + m_sceneCameraComp->GetCamera().m_direction * 15.0f, 10.0f);
+		Transform origin;
+
+		origin.SetPosition(bb.GetPosition());
+		origin.SetScale(glm::vec3(10.0f));
+
+		wireframeShader.Use();
+		wireframeShader.SetMat4("view", view);
+		wireframeShader.SetMat4("projection", projection);
+		wireframeShader.SetMat4("model", origin.GetModelMat() );
+		wireframeShader.SetVec3("Color", glm::vec3(0.3, 0.3, 1.0));
+		Primitives::RenderCube(true);
+
+		std::vector<glm::vec3> boxPositions;
+		m_oTree.Search(m_sceneCameraComp->GetCamera().m_frustum, boxPositions);
+
+		pbrShader.Use();
+		pbrShader.SetMat4("view", view);
+		pbrShader.SetMat4("projection", projection);
+		pbrShader.SetVec3("camPos", cameraPosition);
+		pbrShader.SetFloat("heightScale", 0.1f);
+		// draw 3d grid of cubes.
+		const unsigned int size = boxPositions.size();
+		for (unsigned int i = 0; i < size; ++i)
+		{
+			scratchTransform.SetPosition(boxPositions[i]);
+			pbrShader.SetMat4("model", scratchTransform.GetModelMat());
+		
+			Primitives::RenderSphere();
+			vertexCountStats += Primitives::sphere.GetVertexCount();
 		}
 	}
 
@@ -695,7 +725,7 @@ void IBLSpecState::Render(float alpha)
 			case ContainmentType::Contains:
 				wireframeShader.SetVec3("Color", glm::vec3(0.1f, 0.9f, 0.1f));
 				break;
-			case ContainmentType::Intersect:
+			case ContainmentType::Intersects:
 				wireframeShader.SetVec3("Color", glm::vec3(1.0f, 1.0f, 1.0f));
 				break;
 			case ContainmentType::Disjoint:
