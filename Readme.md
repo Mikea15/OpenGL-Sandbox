@@ -28,5 +28,5 @@ Expect unoptimized code ( not the objective ), comments here and there, broken o
 - GLM
 - Assimp 4.1.0
 - ImGUI
-- std_image
+- stb_image
 - nlohmannJson

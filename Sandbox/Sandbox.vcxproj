@@ -248,7 +248,6 @@
     <ClInclude Include="Source\Systems\Rendering\Primitives\Sphere.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Readme.md" />
     <None Include="Source\Shaders\advanced_glsl.vs" />
     <None Include="Source\Shaders\deferred_light.fs" />
     <None Include="Source\Shaders\deferred_light.vs" />
