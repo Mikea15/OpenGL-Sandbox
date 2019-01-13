@@ -306,8 +306,8 @@ void IBLSpecState::Init(Game* game)
 	glViewport(0, 0, m_windowParams.Width, m_windowParams.Height);
 
 	// create a 3d grid of cubes.
-	gX = gY = gZ = 3;
-	// gY = 1;
+	gX = gY = gZ = 4;
+	gY = 2;
 
 	std::random_device rd; // obtain a random number from hardware
 	std::mt19937 eng(rd()); // seed the generator
@@ -379,8 +379,8 @@ void IBLSpecState::Update(float deltaTime)
 
 	glm::vec3 camPos = m_sceneCameraComp->GetCamera().GetPosition();
 	glm::vec3 camPosOverHead = camPos + glm::vec3(0, 1, 0) * 3.0f;
-	
-	if (includeCamPosIntoTrees) 
+
+	if (includeCamPosIntoTrees)
 	{
 		camPushPosTime += deltaTime;
 		if (camPushPosTime > includeFreq)
@@ -417,168 +417,180 @@ void IBLSpecState::Render(float alpha)
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// render scene, supplying the convoluted irradiance map to the final shader.
-	// ------------------------------------------------------------------------------------------
-	pbrShader.Use();
-	pbrShader.SetMat4("view", view);
-	pbrShader.SetMat4("projection", projection);
-	pbrShader.SetVec3("camPos", cameraPosition);
-	pbrShader.SetFloat("heightScale", 0.1f);
-
-	// bind pre-computed IBL data
-	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
-	glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
-	glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
-
-	// rusted iron
-	glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, ironAlbedoMap);
-	glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, ironNormalMap);
-	glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, ironMetallicMap);
-	glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, ironRoughnessMap);
-	glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, ironAOMap);
+	bool showSpheresTextured = true;
+	if (showSpheresTextured)
 	{
-		Transform t;
-		t.SetPosition(glm::vec3(-5.0, 0.0, 2.0));
-		t.SetOrientation(rotatingT.GetOrientation());
-		pbrShader.SetMat4("model", t.GetModelMat());
-		Primitives::RenderSphere();
-		vertexCountStats += Primitives::sphere.GetVertexCount();
+		// render scene, supplying the convoluted irradiance map to the final shader.
+		// ------------------------------------------------------------------------------------------
+		pbrShader.Use();
+		pbrShader.SetMat4("view", view);
+		pbrShader.SetMat4("projection", projection);
+		pbrShader.SetVec3("camPos", cameraPosition);
+		pbrShader.SetFloat("heightScale", 0.1f);
+
+		// bind pre-computed IBL data
+		glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap);
+		glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap);
+		glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
+
+		// rusted iron
+		glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, ironAlbedoMap);
+		glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, ironNormalMap);
+		glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, ironMetallicMap);
+		glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, ironRoughnessMap);
+		glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, ironAOMap);
+		{
+			Transform t;
+			t.SetPosition(glm::vec3(-5.0, 0.0, 2.0));
+			t.SetOrientation(rotatingT.GetOrientation());
+			pbrShader.SetMat4("model", t.GetModelMat());
+			Primitives::RenderSphere();
+			vertexCountStats += Primitives::sphere.GetVertexCount();
+		}
+
+		// gold
+		glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, goldAlbedoMap);
+		glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, goldNormalMap);
+		glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, goldMetallicMap);
+		glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, goldRoughnessMap);
+		glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, goldAOMap);
+		{
+			Transform t;
+			t.SetPosition(glm::vec3(-3.0, 0.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
+			pbrShader.SetMat4("model", t.GetModelMat());
+			Primitives::RenderSphere();
+			vertexCountStats += Primitives::sphere.GetVertexCount();
+		}
+
+		// grass
+		glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, grassAlbedoMap);
+		glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, grassNormalMap);
+		glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, grassMetallicMap);
+		glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, grassRoughnessMap);
+		glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, grassAOMap);
+		{
+			Transform t;
+			t.SetPosition(glm::vec3(-1.0, 0.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
+			pbrShader.SetMat4("model", t.GetModelMat());
+			Primitives::RenderSphere();
+			vertexCountStats += Primitives::sphere.GetVertexCount();
+		}
+
+		// plastic
+		glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, plasticAlbedoMap);
+		glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, plasticNormalMap);
+		glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, plasticMetallicMap);
+		glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, plasticRoughnessMap);
+		glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, plasticAOMap);
+		{
+			Transform t;
+			t.SetPosition(glm::vec3(1.0, 0.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
+			pbrShader.SetMat4("model", t.GetModelMat());
+			Primitives::RenderSphere();
+			vertexCountStats += Primitives::sphere.GetVertexCount();
+		}
+
+		// wall
+		glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, wallAlbedoMap);
+		glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, wallNormalMap);
+		glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, wallMetallicMap);
+		glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, wallRoughnessMap);
+		glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, wallAOMap);
+		{
+			Transform t;
+			t.SetPosition(glm::vec3(3.0, 0.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
+			pbrShader.SetMat4("model", t.GetModelMat());
+			Primitives::RenderSphere();
+			vertexCountStats += Primitives::sphere.GetVertexCount();
+		}
+
+		// marble
+		glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, marbleAlbedoMap);
+		glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, marbleNormalMap);
+
+		glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, marbleRoughnessMap);
+		glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, marbleAOMap);
+		glActiveTexture(GL_TEXTURE8); glBindTexture(GL_TEXTURE_2D, marbleHeightMap);
+		{
+			Transform t;
+			t.SetPosition(glm::vec3(-1.0, 2.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
+			pbrShader.SetMat4("model", t.GetModelMat());
+			Primitives::RenderSphere();
+			vertexCountStats += Primitives::sphere.GetVertexCount();
+		}
+
+		// granite
+		glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, graniteAlbedoMap);
+		glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, graniteNormalMap);
+
+		glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, graniteRoughnessMap);
+		glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, graniteAOMap);
+		glActiveTexture(GL_TEXTURE8); glBindTexture(GL_TEXTURE_2D, graniteHeightMap);
+		{
+			Transform t;
+			t.SetPosition(glm::vec3(1.0, 2.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
+			pbrShader.SetMat4("model", t.GetModelMat());
+			Primitives::RenderSphere();
+			vertexCountStats += Primitives::sphere.GetVertexCount();
+		}
+
+		// leather
+		glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, leatherAlbedoMap);
+		glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, leatherNormalMap);
+
+		glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, leatherRoughnessMap);
+		glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, leatherAOMap);
+		glActiveTexture(GL_TEXTURE8); glBindTexture(GL_TEXTURE_2D, leatherHeightMap);
+		{
+			Transform t;
+			t.SetPosition(glm::vec3(3.0, 2.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
+			pbrShader.SetMat4("model", t.GetModelMat());
+			Primitives::RenderSphere();
+			vertexCountStats += Primitives::sphere.GetVertexCount();
+		}
 	}
 
-	// gold
-	glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, goldAlbedoMap);
-	glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, goldNormalMap);
-	glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, goldMetallicMap);
-	glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, goldRoughnessMap);
-	glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, goldAOMap);
+	bool showLights = false;
+	if (showLights)
 	{
-		Transform t;
-		t.SetPosition(glm::vec3(-3.0, 0.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
-		pbrShader.SetMat4("model", t.GetModelMat());
-		Primitives::RenderSphere();
-		vertexCountStats += Primitives::sphere.GetVertexCount();
+
+		// render light source (simply re-render sphere at light positions)
+		// this looks a bit off as we use the same shader, but it'll make their positions obvious and 
+		// keeps the codeprint small.
+		for (unsigned int i = 0; i < lightPositions.size(); ++i)
+		{
+			Transform lightTransform;
+			lightTransform.SetPosition(lightPositions[i]);
+
+			pbrShader.SetMat4("model", lightTransform.GetModelMat());
+			pbrShader.SetVec3("lightPositions[" + std::to_string(i) + "]", lightPositions[i]);
+			pbrShader.SetVec3("lightColors[" + std::to_string(i) + "]", lightColors[i]);
+
+			Primitives::RenderSphere();
+			vertexCountStats += Primitives::sphere.GetVertexCount();
+		}
 	}
 
-	// grass
-	glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, grassAlbedoMap);
-	glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, grassNormalMap);
-	glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, grassMetallicMap);
-	glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, grassRoughnessMap);
-	glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, grassAOMap);
+	bool show3DCubes = true;
+	if (show3DCubes) 
 	{
-		Transform t;
-		t.SetPosition(glm::vec3(-1.0, 0.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
-		pbrShader.SetMat4("model", t.GetModelMat());
-		Primitives::RenderSphere();
-		vertexCountStats += Primitives::sphere.GetVertexCount();
+		// draw 3d grid of cubes.
+		const unsigned int size = positions.size();
+		for (unsigned int i = 0; i < size; ++i)
+		{
+			visible[i] = m_sceneCameraComp->GetCamera().m_frustum.Contains(BoundingBox(positions[i], 1.0f));
+			if (visible[i] == ContainmentType::Disjoint)
+			{
+				continue;
+			}
+
+			scratchTransform.SetPosition(positions[i]);
+			pbrShader.SetMat4("model", scratchTransform.GetModelMat());
+
+			Primitives::RenderSphere();
+			vertexCountStats += Primitives::sphere.GetVertexCount();
+		}
 	}
-
-	// plastic
-	glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, plasticAlbedoMap);
-	glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, plasticNormalMap);
-	glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, plasticMetallicMap);
-	glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, plasticRoughnessMap);
-	glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, plasticAOMap);
-	{
-		Transform t;
-		t.SetPosition(glm::vec3(1.0, 0.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
-		pbrShader.SetMat4("model", t.GetModelMat());
-		Primitives::RenderSphere();
-		vertexCountStats += Primitives::sphere.GetVertexCount();
-	}
-
-	// wall
-	glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, wallAlbedoMap);
-	glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, wallNormalMap);
-	glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, wallMetallicMap);
-	glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, wallRoughnessMap);
-	glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, wallAOMap);
-	{
-		Transform t;
-		t.SetPosition(glm::vec3(3.0, 0.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
-		pbrShader.SetMat4("model", t.GetModelMat());
-		Primitives::RenderSphere();
-		vertexCountStats += Primitives::sphere.GetVertexCount();
-	}
-
-	// marble
-	glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, marbleAlbedoMap);
-	glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, marbleNormalMap);
-
-	glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, marbleRoughnessMap);
-	glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, marbleAOMap);
-	glActiveTexture(GL_TEXTURE8); glBindTexture(GL_TEXTURE_2D, marbleHeightMap);
-	{
-		Transform t;
-		t.SetPosition(glm::vec3(-1.0, 2.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
-		pbrShader.SetMat4("model", t.GetModelMat());
-		Primitives::RenderSphere();
-		vertexCountStats += Primitives::sphere.GetVertexCount();
-	}
-
-	// granite
-	glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, graniteAlbedoMap);
-	glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, graniteNormalMap);
-
-	glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, graniteRoughnessMap);
-	glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, graniteAOMap);
-	glActiveTexture(GL_TEXTURE8); glBindTexture(GL_TEXTURE_2D, graniteHeightMap);
-	{
-		Transform t;
-		t.SetPosition(glm::vec3(1.0, 2.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
-		pbrShader.SetMat4("model", t.GetModelMat());
-		Primitives::RenderSphere();
-		vertexCountStats += Primitives::sphere.GetVertexCount();
-	}
-
-	// leather
-	glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, leatherAlbedoMap);
-	glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, leatherNormalMap);
-
-	glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, leatherRoughnessMap);
-	glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, leatherAOMap);
-	glActiveTexture(GL_TEXTURE8); glBindTexture(GL_TEXTURE_2D, leatherHeightMap);
-	{
-		Transform t;
-		t.SetPosition(glm::vec3(3.0, 2.0, 2.0)); t.SetOrientation(rotatingT.GetOrientation());
-		pbrShader.SetMat4("model", t.GetModelMat());
-		Primitives::RenderSphere();
-		vertexCountStats += Primitives::sphere.GetVertexCount();
-	}
-
-	// render light source (simply re-render sphere at light positions)
-	// this looks a bit off as we use the same shader, but it'll make their positions obvious and 
-	// keeps the codeprint small.
-
-	for (unsigned int i = 0; i < lightPositions.size(); ++i)
-	{
-		Transform lightTransform;
-		lightTransform.SetPosition(lightPositions[i]);
-		pbrShader.SetMat4("model", lightTransform.GetModelMat());
-
-		pbrShader.SetVec3("lightPositions[" + std::to_string(i) + "]", lightPositions[i]);
-		pbrShader.SetVec3("lightColors[" + std::to_string(i) + "]", lightColors[i]);
-
-		Primitives::RenderSphere();
-		vertexCountStats += Primitives::sphere.GetVertexCount();
-	}
-
-	// draw 3d grid of cubes.
-	// const unsigned int size = positions.size();
-	// for (unsigned int i = 0; i < size; ++i)
-	// {
-	// 	visible[i] = m_sceneCameraComp->GetCamera().m_frustum.SphereInFrustrum(positions[i], 1.0f);
-	// 	if (visible[i] == ContainmentType::Disjoint)
-	// 	{
-	// 		continue;
-	// 	}
-	// 
-	// 	scratchTransform.SetPosition(positions[i]);
-	// 	pbrShader.SetMat4("model", scratchTransform.GetModelMat());
-	// 
-	// 	Primitives::RenderSphere();
-	// 	vertexCountStats += Primitives::sphere.GetVertexCount();
-	// }
 
 	if (showQtree)
 	{
@@ -604,40 +616,9 @@ void IBLSpecState::Render(float alpha)
 		}
 	}
 
-	{
-		// Camera Box
-		auto bb = BoundingBox(cameraPosition + m_sceneCameraComp->GetCamera().m_direction * 15.0f, 10.0f);
-		Transform origin;
-
-		origin.SetPosition(bb.GetPosition());
-		origin.SetScale(glm::vec3(10.0f));
-
-		wireframeShader.Use();
-		wireframeShader.SetMat4("view", view);
-		wireframeShader.SetMat4("projection", projection);
-		wireframeShader.SetMat4("model", origin.GetModelMat() );
-		wireframeShader.SetVec3("Color", glm::vec3(0.3, 0.3, 1.0));
-		Primitives::RenderCube(true);
-
-		std::vector<glm::vec3> boxPositions;
-		m_oTree.Search(m_sceneCameraComp->GetCamera().m_frustum, boxPositions);
-
-		pbrShader.Use();
-		pbrShader.SetMat4("view", view);
-		pbrShader.SetMat4("projection", projection);
-		pbrShader.SetVec3("camPos", cameraPosition);
-		pbrShader.SetFloat("heightScale", 0.1f);
-		// draw 3d grid of cubes.
-		const unsigned int size = boxPositions.size();
-		for (unsigned int i = 0; i < size; ++i)
-		{
-			scratchTransform.SetPosition(boxPositions[i]);
-			pbrShader.SetMat4("model", scratchTransform.GetModelMat());
-		
-			Primitives::RenderSphere();
-			vertexCountStats += Primitives::sphere.GetVertexCount();
-		}
-	}
+	Transform tt;
+	wireframeShader.SetMat4("model", tt.GetModelMat());
+	m_sceneCameraComp->GetCamera().m_frustum.DrawPlanes();
 
 	if (showOctree)
 	{
@@ -662,39 +643,27 @@ void IBLSpecState::Render(float alpha)
 		}
 	}
 
-	Transform origin;
-	wireframeShader.Use();
-	wireframeShader.SetMat4("view", view);
-	wireframeShader.SetMat4("projection", projection);
-	wireframeShader.SetVec3("Color", glm::vec3(0.1, 0.8, 0.2));
-	wireframeShader.SetMat4("model", origin.GetModelMat());
-	Primitives::RenderCube(true);
-	vertexCountStats += Primitives::cube.GetVertexCount();
-
-	origin.Scale(0.1f);
-	wireframeShader.SetMat4("view", view);
-	wireframeShader.SetMat4("projection", projection);
-	wireframeShader.SetVec3("Color", glm::vec3(0.1, 0.8, 0.2));
-	wireframeShader.SetMat4("model", origin.GetModelMat());
-	Primitives::RenderCube();
-	vertexCountStats += Primitives::cube.GetVertexCount();
-
-	// render skybox (render as last to prevent overdraw)
-	backgroundShader.Use();
-	backgroundShader.SetMat4("projection", projection);
-	backgroundShader.SetMat4("view", view);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
-	// glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap); // display irradiance map
-	// glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap); // display prefilter map
-	Primitives::RenderCube();
-	vertexCountStats += Primitives::cube.GetVertexCount();
-
+	bool drawSkybox = true;
+	if (drawSkybox) 
+	{
+		// render skybox (render as last to prevent overdraw)
+		backgroundShader.Use();
+		backgroundShader.SetMat4("projection", projection);
+		backgroundShader.SetMat4("view", view);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, envCubemap);
+		// glBindTexture(GL_TEXTURE_CUBE_MAP, irradianceMap); // display irradiance map
+		// glBindTexture(GL_TEXTURE_CUBE_MAP, prefilterMap); // display prefilter map
+		Primitives::RenderCube();
+		vertexCountStats += Primitives::cube.GetVertexCount();
+	}
 	// render BRDF map to screen
 	// brdfShader.Use();
 	// Primitives::RenderQuad();
 
 	// render top down view in wireframe
+	bool renderTopDownBuffer = true;
+	if( renderTopDownBuffer )
 	{
 		// 1. render scene into floating point framebuffer
 		// -----------------------------------------------
@@ -712,9 +681,10 @@ void IBLSpecState::Render(float alpha)
 		glm::mat4 ortho = topDownCamera.OrthographicMatrix();
 
 		wireframeShader.Use();
-		wireframeShader.SetVec3("Color", glm::vec3(0, 0, 1.0));
 		wireframeShader.SetMat4("view", view);
 		wireframeShader.SetMat4("projection", ortho);
+
+		
 
 		// draw 3d grid of cubes.
 		const unsigned int size = positions.size();

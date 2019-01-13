@@ -83,8 +83,7 @@
       <ConformanceMode>
       </ConformanceMode>
       <AdditionalIncludeDirectories>D:\Work\Projects\Sandbox\Sandbox\Source;D:\CodeLibraries\SDL2-2.0.8\include;D:\CodeLibraries\glm;D:\CodeLibraries\glew-2.1.0\include;D:\CodeLibraries\assimp-4.1.0\include;D:\CodeLibraries\nlohmannJson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <DebugInformationFormat>
-      </DebugInformationFormat>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <CreateHotpatchableImage>
       </CreateHotpatchableImage>
       <MultiProcessorCompilation>
@@ -97,10 +96,13 @@
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>opengl32.lib;glew32.lib;SDL2.lib;SDL2main.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\CodeLibraries\assimp-4.1.0\build\code\Debug;D:\CodeLibraries\glew-2.1.0\lib\Release\Win32;D:\CodeLibraries\SDL2-2.0.8\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <CreateHotPatchableImage>Enabled</CreateHotPatchableImage>
-      <OptimizeReferences>false</OptimizeReferences>
-      <EnableCOMDATFolding>false</EnableCOMDATFolding>
-      <GenerateDebugInformation>DebugFull</GenerateDebugInformation>
+      <CreateHotPatchableImage>
+      </CreateHotPatchableImage>
+      <OptimizeReferences>
+      </OptimizeReferences>
+      <EnableCOMDATFolding>
+      </EnableCOMDATFolding>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -254,6 +256,7 @@
     <ClInclude Include="Source\Systems\Rendering\Primitives\Sphere.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Readme.md" />
     <None Include="Source\Shaders\advanced_glsl.vs" />
     <None Include="Source\Shaders\deferred_light.fs" />
     <None Include="Source\Shaders\deferred_light.vs" />
