@@ -20,6 +20,7 @@ Expect unoptimized code ( not the objective ), comments here and there, broken o
 - Occlusion and Portal Culling
 - Simple Profiler ( w/ ImGUI Display )
 - Entity Components and Serialization
+- Water caustics
 - Others stuff I'll remember later
 
 ### Dependencies
