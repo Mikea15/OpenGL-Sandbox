@@ -1,22 +1,25 @@
-# Sandbox
-Modern OpenGL sandbox application.
+## Modern OpenGL sandbox application.
 ---
 This is a simple sandbox application that I've used to learn more about OpenGL, shaders, and some other subjects I am interested in. At this point, this app allows the creation of fast demo scenes where I can test stuff on.
 
-Things I've played arround with:
-- Async texture loading ( Producer / Consumer ) with multiple threads.
-- Frustum Occlusion Culling
-- QuadTree / Octress Implementation
-- Frustum Occlusion Culling with Octree Acceleration
-- Deferred Rendering, Rendering to Texture, Shadow Mapping.
-- Post Processing FX
-- Image Based Lighting
+Expect unoptimized code ( not the objective ), comments here and there, broken or half-baked solutions, duplicate code, stuff that I'm moving around and re-organizing with time.
 
-### Planned, Started or Unfinished
-Some things I still want to explore and build upon
-- Implement Material Definitions, Async Loading
+---
+
+### Things Implemented
+- Deferred Rendering, Rendering to Texture, Shadow Mapping, IBL, Post Processing
+- Async texture loading ( Producer / Consumer ) with multiple threads.
+- ImGUI Integration
+- LivePP Integration ( Trial over now )
+- QuadTree / Octress Implementation
+- Frustum Culling ( with and without Octrees )
+
+### Things Planned, Started or Unfinished
+- Material Definitions, Async Loading
 - Scene Graph
-- Portal Culling
+- Occlusion and Portal Culling
+- Entity Components and Serialization
+- Others stuff I'll remember later
 
 ### Dependencies
 - SDL2 2.0.8
