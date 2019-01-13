@@ -1,6 +1,5 @@
 # Sandbox
 Modern OpenGL sandbox application.
-
 ---
 This is a simple sandbox application that I've used to learn more about OpenGL, shaders, and some other subjects I am interested in. At this point, this app allows the creation of fast demo scenes where I can test stuff on.
 
@@ -18,7 +17,6 @@ Some things I still want to explore and build upon
 - Implement Material Definitions, Async Loading
 - Scene Graph
 - Portal Culling
-- 
 
 ### Dependencies
 - SDL2 2.0.8
