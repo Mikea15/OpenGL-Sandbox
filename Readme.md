@@ -1,5 +1,5 @@
 ## Modern OpenGL sandbox application.
----
+
 This is a simple sandbox application that I've used to learn more about OpenGL, shaders, and some other subjects I am interested in. At this point, this app allows the creation of fast demo scenes where I can test stuff on.
 
 Expect unoptimized code ( not the objective ), comments here and there, broken or half-baked solutions, duplicate code, stuff that I'm moving around and re-organizing with time.
