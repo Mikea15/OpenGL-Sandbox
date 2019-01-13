@@ -56,25 +56,13 @@ Skybox::Skybox()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-	std::vector<std::string> faces
-	{
-		std::string("Data/Images/skybox/lake/posx.jpg"),
-		std::string("Data/Images/skybox/lake/negx.jpg"),
-		std::string("Data/Images/skybox/lake/posy.jpg"),
-		std::string("Data/Images/skybox/lake/negy.jpg"),
-		std::string("Data/Images/skybox/lake/posz.jpg"),
-		std::string("Data/Images/skybox/lake/negz.jpg")
-	};
-
-	m_texture = Textures::LoadCubemap(faces);
-	
-	transform = Transform();
 	transform.SetPosition(glm::vec3(0, 0, 0));
 	transform.Scale(10000.0f);
 }
 
 Skybox::~Skybox()
 {
+
 }
 
 void Skybox::Draw(const Shader& shader)

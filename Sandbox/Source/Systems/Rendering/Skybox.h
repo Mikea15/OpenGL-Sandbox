@@ -33,6 +33,8 @@ public:
 	Skybox();
 	~Skybox();
 
+	void SetTexture(unsigned int texture) { m_texture = texture; }
+
 	void Draw(const Shader& shader);
 
 	unsigned int GetVAO() const { return m_VAO; }

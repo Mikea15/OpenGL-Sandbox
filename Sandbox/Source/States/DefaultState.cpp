@@ -17,7 +17,21 @@ void DefaultState::Init(Game* game)
 	// -----------------------------
 	glEnable(GL_DEPTH_TEST);
 
+	std::vector<std::string> faces
+	{
+		std::string("Data/Images/skybox/lake/posx.jpg"),
+		std::string("Data/Images/skybox/lake/negx.jpg"),
+		std::string("Data/Images/skybox/lake/posy.jpg"),
+		std::string("Data/Images/skybox/lake/negy.jpg"),
+		std::string("Data/Images/skybox/lake/posz.jpg"),
+		std::string("Data/Images/skybox/lake/negz.jpg")
+	};
+
+	const unsigned int skyboxTex = m_assetManager->LoadCubemap("lake", faces);
+
 	skybox = Skybox();
+	skybox.SetTexture(skyboxTex);
+
 	skyboxShader = shaderManager.LoadShader("gradientSkybox", "skybox/skybox.vs", "skybox/horizon_sun.fs");	
 }
 

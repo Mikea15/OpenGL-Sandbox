@@ -4,10 +4,6 @@
 
 #include "States/DefaultState.h"
 #include "States/IBLSpecState.h"
-#include "States/AdvancedLighting.h"
-#include "States/BloomEffectState.h"
-#include "States/ShadowMappingState.h"
-#include "States/MultipleLightsState.h"
 #include "States/InstancingState.h"
 #include "States/DeferredRendering.h"
 #include "States/SSAOState.h"
@@ -34,12 +30,7 @@ private:
 
 	std::shared_ptr<State> m_defaultState;
 	std::shared_ptr<State> m_instancingState;
-	std::shared_ptr<State> m_advancedLighting;
 	std::shared_ptr<State> m_iblSpecState;
-	std::shared_ptr<State> m_cubemapState;
-	std::shared_ptr<State> m_bloomEffectState;
-	std::shared_ptr<State> m_shadowMappingState;
-	std::shared_ptr<State> m_multipleLights;
 	std::shared_ptr<State> m_deferredRenderingState;
 	std::shared_ptr<State> m_ssaoState;
 };

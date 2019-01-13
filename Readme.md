@@ -18,6 +18,7 @@ Expect unoptimized code ( not the objective ), comments here and there, broken o
 - Material Definitions, Async Loading
 - Scene Graph
 - Occlusion and Portal Culling
+- Simple Profiler ( w/ ImGUI Display )
 - Entity Components and Serialization
 - Others stuff I'll remember later
 

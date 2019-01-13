@@ -22,13 +22,15 @@ void SceneSwitcherSystemComponent::Initialize(Game* game)
 	// still. I'll leave this comment here. I spent too much time debuging this shit.
 	// m_defaultState = std::make_shared<IBLSpecState>(); 
 	// m_defaultState = std::make_shared<DeferredRendering>();
-	m_defaultState = std::make_shared<IBLSpecState>();
+	m_defaultState = std::make_shared<DefaultState>();
 	m_game->ChangeState(m_defaultState);
 }
 
 void SceneSwitcherSystemComponent::HandleInput(SDL_Event* event)
 {
-	/*
+	// disable state/scene change
+	return;
+
 	if (event->type == SDL_KEYDOWN)
 	{
 		switch (event->key.keysym.sym)
@@ -44,48 +46,20 @@ void SceneSwitcherSystemComponent::HandleInput(SDL_Event* event)
 			m_game->ChangeState(m_iblSpecState);
 			break;
 		case SDLK_3:
-			if (m_bloomEffectState == nullptr)
-			{
-				m_bloomEffectState = std::make_shared<BloomEffectState>();
-			}
-			m_game->ChangeState(m_bloomEffectState);
-			break;
-		case SDLK_4:
-			if (m_shadowMappingState == nullptr)
-			{
-				m_shadowMappingState = std::make_shared<ShadowMappingState>();
-			}
-			m_game->ChangeState(m_shadowMappingState);
-			break;
-		case SDLK_5:
-			if (m_advancedLighting == nullptr)
-			{
-				m_advancedLighting = std::make_shared<AdvancedLighting>();
-			}
-			m_game->ChangeState(m_advancedLighting);
-			break;
-		case SDLK_6:
-			if (m_multipleLights == nullptr)
-			{
-				m_multipleLights = std::make_shared<MultipleLightsState>();
-			}
-			m_game->ChangeState(m_multipleLights);
-			break;
-		case SDLK_7:
 			if (m_instancingState == nullptr)
 			{
 				m_instancingState = std::make_shared<InstancingState>();
 			}
 			m_game->ChangeState(m_instancingState);
 			break;
-		case SDLK_8:
+		case SDLK_4:
 			if (m_deferredRenderingState == nullptr)
 			{
 				m_deferredRenderingState = std::make_shared<DeferredRendering>();
 			}
 			m_game->ChangeState(m_deferredRenderingState);
 			break;
-		case SDLK_9:
+		case SDLK_5:
 			if (m_ssaoState == nullptr)
 			{
 				m_ssaoState = std::make_shared<SSAOState>();
@@ -94,7 +68,6 @@ void SceneSwitcherSystemComponent::HandleInput(SDL_Event* event)
 			break;
 		}
 	}
-	*/
 }
 
 void SceneSwitcherSystemComponent::PreUpdate(float frameTime)

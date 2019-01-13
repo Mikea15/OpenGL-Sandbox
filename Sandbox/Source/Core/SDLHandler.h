@@ -48,7 +48,6 @@ namespace Core
 		SDL_Window* GetSDLWindow() const { return m_window; }
 		SDL_GLContext GetGLContext() const { return m_glContext; }
 
-
 	private:
 		WindowParameters m_params;
 		SDL_DisplayMode m_displayMode;

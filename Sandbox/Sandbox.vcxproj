@@ -177,12 +177,8 @@
     <ClCompile Include="Source\Managers\SceneManager.cpp" />
     <ClCompile Include="Source\Managers\ShaderManager.cpp" />
     <ClCompile Include="Source\Managers\SystemComponentManager.cpp" />
-    <ClCompile Include="Source\States\AdvancedLighting.cpp" />
-    <ClCompile Include="Source\States\BloomEffectState.cpp" />
     <ClCompile Include="Source\States\DefaultState.cpp" />
     <ClCompile Include="Source\States\InstancingState.cpp" />
-    <ClCompile Include="Source\States\MultipleLightsState.cpp" />
-    <ClCompile Include="Source\States\ShadowMappingState.cpp" />
     <ClCompile Include="Source\Systems\Camera\Camera.cpp" />
     <ClCompile Include="Source\Systems\Entity.cpp" />
     <ClCompile Include="Source\Systems\Model.cpp" />
@@ -233,12 +229,8 @@
     <ClInclude Include="Source\Managers\SceneManager.h" />
     <ClInclude Include="Source\Managers\ShaderManager.h" />
     <ClInclude Include="Source\Managers\SystemComponentManager.h" />
-    <ClInclude Include="Source\States\AdvancedLighting.h" />
-    <ClInclude Include="Source\States\BloomEffectState.h" />
     <ClInclude Include="Source\States\DefaultState.h" />
     <ClInclude Include="Source\States\InstancingState.h" />
-    <ClInclude Include="Source\States\MultipleLightsState.h" />
-    <ClInclude Include="Source\States\ShadowMappingState.h" />
     <ClInclude Include="Source\States\State.h" />
     <ClInclude Include="Source\Systems\Camera\Camera.h" />
     <ClInclude Include="Source\Systems\Entity.h" />

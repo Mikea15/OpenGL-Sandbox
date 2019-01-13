@@ -81,9 +81,6 @@
     <ClCompile Include="Source\Dependencies\std_image\std_image.cpp">
       <Filter>Source Files\Dependencies\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="Source\States\MultipleLightsState.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Systems\Model.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
@@ -111,17 +108,11 @@
     <ClCompile Include="Source\States\InstancingState.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
-    <ClCompile Include="Source\States\AdvancedLighting.cpp">
-      <Filter>Source Files\States</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Core\ImGuiHander.cpp">
       <Filter>Source Files\Core</Filter>
     </ClCompile>
     <ClCompile Include="Source\Systems\Rendering\Primitives.cpp">
       <Filter>Source Files\Systems\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\States\ShadowMappingState.cpp">
-      <Filter>Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="Source\Systems\Rendering\Primitives\Quad.cpp">
       <Filter>Source Files\Systems\Rendering\Primitives</Filter>
@@ -146,9 +137,6 @@
     </ClCompile>
     <ClCompile Include="Source\Systems\Rendering\TextureBuffer.cpp">
       <Filter>Source Files\Systems\Rendering</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\States\BloomEffectState.cpp">
-      <Filter>Source Files\States</Filter>
     </ClCompile>
     <ClCompile Include="Source\States\DefaultState.cpp">
       <Filter>Source Files\States</Filter>
@@ -239,9 +227,6 @@
     <ClInclude Include="Source\Systems\Camera\Camera.h">
       <Filter>Source Files\Systems\Camera</Filter>
     </ClInclude>
-    <ClInclude Include="Source\States\MultipleLightsState.h">
-      <Filter>Source Files\States</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Systems\Rendering\Mesh.h">
       <Filter>Source Files\Systems\Rendering</Filter>
     </ClInclude>
@@ -275,17 +260,11 @@
     <ClInclude Include="Source\States\InstancingState.h">
       <Filter>Source Files\States</Filter>
     </ClInclude>
-    <ClInclude Include="Source\States\AdvancedLighting.h">
-      <Filter>Source Files\States</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Core\ImGuiHander.h">
       <Filter>Source Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Systems\Rendering\Primitives.h">
       <Filter>Source Files\Systems\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\States\ShadowMappingState.h">
-      <Filter>Source Files\States</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\Utils.h">
       <Filter>Source Files\Core</Filter>
@@ -313,9 +292,6 @@
     </ClInclude>
     <ClInclude Include="Source\Systems\Rendering\TextureBuffer.h">
       <Filter>Source Files\Systems\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\States\BloomEffectState.h">
-      <Filter>Source Files\States</Filter>
     </ClInclude>
     <ClInclude Include="Source\States\DefaultState.h">
       <Filter>Source Files\States</Filter>

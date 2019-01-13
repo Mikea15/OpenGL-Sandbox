@@ -616,10 +616,6 @@ void IBLSpecState::Render(float alpha)
 		}
 	}
 
-	Transform tt;
-	wireframeShader.SetMat4("model", tt.GetModelMat());
-	m_sceneCameraComp->GetCamera().m_frustum.DrawPlanes();
-
 	if (showOctree)
 	{
 		std::vector<BoundingBox> ocTreeVis;
