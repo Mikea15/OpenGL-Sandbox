@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <memory>
+#include <vector>
 
 #include <SDL.h>
 #include <gl/glew.h>
@@ -14,24 +15,39 @@ namespace Core
 {
 	struct WindowParameters
 	{
+		// Window
 		int Height;
 		int Width;
 		int Depth;
-
+		int ResolutionIndex = 0;
+		bool Fullscreen = false;
 		int DisplayIndex = 0;
 
 		std::string WindowName = "Sandbox";
 
-		int EnableVSync = 0; // 1 - enabled . 0 - disabled
+		// 0 immediate, 1 wait for sync
+		bool VSync = 0;
 
 		int FPSLimit = 90;
+
+		// OpenGL
+		int GL_Flags = 0;
+		SDL_GLprofile GL_ProfileMask = SDL_GLprofile::SDL_GL_CONTEXT_PROFILE_CORE;
+		int GL_MajorVersion = 4;
+		int GL_MinorVersion = 5;
+		int GL_DoubleBuffer = 1;
+		int GL_Accelerated = 1;
+		int GL_DepthSize = 24;
+		int GL_StencilSize = 8;
+		int GL_MultiSampleBuffers = 1;
+		int GL_MultiSamplesSamples = 4;
 	};
 
 	class SDLHandler
 	{
 	public:
 		SDLHandler() = default;
-		SDLHandler(WindowParameters params);
+		SDLHandler(WindowParameters& params);
 
 		~SDLHandler();
 
@@ -43,16 +59,29 @@ namespace Core
 		void BeginRender();
 		void EndRender();
 
+		void SetWindowParameters(const WindowParameters& params);
+
 		const Uint32 GetTicks() const { return SDL_GetTicks(); }
 
 		SDL_Window* GetSDLWindow() const { return m_window; }
 		SDL_GLContext GetGLContext() const { return m_glContext; }
+
+		const char* GetGLSLVersion() const { return m_glslVersion; }
+
+		const std::vector<SDL_DisplayMode>& GetDisplayModes() const { return m_displayModes; }
+
+	private:
+		void FindDisplayModes();
 
 	private:
 		WindowParameters m_params;
 		SDL_DisplayMode m_displayMode;
 		SDL_Window* m_window;
 		SDL_GLContext m_glContext;
+
+		const char* m_glslVersion = "#version 130";
+
+		std::vector<SDL_DisplayMode> m_displayModes;
 	};
 }
 

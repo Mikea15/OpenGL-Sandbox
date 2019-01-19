@@ -23,7 +23,7 @@ public:
 	int Execute();
 
 	const Core::WindowParameters& GetWindowParameters() const { return m_winParams; }
-	const Core::SDLHandler* GetSDLHandler() const { return &m_sdlHandler; }
+	Core::SDLHandler& GetSDLHandler() { return m_sdlHandler; }
 	SystemComponentManager* GetSystemComponentManager() const { return m_systemComponentManager.get(); }
 	AssetManager& GetAssetManager() { return *m_assetManager.get(); }
 
@@ -36,8 +36,8 @@ public:
 	}
 
 private:
-	void InitSystem();
-	void CleanupSystem();
+	void InitSystems();
+	void CleanupSystems();
 
 private:
 	bool m_isRunning;

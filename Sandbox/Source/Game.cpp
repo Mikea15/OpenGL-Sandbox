@@ -17,7 +17,7 @@ Game::Game()
 	m_winParams.Height = 960;
 	m_winParams.Width = 1440;
 	m_winParams.Depth = 24;
-	m_winParams.EnableVSync = false;
+	m_winParams.VSync = false;
 
 	m_sdlHandler = Core::SDLHandler(m_winParams);
 	m_uiHandler = Core::ImGuiHandler();
@@ -40,12 +40,11 @@ Game::~Game()
 {
 }
 
-void Game::InitSystem()
+void Game::InitSystems()
 {
 	srand(time(NULL));
 
 	m_sdlHandler.Init();
-
 	m_uiHandler.Initialize(this);
 
 	m_assetManager->Initialize();
@@ -56,8 +55,7 @@ void Game::InitSystem()
 
 int Game::Execute()
 {
-	// InitSystems();
-	InitSystem();
+	InitSystems();
 
 	m_currentTime = std::chrono::high_resolution_clock::now();
 	double accumulator = 0.0;
@@ -136,8 +134,6 @@ int Game::Execute()
 		m_sdlHandler.BeginRender();
 		m_systemComponentManager->Render(alpha);
 		m_currentState->Render(alpha);
-		// system components
-		
 
 		// ui
 		m_uiHandler.StartRender();
@@ -147,13 +143,12 @@ int Game::Execute()
 		m_sdlHandler.EndRender();
 	}
 
-	// Cleanup
-	CleanupSystem();
+	CleanupSystems();
 
 	return 0;
 }
 
-void Game::CleanupSystem()
+void Game::CleanupSystems()
 {
 	// system components
 	m_systemComponentManager->Cleanup();

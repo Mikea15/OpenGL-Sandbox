@@ -5,10 +5,36 @@
 #include "Systems/Rendering/Primitives.h"
 
 
+namespace ImGui
+{
+	static auto vector_getter = [](void* vec, int idx, const char** out_text)
+	{
+		auto& vector = *static_cast<std::vector<std::string>*>(vec);
+		if (idx < 0 || idx >= static_cast<int>(vector.size())) { return false; }
+		*out_text = vector.at(idx).c_str();
+		return true;
+	};
+
+	bool Combo(const char* label, int* currIndex, std::vector<std::string>& values)
+	{
+		if (values.empty()) { return false; }
+		return Combo(label, currIndex, vector_getter,
+			static_cast<void*>(&values), values.size());
+	}
+
+	bool ListBox(const char* label, int* currIndex, std::vector<std::string>& values)
+	{
+		if (values.empty()) { return false; }
+		return ListBox(label, currIndex, vector_getter,
+			static_cast<void*>(&values), values.size());
+	}
+
+}
+
 void DefaultState::Init(Game* game)
 {
 	m_windowParams = game->GetWindowParameters();
-	m_sdlHandler = game->GetSDLHandler();
+	m_sdlHandler = &game->GetSDLHandler();
 
 	m_sceneCameraComp = &game->GetSystemComponentManager()->GetComponent<SceneCameraComponent>();
 	m_assetManager = &game->GetAssetManager();
@@ -32,7 +58,7 @@ void DefaultState::Init(Game* game)
 	skybox = Skybox();
 	skybox.SetTexture(skyboxTex);
 
-	skyboxShader = shaderManager.LoadShader("gradientSkybox", "skybox/skybox.vs", "skybox/horizon_sun.fs");	
+	skyboxShader = shaderManager.LoadShader("gradientSkybox", "skybox/skybox.vs", "skybox/horizon_sun.fs");
 }
 
 void DefaultState::HandleInput(SDL_Event * event)
@@ -109,6 +135,59 @@ void DefaultState::RenderUI()
 
 
 	ImGui::EndGroup(); ImGui::End();
+
+	{
+		auto displayModes = m_sdlHandler->GetDisplayModes();
+		const unsigned int size = displayModes.size();
+		std::vector<std::string> displayNamesStr;
+
+		for (int i = 0; i < size; ++i)
+		{
+			std::string st = std::to_string(displayModes[i].w)
+				+ std::string(" x ")
+				+ std::to_string(displayModes[i].h)
+				+ std::string(" @ ")
+				+ std::to_string(displayModes[i].refresh_rate)
+				+ std::string("hz");
+			displayNamesStr.push_back(st);
+		}
+
+		ImGui::Begin("Window Parameters");
+		// ImGui::Combo("Combo", &currentItem, displayNamesStr.data(), size);
+
+		ImGui::Combo("Resolutions", &currentParams.ResolutionIndex, displayNamesStr);
+		ImGui::Checkbox("Fullscreen", &currentParams.Fullscreen);
+		ImGui::Checkbox("VSync", &currentParams.VSync);
+		ImGui::DragInt("FPS Limit", &currentParams.FPSLimit, 1.0f, 30, 200);
+
+		ImGui::SliderInt("Multisample Buffers", &currentParams.GL_MultiSampleBuffers, 1, 4);
+		ImGui::SliderInt("Multisample Samples", &currentParams.GL_MultiSamplesSamples, 1, 32);
+
+		if (ImGui::Button("Apply Changes", ImVec2(140, 30)))
+		{
+			const bool resolutionChanged = currentParams.ResolutionIndex != m_windowParams.ResolutionIndex
+				|| currentParams.VSync != m_windowParams.VSync
+				|| currentParams.Fullscreen != m_windowParams.Fullscreen;
+
+			const bool globalSettingsChanged = currentParams.FPSLimit != m_windowParams.FPSLimit
+				|| currentParams.GL_MultiSampleBuffers != m_windowParams.GL_MultiSampleBuffers
+				|| currentParams.GL_MultiSamplesSamples != m_windowParams.GL_MultiSamplesSamples;
+
+			if (resolutionChanged) 
+			{
+				currentParams.Width = displayModes[currentParams.ResolutionIndex].w;
+				currentParams.Height = displayModes[currentParams.ResolutionIndex].h;
+			}
+
+			if (resolutionChanged || globalSettingsChanged)
+			{
+				m_windowParams = currentParams;
+				m_sdlHandler->SetWindowParameters(m_windowParams);
+			}
+		}
+		
+		ImGui::End();
+	}
 }
 
 void DefaultState::Cleanup()

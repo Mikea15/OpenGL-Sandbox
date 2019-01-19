@@ -17,6 +17,8 @@
 
 #include "Components/System/SceneCameraComponent.h"
 
+
+
 class DefaultState
 	: public State
 {
@@ -32,8 +34,9 @@ public:
 	void Cleanup() override;
 
 protected:
-	const Core::SDLHandler* m_sdlHandler;
+	Core::SDLHandler* m_sdlHandler;
 	Core::WindowParameters m_windowParams;
+	Core::WindowParameters currentParams;
 
 	SceneCameraComponent* m_sceneCameraComp;
 	AssetManager* m_assetManager;

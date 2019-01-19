@@ -71,7 +71,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <SourcePath>$(VC_SourcePath)/Source</SourcePath>
-    <OutDir>$(SolutionDir)Builds\$(Configuration)_$(PlatformTarget)</OutDir>
+    <OutDir>$(SolutionDir)Builds\$(Configuration)_$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Intermediate\$(Configuration)_$(PlatformTarget)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

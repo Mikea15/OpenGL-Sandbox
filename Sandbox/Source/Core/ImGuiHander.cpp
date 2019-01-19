@@ -5,9 +5,7 @@
 namespace Core
 {
 	ImGuiHandler::ImGuiHandler()
-	{
-
-	}
+	{ }
 
 	void ImGuiHandler::Initialize(Game* game)
 	{
@@ -16,13 +14,14 @@ namespace Core
 
 		m_io = ImGui::GetIO();
 
-		m_sdlHandler = game->GetSDLHandler();
+		m_sdlHandler = &game->GetSDLHandler();
 
 		ImGui_ImplSDL2_InitForOpenGL(
 			m_sdlHandler->GetSDLWindow(),
 			m_sdlHandler->GetGLContext()
 		);
-		ImGui_ImplOpenGL3_Init("#version 130");
+
+		ImGui_ImplOpenGL3_Init(m_sdlHandler->GetGLSLVersion());
 		ImGui::StyleColorsDark();
 	}
 
@@ -40,14 +39,12 @@ namespace Core
 
 	void ImGuiHandler::EndRender()
 	{
-		// Rendering
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 
 	void ImGuiHandler::Cleanup()
 	{
-		// Cleanup
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplSDL2_Shutdown();
 		ImGui::DestroyContext();
