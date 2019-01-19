@@ -1,17 +1,17 @@
 ## Modern OpenGL sandbox application.
 
-This is a simple sandbox application that I've used to learn more about OpenGL, shaders, and some other subjects I am interested in. At this point, this app allows the creation of fast demo scenes where I can test stuff on.
+This is a simple sandbox application that I've built upon reading a few different tutorials. It's purpose is purely educational. I research topics I find interesting and implement them here. These topics range from general game development best practices to rendering.
 
-Expect unoptimized code ( not the objective ), comments here and there, broken or half-baked solutions, duplicate code, stuff that I'm moving around and re-organizing with time.
+Do not expect optimized or neatly structured code here. I focus first on functional implementation, then making it efficient. The later becomes less important when my curiosity leads me to a new topic.
 
 ---
-
 ### Things Implemented
-- Deferred Rendering, Rendering to Texture, Shadow Mapping, IBL, Post Processing
-- Async texture loading ( Producer / Consumer ) with multiple threads.
+- Modern OpenGL rendering pipeline
+- Deferred Rendering, Rendering to Texture, Shadow Mapping, IBL, Post Processing, Point/Directional Lights, Reflection Cubemaps, etc..
+- Asynchronous texture loading across multiple threads ( producer / consumer )
 - ImGUI Integration
 - LivePP Integration ( Trial over now )
-- QuadTree / Octress Implementation
+- QuadTree / Octrees Implementation
 - Frustum Culling ( with and without Octrees )
 
 ### Things Planned, Started or Unfinished
@@ -24,10 +24,10 @@ Expect unoptimized code ( not the objective ), comments here and there, broken o
 - Others stuff I'll remember later
 
 ### Dependencies
-- SDL2 2.0.8
-- Glew 2.1.0
-- GLM
-- Assimp 4.1.0
-- ImGUI
-- stb_image
-- nlohmannJson
+- [SDL2 v2.0.8](https://www.libsdl.org/)
+- [GLEW v2.1.0](http://glew.sourceforge.net/)
+- [GLM v0.9.9.0](https://glm.g-truc.net/0.9.9/index.html)
+- [Assimp v4.1.0](https://github.com/assimp/assimp)
+- [ImGui v1.67](https://github.com/ocornut/imgui)
+- [stb_image v2.19](https://github.com/nothings/stb)
+- [nlohmannJson v3.4.0](https://github.com/nlohmann/json)
