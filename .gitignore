@@ -14,6 +14,8 @@
 autosave/
 workspace.mel
 [Dd]ata/
+[Bb]uilds/
+[Ii]intermediate/
 
 # Build results
 [Dd]ebug/
