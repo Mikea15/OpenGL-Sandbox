@@ -143,17 +143,11 @@ void DefaultState::RenderUI()
 
 		for (int i = 0; i < size; ++i)
 		{
-			std::string st = std::to_string(displayModes[i].w)
-				+ std::string(" x ")
-				+ std::to_string(displayModes[i].h)
-				+ std::string(" @ ")
-				+ std::to_string(displayModes[i].refresh_rate)
-				+ std::string("hz");
-			displayNamesStr.push_back(st);
+			const std::string name = m_sdlHandler->GetDisplayModeName(i);
+			displayNamesStr.push_back(name);
 		}
 
 		ImGui::Begin("Window Parameters");
-		// ImGui::Combo("Combo", &currentItem, displayNamesStr.data(), size);
 
 		ImGui::Combo("Resolutions", &currentParams.ResolutionIndex, displayNamesStr);
 		ImGui::Checkbox("Fullscreen", &currentParams.Fullscreen);

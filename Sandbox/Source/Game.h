@@ -30,11 +30,6 @@ public:
 	void ChangeState(std::shared_ptr<State> newState);
 	double GetTimeMS() const { return m_time; }
 
-	void Log(const std::string& className, const std::string& str)
-	{
-		std::cout << "> " << m_time << " : " << " [" << className << "]" << str << std::endl;
-	}
-
 private:
 	void InitSystems();
 	void CleanupSystems();

@@ -135,9 +135,6 @@
     <ClCompile Include="Source\Core\Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Managers\AssetManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Systems\Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -206,6 +203,9 @@
     </ClCompile>
     <ClCompile Include="Source\Dependencies\imgui\imgui_widgets.cpp">
       <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Managers\AssetManager.cpp">
+      <Filter>Source Files\Managers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -287,9 +287,6 @@
     <ClInclude Include="Source\Systems\Rendering\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Managers\AssetManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Systems\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -367,6 +364,9 @@
     </ClInclude>
     <ClInclude Include="Source\Dependencies\imgui\imstb_truetype.h">
       <Filter>Source Files\Dependencies\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Managers\AssetManager.h">
+      <Filter>Source Files\Managers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

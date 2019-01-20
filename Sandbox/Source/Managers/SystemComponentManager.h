@@ -46,8 +46,6 @@ bool childclass::IsClassType( const std::size_t classType ) const {             
 union SDL_Event;
 class Game;
 
-#pragma optimize("", off)
-
 class SystemComponent
 {
 public:

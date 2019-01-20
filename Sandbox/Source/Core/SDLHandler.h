@@ -3,6 +3,7 @@
 #include <iostream>
 #include <memory>
 #include <vector>
+#include <unordered_map>
 
 #include <SDL.h>
 #include <gl/glew.h>
@@ -16,9 +17,9 @@ namespace Core
 	struct WindowParameters
 	{
 		// Window
-		int Height;
-		int Width;
-		int Depth;
+		int Height = 600;
+		int Width = 800;
+		int Depth = 24;
 		int ResolutionIndex = 0;
 		bool Fullscreen = false;
 		int DisplayIndex = 0;
@@ -59,7 +60,7 @@ namespace Core
 		void BeginRender();
 		void EndRender();
 
-		void SetWindowParameters(const WindowParameters& params);
+		void SetWindowParameters(const WindowParameters& params, bool initialSetup = false);
 
 		const Uint32 GetTicks() const { return SDL_GetTicks(); }
 
@@ -69,19 +70,26 @@ namespace Core
 		const char* GetGLSLVersion() const { return m_glslVersion; }
 
 		const std::vector<SDL_DisplayMode>& GetDisplayModes() const { return m_displayModes; }
+		const std::string& GetDisplayModeName(int index) const { 
+			auto it = m_displayModeIndexToName.find(index);
+			if (it != m_displayModeIndexToName.end() ) { return it->second; }
+			return "";
+		}
+		const SDL_DisplayMode* GetCurrentDisplayMode();
 
 	private:
 		void FindDisplayModes();
 
 	private:
 		WindowParameters m_params;
-		SDL_DisplayMode m_displayMode;
+
 		SDL_Window* m_window;
 		SDL_GLContext m_glContext;
 
 		const char* m_glslVersion = "#version 130";
 
 		std::vector<SDL_DisplayMode> m_displayModes;
+		std::unordered_map<int, std::string> m_displayModeIndexToName;
 	};
 }
 

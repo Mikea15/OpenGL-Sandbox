@@ -22,7 +22,6 @@ Game::Game()
 	m_sdlHandler = Core::SDLHandler(m_winParams);
 	m_uiHandler = Core::ImGuiHandler();
 
-
 	m_systemComponentManager = std::make_unique<SystemComponentManager>();
 	m_systemComponentManager->AddComponent<SceneCameraComponent>();
 	m_systemComponentManager->AddComponent<FpsCounterSystemComponent>();
