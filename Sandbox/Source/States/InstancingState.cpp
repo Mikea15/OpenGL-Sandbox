@@ -46,8 +46,8 @@ void InstancingState::Render(float alpha)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// configure transformation matrices
-	glm::mat4 view = m_sceneCameraComp->GetCamera().GetViewMatrix();
-	glm::mat4 projection = m_sceneCameraComp->GetCamera().ProjectionMatrix();
+	glm::mat4 view = m_sceneCameraComp->GetCamera().GetView();
+	glm::mat4 projection = m_sceneCameraComp->GetCamera().GetProjection();
 
 	// draw planet
 	planetShader.Use();

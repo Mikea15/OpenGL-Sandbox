@@ -6,55 +6,27 @@
 #include "../Transform.h"
 
 
-static const float MaxVerticalAngle = 85.0f; //must be less than 90 to avoid gimbal lock
+//must be less than 90 to avoid gimbal lock
+const float Camera::s_maxVerticalAngle = 85.0f;
+const float Camera::s_minFov = 0.1f;
+const float Camera::s_maxFov = 179.0f;
 
 Camera::Camera()
 	: m_position(0.0f, 0.0f, 1.0f)
-	, m_positionChange(0.0f)
 	, m_viewMatrix(1.0f)
 	, m_projectionMatrix(1.0f)
-	, m_direction(0.0f)
+	, m_forward(0.0f)
 	, m_up(0.0f)
 	, m_right(0.0f)
 	, m_horizontalAngle(180.0f)
 	, m_verticalAngle(0.0f)
-	, m_horizontalChange(0.0f)
-	, m_verticalChange(0.0f)
-	, m_fov(50.0f)
-	, m_nearPlane(0.01f)
-	, m_farPlane(150.0f)
-	, m_aspectRatio(16.0f / 9.0f)
-	, m_movementSpeed(10.0f)
-	, m_hasSpeedBoost(false)
-	, m_speedBoost(2.0f)
-	, m_mouseSensitivity(0.15f, 0.15f)
 {
 	m_frustum = BoundingFrustum(m_viewMatrix);
 }
 
-void Camera::ChangeFov(float delta)
-{
-	SetFov(m_fov + delta);
-}
-
-void Camera::SetNearFarPlane(float nearPlane, float farPlane)
-{
-	assert(nearPlane > 0.0f);
-	assert(farPlane > nearPlane);
-
-	m_nearPlane = nearPlane;
-	m_farPlane = farPlane;
-}
-
 void Camera::Update(float deltaTime)
 {
-	m_horizontalAngle += m_horizontalChange * m_mouseSensitivity.x;
-	m_horizontalChange = 0.0f;
-
-	m_verticalAngle += m_verticalChange * m_mouseSensitivity.y;
-	m_verticalChange = 0.0f;
-
-	m_direction = glm::vec3(
+	m_forward = glm::vec3(
 		cos(glm::radians(m_verticalAngle)) * sin(glm::radians(m_horizontalAngle)),
 		sin(glm::radians(m_verticalAngle)),
 		cos(glm::radians(m_verticalAngle)) * cos(glm::radians(m_horizontalAngle))
@@ -66,77 +38,100 @@ void Camera::Update(float deltaTime)
 		cos(glm::radians(m_horizontalAngle) - 3.14f * 0.5f)
 	);
 
-	m_up = glm::cross(m_right, m_direction);
+	m_up = glm::cross(m_right, m_forward);
 
-	m_position += m_positionChange * (m_hasSpeedBoost ? m_movementSpeed * m_speedBoost : m_movementSpeed) * deltaTime;
-	m_positionChange = glm::vec3(0.0f);
+	const float hSize = m_params.m_orthoSize * 0.5f;
+	const float wSize = m_params.m_orthoSize * 0.5f * m_params.m_aspectRatio;
 
-	m_viewMatrix = glm::lookAt(m_position, m_position + m_direction, m_up);
-	m_projectionMatrix = glm::perspective(
-		glm::radians(m_fov),
-		m_aspectRatio,
-		m_nearPlane,
-		m_farPlane
+	m_viewMatrix = glm::lookAt(m_position, m_position + m_forward, m_up);
+	m_projectionMatrix = glm::perspective( glm::radians(m_params.m_fov), m_params.m_aspectRatio,
+		m_params.m_nearPlane, m_params.m_farPlane
 	);
+	m_orthographicMatrix = glm::ortho(-wSize, wSize, -hSize, hSize, 
+		m_params.m_nearPlane, m_params.m_farPlane);
 
-	m_orthographicMatrix = glm::ortho(
-		-m_resolution.x * 0.5f, m_resolution.x * 0.5f,
-		-m_resolution.y * 0.5f, m_resolution.y * 0.5f, 
-		m_nearPlane, 20.0f
-	);
-
-	m_frustum.SetViewProjectionMatrix( m_projectionMatrix * m_viewMatrix );
+	m_frustum.UpdateViewProjectionMatrix(m_projectionMatrix * m_viewMatrix);
 }
 
-void Camera::UpdateFOV(float fovChange)
+void Camera::UpdateFov(float delta)
 {
-
+	m_params.m_fov += delta;
+	if (m_params.m_fov < s_minFov)
+	{
+		m_params.m_fov = s_minFov;
+	}
+	else if (m_params.m_fov > s_maxFov)
+	{
+		m_params.m_fov = s_maxFov;
+	}
 }
 
-void Camera::UpdateMouseMovement(float horizontalChange, float verticalChange)
+void Camera::UpdateLookAt(const glm::vec2& mouseMovement)
 {
-	m_horizontalChange += horizontalChange;
-	m_verticalChange += verticalChange;
+	m_horizontalAngle -= mouseMovement.x;
+	m_verticalAngle -= mouseMovement.y;
+	NormalizeAngles();
 }
 
-bool Camera::IsVisible(const glm::vec3& position) const
+void Camera::Move(const glm::vec3& movement)
+{
+	m_position += movement;
+}
+
+void Camera::SetFov(float fov)
+{
+	if (fov < s_minFov)
+	{
+		fov = s_minFov;
+	}
+	else if (fov > s_maxFov)
+	{
+		fov = s_maxFov;
+	}
+	m_params.m_fov += fov;
+}
+
+void Camera::SetNearFarPlane(float nearPlane, float farPlane)
+{
+	assert(nearPlane > 0.0f);
+	assert(farPlane > nearPlane);
+
+	m_params.m_nearPlane = nearPlane;
+	m_params.m_farPlane = farPlane;
+}
+
+void Camera::SetAspectRatio(float ratio)
+{
+	assert(ratio > 0.0);
+	m_params.m_aspectRatio = ratio;
+}
+
+bool Camera::IsInFieldOfView(const glm::vec3& position) const
 {
 	const glm::vec3 camToObj = position - m_position;
 	const float distSq = camToObj.length() * camToObj.length();
-	if (distSq > m_farPlane * m_farPlane) 
-	{ 
-		return false; 
+	if (distSq > m_params.m_farPlane * m_params.m_farPlane)
+	{
+		return false;
 	}
-	if (distSq < m_nearPlane * m_nearPlane)
+	if (distSq < m_params.m_nearPlane * m_params.m_nearPlane)
 	{
 		return false;
 	}
 
 	const glm::vec3 camToObjDir = glm::normalize(camToObj);
-	const float dot = glm::dot(camToObjDir, m_direction);
+	const float dot = glm::dot(camToObjDir, m_forward);
 	if (dot > 0)
 	{
-		float angle = acosf(dot) * 180 / 3.14f;
-		return angle <= m_fov;
+		const float angle = glm::degrees(acosf(dot));
+		return angle <= m_params.m_fov;
 	}
 	return false;
 }
 
-void Camera::Translate(const glm::vec3& offset)
+void Camera::ToggleOrthographicCamera()
 {
-	m_positionChange += offset;
-}
-
-bool Camera::IsInView(const glm::vec3 & target)
-{
-	glm::vec3 dir = glm::normalize(target - m_position);
-	const float dot = glm::dot(m_direction, dir);
-	const float angle = glm::degrees(acosf(dot));
-
-	if (angle < m_fov)
-		return true;
-
-	return false;
+	m_params.m_isOrtho = !m_params.m_isOrtho;
 }
 
 void Camera::LookAt(glm::vec3 position)
@@ -145,33 +140,35 @@ void Camera::LookAt(glm::vec3 position)
 	glm::vec3 direction = glm::normalize(position - m_position);
 	m_horizontalAngle = -glm::radians(atan2f(-direction.x, -direction.z));
 	m_verticalAngle = glm::radians(asinf(-direction.y));
-	normalizeAngles();
+	NormalizeAngles();
 }
 
-glm::mat4 Camera::ViewProjectionMatrix()
+void Camera::NormalizeAngles()
 {
-	return m_projectionMatrix * m_viewMatrix;
-}
-
-glm::mat4 Camera::ProjectionMatrix()
-{
-	return m_projectionMatrix;
-}
-
-glm::mat4 Camera::View()
-{
-	return m_viewMatrix;
-}
-
-void Camera::normalizeAngles()
-{
-	m_horizontalAngle = fmodf(m_horizontalAngle, 360.0f);
-	//fmodf can return negative values, but this will make them all positive
-	if (m_horizontalAngle < 0.0f)
+	while (m_horizontalAngle < 0.0f)
+	{
 		m_horizontalAngle += 360.0f;
+	}
 
-	if (m_verticalAngle > MaxVerticalAngle)
-		m_verticalAngle = MaxVerticalAngle;
-	else if (m_verticalAngle < -MaxVerticalAngle)
-		m_verticalAngle = -MaxVerticalAngle;
+	while (m_horizontalAngle > 360.0f)
+	{
+		m_horizontalAngle -= 360.0f;
+	}
+
+	if (m_verticalAngle > s_maxVerticalAngle)
+	{
+		m_verticalAngle = s_maxVerticalAngle;
+	}
+	else if (m_verticalAngle < -s_maxVerticalAngle)
+	{
+		m_verticalAngle = -s_maxVerticalAngle;
+	}
+}
+
+void Camera::SetParams(const CameraParams & params)
+{
+	if (m_params != params)
+	{
+		m_params = params;
+	}
 }

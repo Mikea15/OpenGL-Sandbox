@@ -23,28 +23,35 @@ public:
 	void RenderUI() override;
 	void Cleanup() override;
 
-	Camera& GetCamera() { return camera; }
+	Camera& GetCamera() { return m_camera; }
 
 private:
 	Core::WindowParameters m_windowParams;
 
-	Camera camera;
-	glm::vec2 mousePos;
+	Camera m_camera;
 
-	float m_velocity = 1.0f;
-	float m_accTime = 1.5f;
-	float m_decTime = 0.6f;
+	glm::vec3 m_cameraMovement;
+	float m_cameraVelocity = 10.0f;
+	float m_cameraSensitivity = 1.0f;
+	float m_cameraMovementDamping = 0.85f;
+	float m_cameraMovementSpeedBoostMult = 5.0f;
 
-	float m_accelerationSensitivity = 0.5f;
-	glm::vec3 velocity;
-	float m_dampening = 0.85f;
+	glm::vec2 m_mousePosition;
+	glm::vec2 m_mouseSensitivity;
 
-	bool grabMouseFocus = true;
-	bool moveLeft = false;
-	bool moveRight = false;
-	bool moveForward = false;
-	bool moveBack = false;
-	bool moveUp = false;
-	bool moveDown = false;
-	bool fastMove = false;
+	int m_fovInputChange = 0;
+	float m_fovChange = 0.0f;
+	float m_fovVelocity = 100.0f;
+	float m_fovSensitivity = 1.0f;
+	float m_fovDamping = 0.85f;
+
+	bool m_inputGrabMouse = true;
+	bool m_inputMoveLeft = false;
+	bool m_inputMoveRight = false;
+	bool m_inputMoveForward = false;
+	bool m_inputMoveBack = false;
+	bool m_inputMoveUp = false;
+	bool m_inputMoveDown = false;
+	bool m_inputEnableMovementBoost = false;
+	bool m_inputToggleOrthoCamera = false;
 };

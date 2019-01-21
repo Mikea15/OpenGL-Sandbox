@@ -83,6 +83,8 @@ namespace Core
 			{
 				SDL_SetWindowDisplayMode(m_window, dm);
 				SDL_SetWindowSize(m_window, dm->w, dm->h);
+				m_params.Width = dm->w;
+				m_params.Height = dm->h;
 			}
 		}
 

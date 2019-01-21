@@ -296,7 +296,7 @@ void IBLSpecState::Init(Game* game)
 
 	// initialize static shader uniforms before rendering
 	// --------------------------------------------------
-	glm::mat4 projection = m_sceneCameraComp->GetCamera().ProjectionMatrix();
+	glm::mat4 projection = m_sceneCameraComp->GetCamera().GetProjection();
 
 	pbrShader.Use();
 	pbrShader.SetMat4("projection", projection);
@@ -385,7 +385,7 @@ void IBLSpecState::Update(float deltaTime)
 		camPushPosTime += deltaTime;
 		if (camPushPosTime > includeFreq)
 		{
-			glm::vec3 positionToAdd = camPos + m_sceneCameraComp->GetCamera().m_direction * 2.0f;
+			glm::vec3 positionToAdd = camPos + m_sceneCameraComp->GetCamera().GetForward() * 2.0f;
 			positions.push_back(positionToAdd);
 			m_qTree.Insert(positionToAdd);
 			m_oTree.Insert(positionToAdd);
@@ -394,10 +394,7 @@ void IBLSpecState::Update(float deltaTime)
 		}
 	}
 
-	topDownCamera.m_resolution = glm::vec2(m_windowParams.Width, m_windowParams.Height) * 0.045f;
 	topDownCamera.SetPosition(glm::vec3(0.0f, 10.0f, 0.0f));
-	topDownCamera.m_horizontalAngle = m_sceneCameraComp->GetCamera().m_horizontalAngle;
-	topDownCamera.m_verticalAngle = -90;
 	topDownCamera.Update(deltaTime);
 
 	rotatingT.RotateLocal(glm::vec3(0, 1, 0), 15.0f * deltaTime);
@@ -405,11 +402,13 @@ void IBLSpecState::Update(float deltaTime)
 
 void IBLSpecState::Render(float alpha)
 {
+	glViewport(0, 0, m_windowParams.Width, m_windowParams.Height);
+
 	vertexCountStats = 0;
 
 	// configure transformation matrices
-	glm::mat4 view = m_sceneCameraComp->GetCamera().GetViewMatrix();
-	glm::mat4 projection = m_sceneCameraComp->GetCamera().ProjectionMatrix();
+	glm::mat4 view = m_sceneCameraComp->GetCamera().GetView();
+	glm::mat4 projection = m_sceneCameraComp->GetCamera().GetProjection();
 	glm::vec3 cameraPosition = m_sceneCameraComp->GetCamera().GetPosition();
 
 	// render
@@ -578,7 +577,7 @@ void IBLSpecState::Render(float alpha)
 		const unsigned int size = positions.size();
 		for (unsigned int i = 0; i < size; ++i)
 		{
-			visible[i] = m_sceneCameraComp->GetCamera().m_frustum.Contains(BoundingBox(positions[i], 1.0f));
+			visible[i] = m_sceneCameraComp->GetCamera().GetBoundingFrustum().Contains(BoundingBox(positions[i], 1.0f));
 			if (visible[i] == ContainmentType::Disjoint)
 			{
 				continue;
@@ -671,16 +670,14 @@ void IBLSpecState::Render(float alpha)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 		// configure transformation matrices
-		glm::mat4 view = topDownCamera.GetViewMatrix();
-		glm::mat4 projection = topDownCamera.ProjectionMatrix();
+		glm::mat4 view = topDownCamera.GetView();
+		glm::mat4 projection = topDownCamera.GetProjection();
 		glm::vec3 cameraPosition = topDownCamera.GetPosition();
 		glm::mat4 ortho = topDownCamera.OrthographicMatrix();
 
 		wireframeShader.Use();
 		wireframeShader.SetMat4("view", view);
 		wireframeShader.SetMat4("projection", ortho);
-
-		
 
 		// draw 3d grid of cubes.
 		const unsigned int size = positions.size();

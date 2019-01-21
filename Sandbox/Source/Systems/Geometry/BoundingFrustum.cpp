@@ -11,13 +11,13 @@ BoundingFrustum::BoundingFrustum()
 
 BoundingFrustum::BoundingFrustum(const glm::mat4& viewProjection)
 {
-	SetViewProjectionMatrix(viewProjection);
+	UpdateViewProjectionMatrix(viewProjection);
 }
 
 BoundingFrustum::~BoundingFrustum()
 {}
 
-void BoundingFrustum::SetViewProjectionMatrix(const glm::mat4& viewProjection)
+void BoundingFrustum::UpdateViewProjectionMatrix(const glm::mat4& viewProjection)
 {
 	viewProj = viewProjection;
 	CreatePlanes();

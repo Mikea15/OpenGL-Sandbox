@@ -30,7 +30,7 @@ public:
 
 	~BoundingFrustum();
 
-	void SetViewProjectionMatrix(const glm::mat4& viewProjection);
+	void UpdateViewProjectionMatrix(const glm::mat4& viewProjection);
 
 	bool Intersects(const BoundingBox& aabb) const;
 	bool Intersects(const BoundingFrustum& frustum) const;

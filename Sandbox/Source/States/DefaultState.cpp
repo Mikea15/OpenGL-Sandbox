@@ -80,8 +80,8 @@ void DefaultState::Render(float alpha)
 	glViewport(0, 0, m_windowParams.Width, m_windowParams.Height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glm::mat4 projection = m_sceneCameraComp->GetCamera().ProjectionMatrix();
-	glm::mat4 view = m_sceneCameraComp->GetCamera().View();
+	glm::mat4 projection = m_sceneCameraComp->GetCamera().GetProjection();
+	glm::mat4 view = m_sceneCameraComp->GetCamera().GetView();
 
 	// render skybox last. but before transparent objects
 	skyboxShader.Use();

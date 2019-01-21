@@ -6,15 +6,11 @@
 CLASS_DEFINITION(SystemComponent, SceneCameraComponent)
 
 SceneCameraComponent::SceneCameraComponent()
+	: m_mouseSensitivity(10.0f)
+	, m_cameraMovement(0.0f)
 {
-	camera = Camera();
-	camera.SetPosition(glm::vec3(0.0f, 1.0f, 7.0f));
-	camera.SetNearFarPlane(0.001f, 500.0f);
-	camera.SetFov(75.0f);
-
-	mousePos = glm::vec2(m_windowParams.Width * 0.5f, m_windowParams.Height * 0.5f);
-
-	velocity = glm::vec3(0.0f);
+	m_camera.SetPosition(glm::vec3(0.0f, 1.0f, 7.0f));
+	m_mousePosition = glm::vec2(m_windowParams.Width * 0.5f, m_windowParams.Height * 0.5f);
 }
 
 SceneCameraComponent::~SceneCameraComponent()
@@ -26,36 +22,48 @@ void SceneCameraComponent::Initialize(Game* game)
 	m_windowParams = game->GetWindowParameters();
 
 	// grab mouse focus
-	SDL_SetRelativeMouseMode(grabMouseFocus ? SDL_TRUE : SDL_FALSE);
+	SDL_SetRelativeMouseMode(m_inputGrabMouse ? SDL_TRUE : SDL_FALSE);
 }
 
 void SceneCameraComponent::HandleInput(SDL_Event* event)
 {
 	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_F1)
 	{
-		grabMouseFocus = !grabMouseFocus;
-		SDL_SetRelativeMouseMode(grabMouseFocus ? SDL_TRUE : SDL_FALSE);
+		m_inputGrabMouse = !m_inputGrabMouse;
+		SDL_SetRelativeMouseMode(m_inputGrabMouse ? SDL_TRUE : SDL_FALSE);
 	}
 
-	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_w) moveForward = true;
-	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_s) moveBack = true;
-	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_a) moveLeft = true;
-	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_d) moveRight = true;
-	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_e) moveUp = true;
-	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_q) moveDown = true;
-	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_LSHIFT) fastMove = true;
+	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_w) m_inputMoveForward = true;
+	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_s) m_inputMoveBack = true;
+	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_a) m_inputMoveLeft = true;
+	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_d) m_inputMoveRight = true;
+	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_e) m_inputMoveUp = true;
+	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_q) m_inputMoveDown = true;
+	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_LSHIFT) m_inputEnableMovementBoost = true;
+	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_c)
+	{
+		m_camera.ToggleOrthographicCamera();
+	}
 
-	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_w) moveForward = false;
-	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_s) moveBack = false;
-	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_a) moveLeft = false;
-	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_d) moveRight = false;
-	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_e) moveUp = false;
-	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_q) moveDown = false;
-	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_LSHIFT) fastMove = false;
+	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_w) m_inputMoveForward = false;
+	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_s) m_inputMoveBack = false;
+	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_a) m_inputMoveLeft = false;
+	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_d) m_inputMoveRight = false;
+	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_e) m_inputMoveUp = false;
+	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_q) m_inputMoveDown = false;
+	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_LSHIFT) m_inputEnableMovementBoost = false;
+
 
 	if (event->type == SDL_MOUSEWHEEL) {
-		float delta = event->wheel.y * 2.0f;
-		camera.ChangeFov(delta);
+		if (event->wheel.y > 0)
+		{
+			m_fovInputChange = 1.0f;
+		}
+
+		if (event->wheel.y < 0)
+		{
+			m_fovInputChange = -1.0f;
+		}
 	}
 }
 
@@ -68,25 +76,39 @@ void SceneCameraComponent::Update(float deltaTime)
 {
 	int x, y;
 	SDL_GetRelativeMouseState(&x, &y);
+	m_mousePosition = glm::vec2(x, y);
 
-	mousePos = glm::vec2(x, y);
-
-	if (grabMouseFocus)
+	// get mouse input
+	glm::vec2 mouseMovement = m_mousePosition * m_mouseSensitivity * deltaTime;
+	
+	// get camera movement input
+	glm::vec3 direction = m_camera.GetForward() * ((m_inputMoveForward) ? 1.0f : (m_inputMoveBack) ? -1.0f : 0.0f);
+	direction += m_camera.GetRight() * ((m_inputMoveRight) ? 1.0f : (m_inputMoveLeft) ? -1.0f : 0.0f);
+	direction += m_camera.GetUp() * ((m_inputMoveUp) ? 1.0f : (m_inputMoveDown) ? -1.0f : 0.0f);
+	
+	const float velocity = m_cameraVelocity * (m_inputEnableMovementBoost ? m_cameraMovementSpeedBoostMult : 1.0f);
+	m_cameraMovement += direction * velocity * m_cameraSensitivity * deltaTime;
+	
+	// only apply damping if not accelerating
+	if (glm::length(direction) < 0.01f) 
 	{
-		camera.UpdateMouseMovement(static_cast<float>(-x), static_cast<float>(-y));
+		m_cameraMovement *= m_cameraMovementDamping;
 	}
 
-	camera.Update(deltaTime);
-	camera.SetSpeedBoost(fastMove);
+	if (m_fovInputChange != 0)
+	{
+		m_fovChange = m_fovInputChange *  m_fovVelocity * m_fovSensitivity * deltaTime;
+		m_fovInputChange = 0;
+	}
+	m_fovChange *= m_fovDamping;
 
-	glm::vec3 direction = camera.m_direction * ((moveForward) ? 1.0f : (moveBack) ? -1.0f : 0.0f);
-	direction += camera.m_right * ((moveRight) ? 1.0f : (moveLeft) ? -1.0f : 0.0f);
-	direction += camera.m_up * ((moveUp) ? 1.0f : (moveDown) ? -1.0f : 0.0f);
-	
-	velocity += direction * m_velocity * m_accelerationSensitivity;
-	velocity *= m_dampening;
-
-	camera.Translate(velocity);
+	if (m_inputGrabMouse)
+	{
+		m_camera.UpdateLookAt(mouseMovement);
+	}
+	m_camera.Move(m_cameraMovement);
+	m_camera.UpdateFov(m_fovChange);
+	m_camera.Update(deltaTime);
 }
 
 void SceneCameraComponent::Render(float alpha)
@@ -97,25 +119,29 @@ void SceneCameraComponent::Render(float alpha)
 void SceneCameraComponent::RenderUI()
 {
 	ImGui::Begin("Scene Camera");
-	ImGui::Text("Current Fov: %f", camera.m_fov);
-	ImGui::Separator();
+
+	CameraParams currentParams = m_camera.GetParams();
+
 	ImGui::Text("Camera Speed");
 	bool changedSpeedViaButon = false;
-	if (ImGui::Button("1.0")) { m_velocity = 1.0f; } ImGui::SameLine();
-	if (ImGui::Button("10.0")) { m_velocity = 10.0f; } ImGui::SameLine();
-	if (ImGui::Button("100.0")) { m_velocity = 100.0f; }
+	if (ImGui::Button("1.0")) { m_cameraVelocity = 1.0f; } ImGui::SameLine();
+	if (ImGui::Button("10.0")) { m_cameraVelocity = 10.0f; } ImGui::SameLine();
+	if (ImGui::Button("100.0")) { m_cameraVelocity = 100.0f; }
 	
-	if (changedSpeedViaButon)
-	{
-		camera.SetCameraSpeed(m_velocity);
-	}
+	ImGui::SliderFloat("Camera Velocity", &m_cameraVelocity, 0.0f, 100.0f);
+	ImGui::SliderFloat("Camera Sensitivity", &m_cameraSensitivity, 0.0f, 1.0f);
+	ImGui::SliderFloat("Camera Damping", &m_cameraMovementDamping, 0.0f, 1.0f);
+	
+	ImGui::SliderFloat("Fov Velocity", &m_fovVelocity, 0.0f, 100.0f);
+	ImGui::SliderFloat("Fov Sensitivity", &m_fovSensitivity, 0.0f, 1.0f);
+	ImGui::SliderFloat("Fov Damping", &m_fovDamping, 0.0f, 1.0f);
 
-	ImGui::SliderFloat("Camera Velocity", &m_velocity, 0.0f, 100.0f);
-	ImGui::SliderFloat("Camera Acc Sensitivity", &m_accelerationSensitivity, 0.0f, 1.0f);
-	ImGui::SliderFloat("Camera Speed Damp", &m_dampening, 0.0f, 1.0f);
-	ImGui::SliderFloat("Near Plane", &camera.m_nearPlane, 0.01f, camera.m_farPlane);
-	ImGui::SliderFloat("Far Plane", &camera.m_farPlane, camera.m_nearPlane, 1000.0f);
-	ImGui::SliderFloat("FoV", &camera.m_fov, 0.1f, 180.0f);
+	ImGui::SliderFloat("Near Plane", &currentParams.m_nearPlane, 0.01f, currentParams.m_farPlane);
+	ImGui::SliderFloat("Far Plane", &currentParams.m_farPlane, currentParams.m_nearPlane, 1000.0f);
+	ImGui::SliderFloat("FoV", &currentParams.m_fov, 0.1f, 179.0f);
+	
+	m_camera.SetParams(currentParams);
+
 	ImGui::End();
 }
 
