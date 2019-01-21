@@ -14,8 +14,16 @@
 autosave/
 workspace.mel
 [Dd]ata/
-[Bb]uilds/*
-[Ii]ntermediate/*
+[Bb]uilds/
+[Ii]ntermediate/[Dd]ebug_x86/
+[Ii]ntermediate/[Dd]ebug_x64/
+[Bb]uilds/[Dd]ebug_x86/
+[Bb]uilds/[Dd]ebug_x64/
+[Dd]ebug_x86/
+[Dd]ebug_x64/
+
+*.idb
+*.tlog
 
 # Build results
 [Dd]ebug/

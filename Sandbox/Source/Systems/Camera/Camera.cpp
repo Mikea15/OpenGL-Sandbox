@@ -134,7 +134,7 @@ void Camera::ToggleOrthographicCamera()
 	m_params.m_isOrtho = !m_params.m_isOrtho;
 }
 
-void Camera::LookAt(glm::vec3 position)
+void Camera::LookAt(const glm::vec3& position)
 {
 	assert(position != m_position);
 	glm::vec3 direction = glm::normalize(position - m_position);

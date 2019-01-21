@@ -76,7 +76,7 @@ public:
 	void ToggleOrthographicCamera();
 	bool IsOrthographic() const { return m_params.m_isOrtho; }
 
-	void LookAt(glm::vec3 position);
+	void LookAt(const glm::vec3& position);
 	
 	void NormalizeAngles();
 		

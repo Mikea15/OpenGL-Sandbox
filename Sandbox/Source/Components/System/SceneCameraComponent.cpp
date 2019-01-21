@@ -40,9 +40,21 @@ void SceneCameraComponent::HandleInput(SDL_Event* event)
 	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_e) m_inputMoveUp = true;
 	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_q) m_inputMoveDown = true;
 	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_LSHIFT) m_inputEnableMovementBoost = true;
-	if (event->type == SDL_KEYDOWN && event->key.keysym.sym == SDLK_c)
+
+	if (event->type == SDL_KEYDOWN)
 	{
-		m_camera.ToggleOrthographicCamera();
+		switch (event->key.keysym.sym) {
+		case SDLK_f:
+			m_camera.LookAt(glm::vec3(0.0f));
+			break;
+		case SDLK_c: 
+			m_camera.ToggleOrthographicCamera();
+			break;
+		case SDLK_r:
+			m_camera.SetPosition(glm::vec3(0.0f));
+			break;
+		default: break;
+		}
 	}
 
 	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_w) m_inputMoveForward = false;
@@ -55,15 +67,7 @@ void SceneCameraComponent::HandleInput(SDL_Event* event)
 
 
 	if (event->type == SDL_MOUSEWHEEL) {
-		if (event->wheel.y > 0)
-		{
-			m_fovInputChange = 1.0f;
-		}
-
-		if (event->wheel.y < 0)
-		{
-			m_fovInputChange = -1.0f;
-		}
+		m_fovInputChange -= event->wheel.y;
 	}
 }
 
