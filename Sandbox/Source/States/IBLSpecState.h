@@ -129,6 +129,8 @@ private:
 	unsigned int rboDepth;
 	Camera topDownCamera;
 
+	Camera cc;
+
 	bool includeCamPosIntoTrees = false;
 	float includeFreq = 0.3f;
 	float camPushPosTime = 0.0f;

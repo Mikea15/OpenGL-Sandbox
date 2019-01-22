@@ -88,13 +88,13 @@ void Camera::SetFov(float fov)
 	{
 		fov = s_maxFov;
 	}
-	m_params.m_fov += fov;
+	m_params.m_fov = fov;
 }
 
 void Camera::SetNearFarPlane(float nearPlane, float farPlane)
 {
-	assert(nearPlane > 0.0f);
-	assert(farPlane > nearPlane);
+	//assert(nearPlane > 0.0f);
+	//assert(farPlane > nearPlane);
 
 	m_params.m_nearPlane = nearPlane;
 	m_params.m_farPlane = farPlane;
@@ -102,7 +102,7 @@ void Camera::SetNearFarPlane(float nearPlane, float farPlane)
 
 void Camera::SetAspectRatio(float ratio)
 {
-	assert(ratio > 0.0);
+	//assert(ratio > 0.0);
 	m_params.m_aspectRatio = ratio;
 }
 

@@ -4,6 +4,11 @@
 
 #include <random>
 
+static float ccCamNearPlane = 1.0f;
+static float ccCamFarPlane = 10.0f;
+static float ccCamFov = 60.0f;
+static float ccRotationSpeed = 10.0f;
+
 IBLSpecState::IBLSpecState()
 {
 
@@ -306,8 +311,8 @@ void IBLSpecState::Init(Game* game)
 	glViewport(0, 0, m_windowParams.Width, m_windowParams.Height);
 
 	// create a 3d grid of cubes.
-	gX = gY = gZ = 4;
-	gY = 2;
+	gX = gY = gZ = 10;
+	gY = 1;
 
 	std::random_device rd; // obtain a random number from hardware
 	std::mt19937 eng(rd()); // seed the generator
@@ -319,7 +324,7 @@ void IBLSpecState::Init(Game* game)
 		{
 			for (int gZStart = -gZ; gZStart < gZ; gZStart++)
 			{
-				glm::vec3 v3 = glm::vec3(distr(eng), distr(eng), distr(eng)) * gridSpacing;
+				glm::vec3 v3 = glm::vec3(distr(eng), gY, distr(eng)) * gridSpacing;
 				positions.push_back(v3);
 				visible.push_back(ContainmentType::Disjoint);
 
@@ -366,6 +371,9 @@ void IBLSpecState::Init(Game* game)
 		m_sceneCameraComp->GetCamera().GetFarPlane()
 	);
 
+	
+	cc.SetNearFarPlane(ccCamNearPlane, ccCamFarPlane);
+	cc.SetFov(ccCamFov);
 }
 
 void IBLSpecState::HandleInput(SDL_Event* event)
@@ -394,6 +402,9 @@ void IBLSpecState::Update(float deltaTime)
 		}
 	}
 
+	cc.UpdateLookAt(glm::vec2(1.0f, 0.0f) * ccRotationSpeed * deltaTime);
+	cc.Update(deltaTime);
+
 	topDownCamera.SetPosition(glm::vec3(0.0f, 10.0f, 0.0f));
 	topDownCamera.Update(deltaTime);
 
@@ -415,6 +426,69 @@ void IBLSpecState::Render(float alpha)
 	// ------
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	bool showLines = true;
+	if (showLines)
+	{
+		wireframeShader.Use();
+		wireframeShader.SetMat4("view", view);
+		wireframeShader.SetMat4("projection", projection);
+		wireframeShader.SetVec3("Color", glm::vec3(0.1, 0.8, 0.2));
+
+		Transform t;
+		
+		t.SetPosition(glm::vec3(0.0f));
+		wireframeShader.SetVec3("Color", glm::vec3(0.0f, 0.0f, 0.0f));
+		wireframeShader.SetMat4("model", t.GetModelMat());
+		Primitives::RenderPoint(10);
+
+		t.SetPosition(glm::vec3(0.0f, 1.0f, 0.0f));
+		wireframeShader.SetVec3("Color", glm::vec3(0.0f, 1.0f, 0.0f));
+		wireframeShader.SetMat4("model", t.GetModelMat());
+		Primitives::RenderPoint(10);
+
+		t.SetPosition(glm::vec3(0.0f));
+		wireframeShader.SetMat4("model", t.GetModelMat());
+		Primitives::RenderLine(glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+		t.SetPosition(glm::vec3(1.0f, 0.0f, 0.0f));
+		wireframeShader.SetVec3("Color", glm::vec3(1.0f, 0.0f, 0.0f));
+		wireframeShader.SetMat4("model", t.GetModelMat());
+		Primitives::RenderPoint(10);
+
+		t.SetPosition(glm::vec3(0.0f));
+		wireframeShader.SetMat4("model", t.GetModelMat());
+		Primitives::RenderLine(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+		t.SetPosition(glm::vec3(0.0f, 0.0f, 1.0f));
+		wireframeShader.SetVec3("Color", glm::vec3(0.0f, 0.0f, 1.0f));
+		wireframeShader.SetMat4("model", t.GetModelMat());
+		Primitives::RenderPoint(10);
+
+		wireframeShader.SetMat4("model", t.GetModelMat());
+		
+		glm::vec3 ccP = cc.GetPosition();
+		auto points = cc.GetBoundingFrustum().GetCorners();
+		// near
+		Primitives::RenderLine(points[0], points[3]);
+		Primitives::RenderLine(points[1], points[0]);
+		Primitives::RenderLine(points[2], points[1]);
+		Primitives::RenderLine(points[3], points[2]);
+
+		// far
+		Primitives::RenderLine(points[4], points[7]);
+		Primitives::RenderLine(points[5], points[4]);
+		Primitives::RenderLine(points[6], points[5]);
+		Primitives::RenderLine(points[7], points[6]);
+
+		// near to far
+		Primitives::RenderLine(points[0], points[4]);
+		Primitives::RenderLine(points[1], points[5]);
+		Primitives::RenderLine(points[2], points[6]);
+		Primitives::RenderLine(points[3], points[7]);
+
+		Primitives::RenderLine(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	}
 
 	bool showSpheresTextured = true;
 	if (showSpheresTextured)
@@ -570,23 +644,52 @@ void IBLSpecState::Render(float alpha)
 		}
 	}
 
-	bool show3DCubes = true;
-	if (show3DCubes) 
+	bool showSpeheres = true;
+	if (showSpeheres)
 	{
+		
+
 		// draw 3d grid of cubes.
 		const unsigned int size = positions.size();
 		for (unsigned int i = 0; i < size; ++i)
 		{
-			visible[i] = m_sceneCameraComp->GetCamera().GetBoundingFrustum().Contains(BoundingBox(positions[i], 1.0f));
-			if (visible[i] == ContainmentType::Disjoint)
-			{
-				continue;
-			}
-
 			scratchTransform.SetPosition(positions[i]);
 			pbrShader.SetMat4("model", scratchTransform.GetModelMat());
 
-			Primitives::RenderSphere();
+			visible[i] = cc.GetBoundingFrustum().Contains(BoundingBox(positions[i], 1.0f));
+			if (visible[i] == ContainmentType::Disjoint)
+			{
+				wireframeShader.Use();
+				wireframeShader.SetMat4("view", view);
+				wireframeShader.SetMat4("projection", projection);
+				wireframeShader.SetVec3("camPos", cameraPosition);
+				wireframeShader.SetMat4("model", scratchTransform.GetModelMat());
+				wireframeShader.SetVec3("Color", glm::vec3(0.1f, 0.2f, 0.5f));
+
+				Primitives::RenderSphere(true);
+			}
+			else if (visible[i] == ContainmentType::Intersects)
+			{
+				wireframeShader.Use();
+				wireframeShader.SetMat4("view", view);
+				wireframeShader.SetMat4("projection", projection);
+				wireframeShader.SetVec3("camPos", cameraPosition);
+				wireframeShader.SetMat4("model", scratchTransform.GetModelMat());
+				wireframeShader.SetVec3("Color", glm::vec3(1.0f, 1.0f, 1.0f));
+				Primitives::RenderSphere(true);
+			}
+			else
+			{
+				pbrShader.Use();
+				pbrShader.SetMat4("view", view);
+				pbrShader.SetMat4("projection", projection);
+				pbrShader.SetVec3("camPos", cameraPosition);
+
+				pbrShader.SetMat4("model", scratchTransform.GetModelMat());
+				Primitives::RenderSphere(false);
+			}
+			
+			
 			vertexCountStats += Primitives::sphere.GetVertexCount();
 		}
 	}
@@ -743,6 +846,18 @@ void IBLSpecState::RenderUI()
 	const float width = 250.0f;
 	const float height = width * screenRatio;
 	ImGui::Image((void*)(intptr_t)colorBuffer, ImVec2(width, height), ImVec2(0, 1), ImVec2(1, 0)); ImGui::NextColumn();
+
+	ImGui::End();
+
+	ImGui::Begin("CC Settings");
+
+	ImGui::SliderFloat("Rotation Speed", &ccRotationSpeed, 0.0f, 100.0f);
+	ImGui::SliderFloat("Near plane", &ccCamNearPlane, 0.1f, ccCamFarPlane);
+	ImGui::SliderFloat("Far plane", &ccCamFarPlane, ccCamNearPlane, 1000.0f);
+	ImGui::SliderFloat("FOV", &ccCamFov, 0.1f, 179.0f);
+
+	cc.SetFov(ccCamFov);
+	cc.SetNearFarPlane(ccCamNearPlane, ccCamFarPlane);
 
 	ImGui::End();
 }
