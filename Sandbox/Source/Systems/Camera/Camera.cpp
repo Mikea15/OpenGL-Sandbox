@@ -26,6 +26,25 @@ Camera::Camera()
 
 void Camera::Update(float deltaTime)
 {
+	if (m_isInterpolating)
+	{
+		m_interpolationCurrentTime += deltaTime;
+		if (m_interpolationCurrentTime <= m_interpolationTime)
+		{
+			float progress = m_interpolationCurrentTime / m_interpolationTime;
+			CameraSnapshot transition = CameraSnapshotInterpolator::Interpolate(m_CSFrom, m_CSTo, progress);
+
+			m_params.m_fov = transition.fov;
+			m_horizontalAngle = transition.horizontalRotation;
+			m_verticalAngle = transition.verticalRotation;
+			m_position = transition.position;
+		}
+		else
+		{
+			m_isInterpolating = false;
+		}
+	}
+
 	m_forward = glm::vec3(
 		cos(glm::radians(m_verticalAngle)) * sin(glm::radians(m_horizontalAngle)),
 		sin(glm::radians(m_verticalAngle)),
@@ -171,4 +190,23 @@ void Camera::SetParams(const CameraParams & params)
 	{
 		m_params = params;
 	}
+}
+
+CameraSnapshot Camera::SaveCameraSnapshot()
+{
+	CameraSnapshot now;
+	now.fov = m_params.m_fov;
+	now.horizontalRotation = m_horizontalAngle;
+	now.verticalRotation = m_verticalAngle;
+	now.position = m_position;
+	return now;
+}
+
+void Camera::InterpolateTo(CameraSnapshot b, float time)
+{
+	m_CSFrom = SaveCameraSnapshot();
+	m_CSTo = b;
+	m_interpolationTime = time;
+	m_interpolationCurrentTime = 0.0f;
+	m_isInterpolating = true;
 }

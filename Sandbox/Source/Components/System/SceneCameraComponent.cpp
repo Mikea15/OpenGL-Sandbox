@@ -57,6 +57,24 @@ void SceneCameraComponent::HandleInput(SDL_Event* event)
 		}
 	}
 
+	if (event->type == SDL_KEYDOWN &&
+		event->key.keysym.sym == SDLK_k) {
+		m_camera1 = m_camera.SaveCameraSnapshot();
+	}
+	if (event->type == SDL_KEYDOWN &&
+		event->key.keysym.sym == SDLK_l) {
+		m_camera2 = m_camera.SaveCameraSnapshot();
+	}
+
+	if (event->type == SDL_KEYDOWN &&
+		event->key.keysym.sym == SDLK_i) {
+		m_camera.InterpolateTo(m_camera1, m_cameraInterpolationTime);
+	}
+	if (event->type == SDL_KEYDOWN &&
+		event->key.keysym.sym == SDLK_o) {
+		m_camera.InterpolateTo(m_camera2, m_cameraInterpolationTime);
+	}
+
 	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_w) m_inputMoveForward = false;
 	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_s) m_inputMoveBack = false;
 	if (event->type == SDL_KEYUP && event->key.keysym.sym == SDLK_a) m_inputMoveLeft = false;
@@ -122,6 +140,19 @@ void SceneCameraComponent::Render(float alpha)
 
 void SceneCameraComponent::RenderUI()
 {
+	ImGui::Begin("Camera Interpolation");
+	ImGui::SliderFloat("Interpolation Time", &m_cameraInterpolationTime, 0.0f, 100.0f);
+	if (ImGui::Button("Camera 1"))
+	{
+		m_camera.InterpolateTo(m_camera1, m_cameraInterpolationTime);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Camera 2"))
+	{
+		m_camera.InterpolateTo(m_camera2, m_cameraInterpolationTime);
+	}
+	ImGui::End();
+
 	ImGui::Begin("Scene Camera");
 
 	CameraParams currentParams = m_camera.GetParams();

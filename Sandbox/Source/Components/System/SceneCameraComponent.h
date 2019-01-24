@@ -29,6 +29,9 @@ private:
 	Core::WindowParameters m_windowParams;
 
 	Camera m_camera;
+	CameraSnapshot m_camera1;
+	CameraSnapshot m_camera2;
+	float m_cameraInterpolationTime = 1.0f;
 
 	glm::vec3 m_cameraMovement;
 	float m_cameraVelocity = 10.0f;
@@ -54,4 +57,5 @@ private:
 	bool m_inputMoveDown = false;
 	bool m_inputEnableMovementBoost = false;
 	bool m_inputToggleOrthoCamera = false;
+
 };

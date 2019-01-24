@@ -647,8 +647,6 @@ void IBLSpecState::Render(float alpha)
 	bool showSpeheres = true;
 	if (showSpeheres)
 	{
-		
-
 		// draw 3d grid of cubes.
 		const unsigned int size = positions.size();
 		for (unsigned int i = 0; i < size; ++i)

@@ -53,8 +53,6 @@ void Transform::Scale(const glm::vec3& axis, float delta)
 	m_scale += axis * delta;
 }
 
-
-
 glm::mat4 Transform::GetModelMat()
 {
 	glm::mat4 model = glm::mat4(1.0f);

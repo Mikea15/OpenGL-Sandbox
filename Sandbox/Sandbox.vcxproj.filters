@@ -207,6 +207,9 @@
     <ClCompile Include="Source\Managers\AssetManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
+    <ClCompile Include="Source\States\OcclusionState.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Game.h">
@@ -367,6 +370,9 @@
     </ClInclude>
     <ClInclude Include="Source\Managers\AssetManager.h">
       <Filter>Source Files\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\States\OcclusionState.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
