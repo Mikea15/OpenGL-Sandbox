@@ -10,6 +10,7 @@ Frustum Culling
 <img src="gifs/frustum_culling.gif" width="650">
 
 Camera Snapshot Interpolation
+
 <img src="gifs/camera_interpolation.gif" width="650">
 
 ---
