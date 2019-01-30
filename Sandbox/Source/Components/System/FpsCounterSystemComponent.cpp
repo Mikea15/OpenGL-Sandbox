@@ -6,7 +6,6 @@ CLASS_DEFINITION(SystemComponent, FpsCounterSystemComponent)
 
 FpsCounterSystemComponent::FpsCounterSystemComponent()
 {
-
 }
 
 FpsCounterSystemComponent::~FpsCounterSystemComponent()
@@ -106,10 +105,10 @@ void FpsCounterSystemComponent::RenderUI()
 	ImGui::NextColumn();
 
 	ImGui::PushItemWidth(15);
-	ImGui::Text("Time: %f", m_totalTime);
-	ImGui::Text("Frametime: %f (ms)", m_lastFrameTimeMS);
-	ImGui::Text("Min %f", m_minFrameTime);
-	ImGui::Text("Max %f", m_maxFrameTime);
+	ImGui::Text("Time: %0.2f", m_totalTime);
+	ImGui::Text("Frametime: %0.2f (ms)", m_lastFrameTimeMS);
+	ImGui::Text("Min %.2f", m_minFrameTime);
+	ImGui::Text("Max %.2f", m_maxFrameTime);
 	ImGui::NextColumn();
 
 	std::stringstream fmtFps;
@@ -124,24 +123,24 @@ void FpsCounterSystemComponent::RenderUI()
 	ImGui::PushItemWidth(15);
 	ImVec4 color = (m_framesPerSecond < 30) ? ImVec4(0.9f, 0.7f, 0.f, 1.f) : ImVec4(0.1f, 0.75f, 0.1f, 1.0f);
 	ImGui::TextColored(color, fmtFps.str().c_str());
-	ImGui::Text("Min %f", m_minFps);
-	ImGui::Text("Max %f", m_maxFps);
+	ImGui::Text("Min %.2f", m_minFps);
+	ImGui::Text("Max %.2f", m_maxFps);
 	ImGui::NextColumn();
 
 	ImGui::Separator();
 
-	ImGui::Text("DeltaTime: %f (ms)", m_lastDeltaTime);
-	ImGui::Text("Updates p/ Second: %f", m_updatesPerSecond);
-	ImGui::Text("1 (s): %f", m_oneSecond);
+	ImGui::Text("DeltaTime: %.2f (ms)", m_lastDeltaTime);
+	ImGui::Text("Updates p/ Second: %.2f", m_updatesPerSecond);
+	ImGui::Text("1 (s): %.2f", m_oneSecond);
 
 	ImGui::NextColumn();
 
-	ImGui::Text("UpdateCount: %f", m_updateCicles);
-	ImGui::Text("FrameCount: %f", m_framesCicles);
-	ImGui::Text("Updates p/ Frame: %f", m_updateCicles / m_framesCicles);
+	ImGui::Text("UpdateCount: %.2f", m_updateCicles);
+	ImGui::Text("FrameCount: %.2f", m_framesCicles);
+	ImGui::Text("Updates p/ Frame: %.2f", m_updateCicles / m_framesCicles);
 	ImGui::NextColumn();
 
-	ImGui::Text("Interp. Alpha: %f", m_alpha);
+	ImGui::Text("Interp. Alpha: %.2f", m_alpha);
 
 	ImGui::Columns(1);
 	ImGui::Separator();

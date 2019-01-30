@@ -20,8 +20,6 @@ SceneCameraComponent::~SceneCameraComponent()
 void SceneCameraComponent::Initialize(Game* game)
 {
 	m_windowParams = game->GetWindowParameters();
-
-	// grab mouse focus
 	SDL_SetRelativeMouseMode(m_inputGrabMouse ? SDL_TRUE : SDL_FALSE);
 }
 

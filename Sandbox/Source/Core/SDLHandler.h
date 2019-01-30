@@ -90,6 +90,8 @@ namespace Core
 
 		std::vector<SDL_DisplayMode> m_displayModes;
 		std::unordered_map<int, std::string> m_displayModeIndexToName;
+
+		bool m_lockMouseCursor = false;
 	};
 }
 

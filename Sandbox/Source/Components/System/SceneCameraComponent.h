@@ -48,7 +48,7 @@ private:
 	float m_fovSensitivity = 1.0f;
 	float m_fovDamping = 0.85f;
 
-	bool m_inputGrabMouse = true;
+	bool m_inputGrabMouse = false;
 	bool m_inputMoveLeft = false;
 	bool m_inputMoveRight = false;
 	bool m_inputMoveForward = false;

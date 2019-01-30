@@ -44,6 +44,6 @@ protected:
 	ShaderManager shaderManager;
 	Shader skyboxShader;
 
-	Skybox skybox;
+	Skybox m_skybox;
 	SkyboxSettings skyboxSettings;
 };

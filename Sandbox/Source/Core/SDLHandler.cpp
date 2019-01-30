@@ -47,7 +47,7 @@ namespace Core
 		return true;
 	}
 
-	void SDLHandler::HandleEvents(SDL_Event * event)
+	void SDLHandler::HandleEvents(SDL_Event* event)
 	{
 		if (event->window.event == SDL_WINDOWEVENT_RESIZED)
 		{

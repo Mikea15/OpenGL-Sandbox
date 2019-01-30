@@ -39,10 +39,6 @@ void DefaultState::Init(Game* game)
 	m_sceneCameraComp = &game->GetSystemComponentManager()->GetComponent<SceneCameraComponent>();
 	m_assetManager = &game->GetAssetManager();
 
-	// configure global opengl state
-	// -----------------------------
-	glEnable(GL_DEPTH_TEST);
-
 	std::vector<std::string> faces
 	{
 		std::string("Data/Images/skybox/lake/posx.jpg"),
@@ -55,8 +51,8 @@ void DefaultState::Init(Game* game)
 
 	const unsigned int skyboxTex = m_assetManager->LoadCubemap("lake", faces);
 
-	skybox = Skybox();
-	skybox.SetTexture(skyboxTex);
+	m_skybox = Skybox();
+	m_skybox.SetTexture(skyboxTex);
 
 	skyboxShader = shaderManager.LoadShader("gradientSkybox", "skybox/skybox.vs", "skybox/horizon_sun.fs");
 }
@@ -87,54 +83,14 @@ void DefaultState::Render(float alpha)
 	skyboxShader.Use();
 	skyboxShader.SetMat4("projection", projection);
 	skyboxShader.SetMat4("view", view);
-	skyboxShader.SetVec3("TopColor", skyboxSettings.topColor);
-	skyboxShader.SetFloat("TopExponent", skyboxSettings.topExp);
-	skyboxShader.SetVec3("HorizonColor", skyboxSettings.horizonColor);
-	skyboxShader.SetVec3("BottomColor", skyboxSettings.bottomColor);
-	skyboxShader.SetFloat("BottomExponent", skyboxSettings.bottomExp);
-	skyboxShader.SetFloat("SkyIntensity", skyboxSettings.skyIntensity);
-	skyboxShader.SetVec3("SunColor", skyboxSettings.sunColor);
-	skyboxShader.SetFloat("SunIntensity", skyboxSettings.sunIntensity);
-	skyboxShader.SetFloat("SunAlpha", skyboxSettings.sunAlpha);
-	skyboxShader.SetFloat("SunBeta", skyboxSettings.sunBeta);
-	skyboxShader.SetFloat("SunAzimuth", skyboxSettings.sunAzimuth);
-	skyboxShader.SetFloat("SunAltitude", skyboxSettings.sunAltitude);
-
-	skybox.Draw(skyboxShader);
+	m_skybox.Draw(skyboxShader);
 }
 
 void DefaultState::RenderUI()
 {
 	PROFILE("RenderUI");
-	ImGui::Begin("Skybox Settings"); ImGui::BeginGroup();
 
-	auto colorSliderUpdate = [&](const std::string& name, glm::vec3& outColor)
-	{
-		float color[3] = { outColor.x, outColor.y, outColor.z };
-		ImGui::ColorEdit3(name.c_str(), color, ImGuiColorEditFlags_RGB);
-		outColor = glm::vec3(color[0], color[1], color[2]);
-	};
-
-
-	colorSliderUpdate("Top Color", skyboxSettings.topColor);
-	ImGui::SliderFloat("Top Exponent", &skyboxSettings.topExp, 0.0f, 100.0f);
-	ImGui::Separator();
-	colorSliderUpdate("Horizon Color", skyboxSettings.horizonColor);
-	ImGui::Separator();
-	colorSliderUpdate("Bottom Color", skyboxSettings.bottomColor);
-	ImGui::SliderFloat("Bottom Exponent", &skyboxSettings.bottomExp, 0.0f, 100.0f);
-	ImGui::Separator();
-	ImGui::SliderFloat("Sky Intensity", &skyboxSettings.skyIntensity, 0.0f, 2.0f);
-	colorSliderUpdate("Sun Color", skyboxSettings.sunColor);
-	ImGui::Separator();
-	ImGui::SliderFloat("Sun Intensity", &skyboxSettings.sunIntensity, 0.0f, 3.0f);
-	ImGui::SliderFloat("Sun Alpha", &skyboxSettings.sunAlpha, 0.0f, 1000.0f);
-	ImGui::SliderFloat("Sun Beta", &skyboxSettings.sunBeta, 0.0f, 1.0f);
-	ImGui::SliderFloat("Sun Azimuth (deg)", &skyboxSettings.sunAzimuth, 0.0f, 360.0f);
-	ImGui::SliderFloat("Sun Altitude (deg)", &skyboxSettings.sunAltitude, 0.0f, 360.0f);
-
-
-	ImGui::EndGroup(); ImGui::End();
+	m_skybox.DrawUIPanel();
 
 	{
 		auto displayModes = m_sdlHandler->GetDisplayModes();

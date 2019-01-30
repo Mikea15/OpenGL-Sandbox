@@ -217,7 +217,7 @@ void DeferredRendering::Render(float alpha)
 	skyboxShader.SetFloat("SunAzimuth", skyboxSettings.sunAzimuth);
 	skyboxShader.SetFloat("SunAltitude", skyboxSettings.sunAltitude);
 
-	skybox.Draw(skyboxShader);
+	m_skybox.Draw(skyboxShader);
 
 }
 

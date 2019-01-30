@@ -5,7 +5,7 @@
 #include <random>
 
 static float ccCamNearPlane = 1.0f;
-static float ccCamFarPlane = 10.0f;
+static float ccCamFarPlane = 200.0f;
 static float ccCamFov = 60.0f;
 static float ccRotationSpeed = 10.0f;
 
@@ -23,9 +23,6 @@ void IBLSpecState::Init(Game* game)
 {
 	DefaultState::Init(game);
 
-	// configure global opengl state
-	// -----------------------------
-	glEnable(GL_DEPTH_TEST);
 	// set depth function to less than AND equal for skybox depth trick.
 	glDepthFunc(GL_LEQUAL);
 	// enable seamless cubemap sampling for lower mip levels in the pre-filter map.

@@ -34,8 +34,11 @@ public:
 	~Skybox();
 
 	void SetTexture(unsigned int texture) { m_texture = texture; }
+	void SetSettings(const SkyboxSettings& settings) { m_currentSettings = settings; }
 
 	void Draw(const Shader& shader);
+
+	void DrawUIPanel();
 
 	unsigned int GetVAO() const { return m_VAO; }
 	unsigned int GetTextureID() { return m_texture; }
@@ -44,4 +47,6 @@ private:
 	Transform transform;
 	unsigned int m_VAO, m_VBO;
 	unsigned int m_texture;
+
+	SkyboxSettings m_currentSettings;
 };
