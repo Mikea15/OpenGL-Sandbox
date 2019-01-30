@@ -15,15 +15,20 @@ void OcclusionState::Init(Game* game)
 {
 	DefaultState::Init(game);
 
+	backgroundShader = shaderManager.LoadShader("backgroundShader", "pbr/background.vs", "pbr/background.fs");
 	wireframeShader = shaderManager.LoadShader("wireframeSimple", "unlit/simple.vs", "unlit/color.fs");
+	
 	wireframeShader.Use();
 	wireframeShader.SetVec3("Color", glm::vec3(0, 0, 1.0));
 
+	backgroundShader.Use();
+	backgroundShader.SetInt("environmentMap", 0);
+
 	std::random_device rd; // obtain a random number from hardware
 	std::mt19937 eng(rd()); // seed the generator
-	std::uniform_int_distribution<> distr(-1000, 1000); // define the range
+	std::uniform_int_distribution<> distr(-10, 10); // define the range
 
-	const unsigned int nCubes = 10000;
+	const unsigned int nCubes = 10;
 	for (unsigned int i = 0; i < nCubes; i++)
 	{
 		glm::vec3 v3 = glm::vec3(distr(eng), 0.0f, distr(eng));
@@ -62,21 +67,35 @@ void OcclusionState::Render(float alpha)
 	glm::mat4 projection = m_sceneCameraComp->GetCamera().GetProjection();
 	glm::vec3 cameraPosition = m_sceneCameraComp->GetCamera().GetPosition();
 
+	wireframeShader.Use();
+	wireframeShader.SetMat4("view", view);
+	wireframeShader.SetMat4("projection", projection);
+	wireframeShader.SetVec3("camPos", cameraPosition);
+
 	// draw 3d grid of cubes.
 	const unsigned int size = positions.size();
 	for (unsigned int i = 0; i < size; ++i)
 	{
+		scratchTransform.SetPosition(positions[i]);
+
+		wireframeShader.SetMat4("model", scratchTransform.GetModelMat());
 		visible[i] = cc.GetBoundingFrustum().Contains(BoundingBox(positions[i], 1.0f));
+
 		if (visible[i] == ContainmentType::Disjoint)
 		{
-			wireframeShader.Use();
-			wireframeShader.SetMat4("view", view);
-			wireframeShader.SetMat4("projection", projection);
-			wireframeShader.SetVec3("camPos", cameraPosition);
-			wireframeShader.SetMat4("model", scratchTransform.GetModelMat());
 			wireframeShader.SetVec3("Color", glm::vec3(0.1f, 0.2f, 0.5f));
 
 			Primitives::RenderSphere(true);
+		}
+		else if ( visible[i] == ContainmentType::Contains )
+		{
+			wireframeShader.SetVec3("Color", glm::vec3(0.1f, 1.0f, 0.5f));
+			Primitives::RenderCube(true);
+		}
+		else
+		{
+			wireframeShader.SetVec3("Color", glm::vec3(1.0f, 1.0f, 1.0f));
+			Primitives::RenderCube(false);
 		}
 	}
 

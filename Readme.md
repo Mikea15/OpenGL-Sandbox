@@ -5,6 +5,14 @@ This is a simple sandbox application that I've built upon reading a few differen
 Do not expect optimized or neatly structured code here. I focus first on functional implementation, then making it efficient. The later becomes less important when my curiosity leads me to a new topic.
 
 ---
+Frustum Culling
+
+<img src="gifs/frustum_culling.gif" width="650">
+
+Camera Snapshot Interpolation
+<img src="gifs/camera_interpolation.gif" width="650">
+
+---
 ### Things Implemented
 - Modern OpenGL rendering pipeline
 - Deferred Rendering, Rendering to Texture, Shadow Mapping, IBL, Post Processing, Point/Directional Lights, Reflection Cubemaps, etc..

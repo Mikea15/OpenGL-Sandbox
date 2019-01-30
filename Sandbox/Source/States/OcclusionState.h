@@ -24,6 +24,7 @@ protected:
 	QuadTree m_qTree;
 	Octree m_oTree;
 
+	Shader backgroundShader;
 	Shader wireframeShader;
 	Transform scratchTransform;
 
