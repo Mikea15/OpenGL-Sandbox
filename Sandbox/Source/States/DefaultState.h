@@ -3,6 +3,8 @@
 #include <SDL.h>
 #include <GL/glew.h>
 
+#include "nlohmann/json.hpp"
+
 #include "State.h"
 
 #include "Core/SDLHandler.h"
@@ -17,7 +19,7 @@
 
 #include "Components/System/SceneCameraComponent.h"
 
-
+using namespace nlohmann;
 
 class DefaultState
 	: public State
@@ -46,4 +48,6 @@ protected:
 
 	Skybox m_skybox;
 	SkyboxSettings skyboxSettings;
+
+	Material m;
 };

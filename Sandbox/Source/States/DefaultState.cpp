@@ -4,7 +4,6 @@
 #include "Core/Utils.h"
 #include "Systems/Rendering/Primitives.h"
 
-
 namespace ImGui
 {
 	static auto vector_getter = [](void* vec, int idx, const char** out_text)
@@ -28,7 +27,6 @@ namespace ImGui
 		return ListBox(label, currIndex, vector_getter,
 			static_cast<void*>(&values), values.size());
 	}
-
 }
 
 void DefaultState::Init(Game* game)
@@ -55,6 +53,7 @@ void DefaultState::Init(Game* game)
 	m_skybox.SetTexture(skyboxTex);
 
 	skyboxShader = shaderManager.LoadShader("gradientSkybox", "skybox/skybox.vs", "skybox/horizon_sun.fs");
+
 }
 
 void DefaultState::HandleInput(SDL_Event * event)

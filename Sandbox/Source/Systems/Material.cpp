@@ -2,6 +2,21 @@
 
 #include "Managers/AssetManager.h"
 
+void to_json(json & j, const Material & mat)
+{
+	j = json{
+		"MaterialProps", 1
+	};
+}
+
+void from_json(const json & j, Material & mat)
+{
+	int var = 0;
+	j.at("MaterialProps").get_to(var);
+}
+
+
+
 Material::Material()
 {
 }
@@ -82,6 +97,7 @@ void Material::BindTextures()
 		glBindTexture(GL_TEXTURE_2D, m_textures[i].id);
 	}
 }
+
 
 
 

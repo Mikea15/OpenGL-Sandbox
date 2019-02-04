@@ -1,5 +1,60 @@
 #include "Transform.h"
 
+void to_json(json& j, const Transform& e)
+{
+	j = json{
+		"pos", 123
+	};
+
+	//j = json{
+	//	{
+	//		"m_position",
+	//		{ "x", e.GetPosition().x },
+	//		{ "y", e.GetPosition().y },
+	//		{ "z", e.GetPosition().z }
+	//	},
+	//	{
+	//		"m_scale",
+	//		{ "x", e.GetScale().x },
+	//		{ "y", e.GetScale().y },
+	//		{ "z", e.GetScale().z }
+	//	}
+	//	/*,{
+	//		"m_orientation",
+	//		{ "x", e.m_orientation.x },
+	//		{ "y", e.m_orientation.y },
+	//		{ "z", e.m_orientation.z },
+	//		{ "w", e.m_orientation.w }
+	//	}*/
+	//};
+}
+
+void from_json(const json& j, Transform& e)
+{
+	int a = 0;
+	a = j["pos"];
+
+	//glm::vec3 pos;
+	//glm::vec3 scale;
+	//// glm::quat orientation;
+
+	//j.at("m_position").at("x").get_to(pos.x);
+	//j.at("m_position").at("x").get_to(pos.y);
+	//j.at("m_position").at("x").get_to(pos.z);
+
+	//j.at("m_scale").at("x").get_to(scale.x);
+	//j.at("m_scale").at("x").get_to(scale.y);
+	//j.at("m_scale").at("x").get_to(scale.z);
+
+	////j.at("m_orientation").at("x").get_to(orientation.x);
+	////j.at("m_orientation").at("x").get_to(orientation.y);
+	////j.at("m_orientation").at("x").get_to(orientation.z);
+	////j.at("m_orientation").at("w").get_to(orientation.w);
+
+	//e.SetPosition(pos);
+	//e.SetScale(scale);
+	//// e.SetOrientation(orientation);
+}
 
 
 Transform::Transform()
@@ -61,3 +116,4 @@ glm::mat4 Transform::GetModelMat()
 	model = glm::scale(model, m_scale);
 	return model;
 }
+

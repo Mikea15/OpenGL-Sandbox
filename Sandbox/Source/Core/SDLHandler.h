@@ -12,6 +12,10 @@
 #include "Dependencies/imgui/imgui_impl_sdl.h"
 #include "Dependencies/imgui/imgui_impl_opengl3.h"
 
+#include "nlohmann/json.hpp"
+
+using namespace nlohmann;
+
 namespace Core
 {
 	struct WindowParameters
@@ -43,6 +47,8 @@ namespace Core
 		int GL_MultiSampleBuffers = 1;
 		int GL_MultiSamplesSamples = 4;
 	};
+
+	
 
 	class SDLHandler
 	{
