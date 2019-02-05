@@ -210,6 +210,9 @@
     <ClCompile Include="Source\States\OcclusionState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Core\WindowParams.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Game.h">
@@ -372,6 +375,9 @@
       <Filter>Source Files\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Source\States\OcclusionState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Core\WindowParams.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

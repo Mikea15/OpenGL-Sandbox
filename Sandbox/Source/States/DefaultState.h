@@ -37,8 +37,8 @@ public:
 
 protected:
 	Core::SDLHandler* m_sdlHandler;
-	Core::WindowParameters m_windowParams;
-	Core::WindowParameters currentParams;
+	Core::WindowParams m_windowParams;
+	Core::WindowParams currentParams;
 
 	SceneCameraComponent* m_sceneCameraComp;
 	AssetManager* m_assetManager;

@@ -4,7 +4,7 @@
 
 #include "Systems/Camera/Camera.h"
 
-struct Core::WindowParameters;
+struct Core::WindowParams;
 
 class SceneCameraComponent
 	: public SystemComponent
@@ -26,7 +26,7 @@ public:
 	Camera& GetCamera() { return m_camera; }
 
 private:
-	Core::WindowParameters m_windowParams;
+	Core::WindowParams m_windowParams;
 
 	Camera m_camera;
 	CameraSnapshot m_camera1;

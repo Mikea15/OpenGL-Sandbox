@@ -195,6 +195,7 @@
     <ClCompile Include="Source\Systems\Rendering\TextureBuffer.cpp" />
     <ClCompile Include="Source\Systems\Transform.cpp" />
     <ClCompile Include="Source\Systems\Rendering\Primitives\Sphere.cpp" />
+    <ClCompile Include="Source\Core\WindowParams.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Dependencies\imgui\imconfig.h" />
@@ -251,6 +252,7 @@
     <ClInclude Include="Source\Systems\Rendering\Vertex.h" />
     <ClInclude Include="Source\Systems\Transform.h" />
     <ClInclude Include="Source\Systems\Rendering\Primitives\Sphere.h" />
+    <ClInclude Include="Source\Core\WindowParams.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Shaders\advanced_glsl.vs" />

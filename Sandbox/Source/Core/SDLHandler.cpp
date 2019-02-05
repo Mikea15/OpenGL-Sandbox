@@ -1,40 +1,21 @@
 #include "SDLHandler.h"
 
 #include <string>
+#include <iostream>
+#include <fstream>
+
+#include "WindowParams.h"
 
 namespace Core
 {
-	void to_json(json& j, const WindowParameters& p)
-	{
-		j = json{
-			{ "Resolution", {
-				{"Height", p.Height},
-				{"Width", p.Width},
-				{"Depth", p.Depth},
-				{"ResolutionIndex", p.ResolutionIndex},
-				{"DisplayIndex", p.DisplayIndex}
-			}
-			},
-			{"Fullscreen", p.Fullscreen},
-		};
-	}
-
-	void from_json(const json& j, WindowParameters& p)
-	{
-		auto resolution = j.at("Resolution");
-
-		resolution.at("Height").get_to(p.Height);
-		resolution.at("Width").get_to(p.Width);
-		resolution.at("Depth").get_to(p.Depth);
-		resolution.at("ResolutionIndex").get_to(p.ResolutionIndex);
-		resolution.at("DisplayIndex").get_to(p.DisplayIndex);
-		
-		j.at("Fullscreen").get_to(p.Fullscreen);
-	}
-
-	SDLHandler::SDLHandler(WindowParameters& params)
+	SDLHandler::SDLHandler(WindowParams& params)
 		: m_params(params)
 	{
+		std::ofstream file;
+		file.open("windowParams.json", std::fstream::out);
+
+		file << static_cast<json>(params).dump(2);
+		file.close();
 	}
 
 	SDLHandler::~SDLHandler()
@@ -73,7 +54,7 @@ namespace Core
 		glEnable(GL_DEPTH_TEST);
 
 		json winParams = m_params;
-		WindowParameters p2 = winParams;
+		WindowParams p2 = winParams;
 
 		std::cout << "Loading Window params" << std::endl;
 		std::cout << winParams.dump(4) << std::endl;
@@ -106,7 +87,7 @@ namespace Core
 		SDL_GL_SwapWindow(m_window);
 	}
 
-	void SDLHandler::SetWindowParameters(const WindowParameters& params, bool initialSetup)
+	void SDLHandler::SetWindowParameters(const WindowParams& params, bool initialSetup)
 	{
 		m_params = params;
 

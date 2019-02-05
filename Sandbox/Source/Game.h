@@ -22,7 +22,7 @@ public:
 
 	int Execute();
 
-	const Core::WindowParameters& GetWindowParameters() const { return m_winParams; }
+	const Core::WindowParams& GetWindowParameters() const { return m_winParams; }
 	Core::SDLHandler& GetSDLHandler() { return m_sdlHandler; }
 	SystemComponentManager* GetSystemComponentManager() const { return m_systemComponentManager.get(); }
 	AssetManager& GetAssetManager() { return *m_assetManager.get(); }
@@ -45,7 +45,7 @@ private:
 
 	Core::SDLHandler m_sdlHandler;
 	Core::ImGuiHandler m_uiHandler;
-	Core::WindowParameters m_winParams;
+	Core::WindowParams m_winParams;
 	std::unique_ptr<AssetManager> m_assetManager;
 
 	std::unique_ptr<SystemComponentManager> m_systemComponentManager;
