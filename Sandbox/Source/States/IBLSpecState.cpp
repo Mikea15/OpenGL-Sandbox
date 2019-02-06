@@ -371,6 +371,8 @@ void IBLSpecState::Init(Game* game)
 	
 	cc.SetNearFarPlane(ccCamNearPlane, ccCamFarPlane);
 	cc.SetFov(ccCamFov);
+
+
 }
 
 void IBLSpecState::HandleInput(SDL_Event* event)
@@ -859,5 +861,6 @@ void IBLSpecState::RenderUI()
 
 void IBLSpecState::Cleanup()
 {
+	DefaultState::Cleanup();
 
 }

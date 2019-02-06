@@ -24,8 +24,9 @@ namespace Core
 
 	void from_json(const json& j, WindowParams& p)
 	{
-		auto resolution = j.at("Resolution");
+		j.at("WindowName").get_to(p.WindowName);
 
+		auto resolution = j.at("Resolution");
 		resolution.at("Height").get_to(p.Height);
 		resolution.at("Width").get_to(p.Width);
 		resolution.at("Depth").get_to(p.Depth);
@@ -33,5 +34,10 @@ namespace Core
 		resolution.at("DisplayIndex").get_to(p.DisplayIndex);
 
 		j.at("Fullscreen").get_to(p.Fullscreen);
+		j.at("VSync").get_to(p.VSync);
+		j.at("FPSLimit").get_to(p.FPSLimit);
+		j.at("GL_MultiSampleBuffers").get_to(p.GL_MultiSampleBuffers);
+		j.at("GL_MultiSamplesSamples").get_to(p.GL_MultiSamplesSamples);
+
 	}
 }

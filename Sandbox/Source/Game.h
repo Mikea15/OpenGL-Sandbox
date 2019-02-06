@@ -34,6 +34,9 @@ private:
 	void InitSystems();
 	void CleanupSystems();
 
+	void LoadConfig();
+	void SaveConfig();
+
 private:
 	bool m_isRunning;
 
@@ -49,5 +52,7 @@ private:
 	std::unique_ptr<AssetManager> m_assetManager;
 
 	std::unique_ptr<SystemComponentManager> m_systemComponentManager;
+
+	static const char* s_configFileName;
 };
 

@@ -46,4 +46,16 @@ private:
 	glm::quat m_orientation;
 };
 
+namespace glm
+{
+	void to_json(json& j, const glm::vec3& p);
+	void from_json(const json& j, glm::vec3& p);
+
+	void to_json(json& j, const glm::quat& p);
+	void from_json(const json& j, glm::quat& p);
+}
+
+void to_json(json& j, const Transform& p);
+void from_json(const json& j, Transform& p);
+
 

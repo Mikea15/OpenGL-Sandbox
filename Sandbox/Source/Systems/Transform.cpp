@@ -1,59 +1,64 @@
 #include "Transform.h"
 
-void to_json(json& j, const Transform& e)
+namespace glm 
 {
-	j = json{
-		"pos", 123
-	};
+	void to_json(json& j, const glm::vec3& p)
+	{
+		j = json{
+			{"x", p.x},
+			{"y", p.y},
+			{"z", p.z},
+		};
+	}
 
-	//j = json{
-	//	{
-	//		"m_position",
-	//		{ "x", e.GetPosition().x },
-	//		{ "y", e.GetPosition().y },
-	//		{ "z", e.GetPosition().z }
-	//	},
-	//	{
-	//		"m_scale",
-	//		{ "x", e.GetScale().x },
-	//		{ "y", e.GetScale().y },
-	//		{ "z", e.GetScale().z }
-	//	}
-	//	/*,{
-	//		"m_orientation",
-	//		{ "x", e.m_orientation.x },
-	//		{ "y", e.m_orientation.y },
-	//		{ "z", e.m_orientation.z },
-	//		{ "w", e.m_orientation.w }
-	//	}*/
-	//};
+	void from_json(const json& j, glm::vec3& p)
+	{
+		j.at("x").get_to(p.x);
+		j.at("y").get_to(p.y);
+		j.at("z").get_to(p.z);
+	}
+
+	void to_json(json& j, const glm::quat& p)
+	{
+		j = json{
+			{"x", p.x},
+			{"y", p.y},
+			{"z", p.z},
+			{"w", p.w},
+		};
+	}
+
+	void from_json(const json& j, glm::quat& p)
+	{
+		j.at("x").get_to(p.x);
+		j.at("y").get_to(p.y);
+		j.at("z").get_to(p.z);
+		j.at("w").get_to(p.w);
+	}
 }
 
-void from_json(const json& j, Transform& e)
+void to_json(json& j, const Transform& p)
 {
-	int a = 0;
-	a = j["pos"];
+	j = json{
+		{ "position", p.GetPosition() },
+		{ "scale", p.GetScale() },
+		{ "rotation", p.GetOrientation() }
+	};
+}
 
-	//glm::vec3 pos;
-	//glm::vec3 scale;
-	//// glm::quat orientation;
+void from_json(const json& j, Transform& p)
+{
+	glm::vec3 position;
+	glm::vec3 scale;
+	glm::quat orientation;
 
-	//j.at("m_position").at("x").get_to(pos.x);
-	//j.at("m_position").at("x").get_to(pos.y);
-	//j.at("m_position").at("x").get_to(pos.z);
+	j.at("position").get_to(position);
+	j.at("scale").get_to(scale);
+	j.at("rotation").get_to(orientation);
 
-	//j.at("m_scale").at("x").get_to(scale.x);
-	//j.at("m_scale").at("x").get_to(scale.y);
-	//j.at("m_scale").at("x").get_to(scale.z);
-
-	////j.at("m_orientation").at("x").get_to(orientation.x);
-	////j.at("m_orientation").at("x").get_to(orientation.y);
-	////j.at("m_orientation").at("x").get_to(orientation.z);
-	////j.at("m_orientation").at("w").get_to(orientation.w);
-
-	//e.SetPosition(pos);
-	//e.SetScale(scale);
-	//// e.SetOrientation(orientation);
+	p.SetPosition(position);
+	p.SetScale(scale);
+	p.SetOrientation(orientation);
 }
 
 

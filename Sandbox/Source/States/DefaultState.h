@@ -48,6 +48,4 @@ protected:
 
 	Skybox m_skybox;
 	SkyboxSettings skyboxSettings;
-
-	Material m;
 };

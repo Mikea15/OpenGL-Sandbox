@@ -3,6 +3,7 @@
 
 #include <cmath>
 #include <algorithm>
+#include <sstream>
 
 #include "Managers/Profiler.h"
 
@@ -10,14 +11,13 @@
 #include "Components/System/ProfilerSystemComponent.h"
 #include "Components/System/SceneSwitcherSystemComponent.h"
 
+const char* Game::s_configFileName = "config.json";
+
 Game::Game()
 	: m_isRunning(true)
 	, m_deltaTime(1.0 / 60.0)
 {
-	m_winParams.Height = 960;
-	m_winParams.Width = 1440;
-	m_winParams.Depth = 24;
-	m_winParams.VSync = false;
+	LoadConfig();
 
 	m_sdlHandler = Core::SDLHandler(m_winParams);
 	m_uiHandler = Core::ImGuiHandler();
@@ -37,6 +37,7 @@ Game::Game()
 
 Game::~Game()
 {
+	SaveConfig();
 }
 
 void Game::InitSystems()
@@ -149,11 +150,50 @@ int Game::Execute()
 
 void Game::CleanupSystems()
 {
+	// state cleanup
+	if (m_currentState)
+	{
+		m_currentState->Cleanup();
+		m_currentState = nullptr;
+	}
+
 	// system components
 	m_systemComponentManager->Cleanup();
 
 	// Cleanup
 	m_uiHandler.Cleanup();
+}
+
+void Game::LoadConfig()
+{
+	std::stringstream stream;
+	std::fstream file(s_configFileName, std::fstream::in);
+	if (file.is_open()) 
+	{
+		while (!file.eof())
+		{
+			std::string buffer;
+			std::getline(file, buffer);
+			stream << buffer;
+		}
+	}
+
+	if (!stream.str().empty())
+	{
+		json jsonParams = json::parse(stream.str());
+		if (!jsonParams.is_null()) {
+			m_winParams = jsonParams;
+		}
+	}
+}
+
+void Game::SaveConfig()
+{
+	std::ofstream file;
+	file.open(s_configFileName, std::fstream::out);
+
+	file << static_cast<json>(m_winParams).dump(4);
+	file.close();
 }
 
 void Game::ChangeState(std::shared_ptr<State> newState)

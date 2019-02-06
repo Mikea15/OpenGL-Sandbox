@@ -11,11 +11,6 @@ namespace Core
 	SDLHandler::SDLHandler(WindowParams& params)
 		: m_params(params)
 	{
-		std::ofstream file;
-		file.open("windowParams.json", std::fstream::out);
-
-		file << static_cast<json>(params).dump(2);
-		file.close();
 	}
 
 	SDLHandler::~SDLHandler()
