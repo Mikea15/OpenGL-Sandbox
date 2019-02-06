@@ -7,7 +7,6 @@
 #include "Core/ImGuiHander.h"
 #include "States/State.h"
 
-
 #include "Managers/AssetManager.h"
 #include "Managers/SystemComponentManager.h"
 #include "Components/System/SceneCameraComponent.h"

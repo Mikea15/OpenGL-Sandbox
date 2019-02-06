@@ -146,6 +146,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Systems\Camera\CameraParams.cpp" />
+    <ClCompile Include="Source\Systems\Camera\CameraSnapshot.cpp" />
     <ClCompile Include="Source\Dependencies\imgui\imgui.cpp" />
     <ClCompile Include="Source\Dependencies\imgui\imgui_demo.cpp" />
     <ClCompile Include="Source\Dependencies\imgui\imgui_draw.cpp" />
@@ -198,6 +200,8 @@
     <ClCompile Include="Source\Core\WindowParams.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Systems\Camera\CameraParams.h" />
+    <ClInclude Include="Source\Systems\Camera\CameraSnapshot.h" />
     <ClInclude Include="Source\Dependencies\imgui\imconfig.h" />
     <ClInclude Include="Source\Dependencies\imgui\imgui.h" />
     <ClInclude Include="Source\Dependencies\imgui\imgui_impl_opengl3.h" />

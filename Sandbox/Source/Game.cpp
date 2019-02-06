@@ -11,7 +11,7 @@
 #include "Components/System/ProfilerSystemComponent.h"
 #include "Components/System/SceneSwitcherSystemComponent.h"
 
-const char* Game::s_configFileName = "config.json";
+const char* Game::s_configFileName = "Levels/config.json";
 
 Game::Game()
 	: m_isRunning(true)

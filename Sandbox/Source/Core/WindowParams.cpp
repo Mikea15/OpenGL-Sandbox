@@ -38,6 +38,5 @@ namespace Core
 		j.at("FPSLimit").get_to(p.FPSLimit);
 		j.at("GL_MultiSampleBuffers").get_to(p.GL_MultiSampleBuffers);
 		j.at("GL_MultiSamplesSamples").get_to(p.GL_MultiSamplesSamples);
-
 	}
 }
