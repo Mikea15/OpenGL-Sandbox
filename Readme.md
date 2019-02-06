@@ -15,22 +15,24 @@ Camera Snapshot Interpolation
 
 ---
 ### Things Implemented
-- Modern OpenGL rendering pipeline
-- Deferred Rendering, Rendering to Texture, Shadow Mapping, IBL, Post Processing, Point/Directional Lights, Reflection Cubemaps, etc..
-- Asynchronous texture loading across multiple threads ( producer / consumer )
-- ImGUI Integration
-- LivePP Integration ( Trial over now )
-- QuadTree / Octrees Implementation
-- Frustum Culling ( with and without Octrees )
+- [x] Modern OpenGL rendering pipeline
+- [x] Deferred Rendering, Render to Texture, Shadow Mapping, Image based Lighting, Point/Directional Lights, Reflection Cubemaps...
+- [x] Post Processing: Bloom, SSAO
+- [x] Asynchronous texture loading across multiple threads ( producer / consumer )
+- [x] ImGUI Integration
+- [x] LivePP Integration ( Trial over now )
+- [x] QuadTree / Octrees Implementation
+- [x] Frustum Culling ( with and without Octrees )
+- [x] Simple Settings Serialization
 
 ### Things Planned, Started or Unfinished
-- Material Definitions, Async Loading
-- Scene Graph
-- Occlusion and Portal Culling
-- Simple Profiler ( w/ ImGUI Display )
-- Entity Components and Serialization
-- Water caustics
-- Others stuff I'll remember later
+- [ ] Material Definitions, Async Loading
+- [ ] Scene Graph
+- [ ] Occlusion and Portal Culling
+- [ ] Simple Profiler ( w/ ImGUI Display )
+- [ ] Entity Components and Serialization
+- [ ] Water caustics
+- [ ] Others stuff I'll remember later
 
 ### Dependencies
 - [SDL2 v2.0.8](https://www.libsdl.org/)
