@@ -53,20 +53,6 @@ void DefaultState::Init(Game* game)
 	m_skybox.SetTexture(skyboxTex);
 
 	skyboxShader = shaderManager.LoadShader("gradientSkybox", "skybox/skybox.vs", "skybox/horizon_sun.fs");
-
-	auto camPos = m_sceneCameraComp->GetCamera().GetPosition();
-	
-	std::string readString;
-	std::fstream inFile("sceneCameraPos.json", std::fstream::in);
-	inFile >> readString;
-	inFile.close();
-
-	if (!readString.empty())
-	{
-		json read = json::parse(readString);
-		glm::vec3 cameraPosition = read;
-		m_sceneCameraComp->GetCamera().SetPosition(cameraPosition);
-	}
 }
 
 void DefaultState::HandleInput(SDL_Event * event)
@@ -187,10 +173,5 @@ void DefaultState::RenderUI()
 
 void DefaultState::Cleanup()
 {
-	auto camPos = m_sceneCameraComp->GetCamera().GetPosition();
-	std::ofstream file;
-	file.open("sceneCameraPos.json", std::fstream::out);
 
-	file << static_cast<json>(camPos);
-	file.close();
 }
