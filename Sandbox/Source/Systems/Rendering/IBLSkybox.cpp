@@ -19,20 +19,17 @@ void IBLSkybox::SetShaders(Shader irradiance, Shader prefilter, Shader brdf, Sha
 	brdfShader = brdf;
 }
 
-// texture = m_assetManager->LoadHDRTexure("Data/Images/pbr/newport_loft.hdr");
-void IBLSkybox::GenBuffers(unsigned int texture)
+void IBLSkybox::GenBuffers(unsigned int texture, unsigned int size)
 {
 	glGenFramebuffers(1, &captureFBO);
 	glGenRenderbuffers(1, &captureRBO);
 
-	const int fboResolution = 2048;
+	const int fboResolution = size;
 
 	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 	glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, fboResolution, fboResolution);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
-
-	hdrTexture = texture;
 
 	// pbr: setup cubemap to render to and attach to framebuffer
 	// ---------------------------------------------------------
@@ -63,7 +60,7 @@ void IBLSkybox::GenBuffers(unsigned int texture)
 	equirectangularToCubemapShader.SetInt("equirectangularMap", 0);
 	equirectangularToCubemapShader.SetMat4("projection", captureProjection);
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, hdrTexture);
+	glBindTexture(GL_TEXTURE_2D, texture);
 
 	glViewport(0, 0, fboResolution, fboResolution); // don't forget to configure the viewport to the capture dimensions.
 	glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
@@ -201,9 +198,9 @@ void IBLSkybox::BindTextureMaps()
 	glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, brdfLUTTexture);
 }
 
+// render skybox (render as last to prevent overdraw)
 void IBLSkybox::DrawSkybox(Shader shader, const glm::mat4& view, const glm::mat4& projection)
 {
-	// render skybox (render as last to prevent overdraw)
 	shader.Use();
 	shader.SetMat4("projection", projection);
 	shader.SetMat4("view", view);

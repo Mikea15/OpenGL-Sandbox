@@ -15,7 +15,7 @@ public:
 	~IBLSkybox();
 
 	void SetShaders(Shader irradiance, Shader prefilter, Shader brdf, Shader cubemap);
-	void GenBuffers(unsigned int texture);
+	void GenBuffers(unsigned int texture, unsigned int size);
 
 	void BindTextureMaps();
 
