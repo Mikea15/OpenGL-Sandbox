@@ -222,6 +222,9 @@
     <ClCompile Include="Source\Systems\Rendering\IBLSkybox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Systems\PostProcessing\SSAO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Game.h">
@@ -396,6 +399,9 @@
       <Filter>Source Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Systems\Rendering\IBLSkybox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\PostProcessing\SSAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -199,6 +199,7 @@
     <ClCompile Include="Source\Systems\Transform.cpp" />
     <ClCompile Include="Source\Systems\Rendering\Primitives\Sphere.cpp" />
     <ClCompile Include="Source\Core\WindowParams.cpp" />
+    <ClCompile Include="Source\Systems\PostProcessing\SSAO.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Systems\Rendering\IBLSkybox.h" />
@@ -259,6 +260,7 @@
     <ClInclude Include="Source\Systems\Transform.h" />
     <ClInclude Include="Source\Systems\Rendering\Primitives\Sphere.h" />
     <ClInclude Include="Source\Core\WindowParams.h" />
+    <ClInclude Include="Source\Systems\PostProcessing\SSAO.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Shaders\advanced_glsl.vs" />

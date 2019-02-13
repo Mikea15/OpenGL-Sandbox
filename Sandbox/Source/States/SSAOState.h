@@ -1,8 +1,8 @@
 #pragma once
 
-#include <random>
-
 #include "DefaultState.h"
+
+#include "Systems/PostProcessing/SSAO.h"
 
 #include "Systems/Rendering/Primitives/Quad.h"
 #include "Systems/Rendering/Primitives/Cube.h"
@@ -26,30 +26,20 @@ private:
 	unsigned int gPosition, gNormal, gAlbedo;
 	unsigned int renderBufferObjectDepth;
 
+	bool enableSSAO = true;
+
 	Shader shaderGeometryPass;
 	Shader shaderLightingPass;
 	Shader shaderLightBox;
 	Shader shaderSSAO;
 	Shader shaderSSAOBlur;
-
+	
 	Entity ent;
 	std::vector<glm::vec3> objectPositions;
 
 	Quad quad;
 	Cube cube;
 
-	// ssao
-	std::vector<glm::vec3> ssaoKernel;
-	unsigned int noiseTexture;
-	unsigned int ssaoFBO;
-	unsigned int ssaoBlurFBO;
-	unsigned int ssaoColorBuffer;
-	unsigned int ssaoColorBufferBlur;
-
-	bool enableSSAO = true;
-	float ssaoIntensity = 1.0f;
-	int kernelSize = 64;
-	float radius = 0.5f;
-	float bias = 0.025f;
+	SSAO ssaoFx;
 };
 
