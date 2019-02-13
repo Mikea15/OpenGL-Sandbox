@@ -32,10 +32,11 @@ namespace ImGui
 void DefaultState::Init(Game* game)
 {
 	m_windowParams = game->GetWindowParameters();
-	m_sdlHandler = &game->GetSDLHandler();
+	currentParams = m_windowParams;
+	m_sdlHandler = game->GetSDLHandler();
 
-	m_sceneCameraComp = &game->GetSystemComponentManager()->GetComponent<SceneCameraComponent>();
-	m_assetManager = &game->GetAssetManager();
+	m_sceneCamera = &game->GetSystemComponentManager()->GetComponent<SceneCameraComponent>();
+	m_assetManager = game->GetAssetManager();
 
 	std::vector<std::string> faces
 	{
@@ -74,8 +75,8 @@ void DefaultState::Render(float alpha)
 	glViewport(0, 0, m_windowParams.Width, m_windowParams.Height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glm::mat4 projection = m_sceneCameraComp->GetCamera().GetProjection();
-	glm::mat4 view = m_sceneCameraComp->GetCamera().GetView();
+	glm::mat4 projection = m_sceneCamera->GetCamera().GetProjection();
+	glm::mat4 view = m_sceneCamera->GetCamera().GetView();
 
 	// render skybox last. but before transparent objects
 	skyboxShader.Use();

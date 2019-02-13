@@ -19,8 +19,7 @@ Game::Game()
 {
 	LoadConfig();
 
-	m_sdlHandler = Core::SDLHandler(m_winParams);
-	m_uiHandler = Core::ImGuiHandler();
+	m_sdlHandler = SDLHandler(m_winParams);
 
 	m_systemComponentManager = std::make_unique<SystemComponentManager>();
 	m_systemComponentManager->AddComponent<SceneCameraComponent>();
@@ -45,7 +44,6 @@ void Game::InitSystems()
 	srand(time(NULL));
 
 	m_sdlHandler.Init();
-	m_uiHandler.Initialize(this);
 
 	m_assetManager->Initialize();
 
@@ -89,7 +87,9 @@ int Game::Execute()
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
-			m_uiHandler.HandleInput(&event);
+			// Handle Input
+			m_sdlHandler.HandleEvents(&event);
+
 			if (event.type == SDL_QUIT) 
 			{
 				m_isRunning = false;
@@ -108,9 +108,6 @@ int Game::Execute()
 			// System Components
 			m_systemComponentManager->HandleInput(&event);
 
-			// Handle Input
-			m_sdlHandler.HandleEvents(&event);
-			
 			m_currentState->HandleInput(&event);
 		}
 
@@ -136,10 +133,12 @@ int Game::Execute()
 		m_currentState->Render(alpha);
 
 		// ui
-		m_uiHandler.StartRender();
+		m_sdlHandler.BeginUIRender();
+
 		m_systemComponentManager->RenderUI();
 		m_currentState->RenderUI();
-		m_uiHandler.EndRender();
+
+		m_sdlHandler.EndUIRender();
 		m_sdlHandler.EndRender();
 	}
 
@@ -159,9 +158,6 @@ void Game::CleanupSystems()
 
 	// system components
 	m_systemComponentManager->Cleanup();
-
-	// Cleanup
-	m_uiHandler.Cleanup();
 }
 
 void Game::LoadConfig()

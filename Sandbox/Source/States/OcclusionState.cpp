@@ -63,9 +63,9 @@ void OcclusionState::Render(float alpha)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// configure transformation matrices
-	glm::mat4 view = m_sceneCameraComp->GetCamera().GetView();
-	glm::mat4 projection = m_sceneCameraComp->GetCamera().GetProjection();
-	glm::vec3 cameraPosition = m_sceneCameraComp->GetCamera().GetPosition();
+	glm::mat4 view = m_sceneCamera->GetCamera().GetView();
+	glm::mat4 projection = m_sceneCamera->GetCamera().GetProjection();
+	glm::vec3 cameraPosition = m_sceneCamera->GetCamera().GetPosition();
 
 	wireframeShader.Use();
 	wireframeShader.SetMat4("view", view);

@@ -4,6 +4,8 @@
 
 #include "DefaultState.h"
 
+#include "Systems/Rendering/IBLSkybox.h"
+
 #include "Systems/QuadTree.h"
 #include "Systems/Octree.h"
 
@@ -29,10 +31,6 @@ private:
 
 	Shader debugInstanced;
 	Shader pbrShader;
-	Shader equirectangularToCubemapShader;
-	Shader irradianceShader;
-	Shader prefilterShader;
-	Shader brdfShader;
 	Shader backgroundShader;
 
 	Shader wireframeShader;
@@ -99,21 +97,9 @@ private:
 	std::vector<glm::vec3> lightPositions;
 	std::vector<glm::vec3> lightColors;
 
-	unsigned int captureFBO;
-	unsigned int captureRBO;
-
-	unsigned int hdrTexture;
-	unsigned int envCubemap;
-
 	Cube cube;
 
-	glm::mat4 captureProjection;
-	std::vector<glm::mat4> captureViews;
-	Transform rotatingT;
-
-	unsigned int irradianceMap;
-	unsigned int prefilterMap;
-	unsigned int brdfLUTTexture;
+	IBLSkybox iblSkybox;
 
 	unsigned int vertexCountStats = 0;
 

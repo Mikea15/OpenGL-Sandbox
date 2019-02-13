@@ -93,9 +93,6 @@
     <ClCompile Include="Source\States\InstancingState.cpp">
       <Filter>Source Files\States</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Core\ImGuiHander.cpp">
-      <Filter>Source Files\Core</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Systems\Rendering\Primitives.cpp">
       <Filter>Source Files\Systems\Rendering</Filter>
     </ClCompile>
@@ -219,6 +216,12 @@
     <ClCompile Include="Source\Systems\Camera\CameraParams.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Core\IMGUIHandler.cpp">
+      <Filter>Source Files\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Systems\Rendering\IBLSkybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Game.h">
@@ -250,9 +253,6 @@
     </ClInclude>
     <ClInclude Include="Source\States\InstancingState.h">
       <Filter>Source Files\States</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Core\ImGuiHander.h">
-      <Filter>Source Files\Core</Filter>
     </ClInclude>
     <ClInclude Include="Source\Systems\Rendering\Primitives.h">
       <Filter>Source Files\Systems\Rendering</Filter>
@@ -392,228 +392,234 @@
     <ClInclude Include="Source\Systems\Camera\CameraParams.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Core\IMGUIHandler.h">
+      <Filter>Source Files\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Systems\Rendering\IBLSkybox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Source\Shaders\yellow.fs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Source\Shaders\advanced_glsl.vs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Source\Shaders\instancing.fs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Source\Shaders\instancing.vs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Source\Shaders\simpleDepthShader.vs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Source\Shaders\point_shadows.fs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Source\Shaders\point_shadows.vs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Source\Shaders\light_box.fs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Source\Shaders\skybox\horizon_sun.fs">
-      <Filter>Shaders\skybox</Filter>
-    </None>
     <None Include="Source\Shaders\horizontal_gradient.fs">
       <Filter>Shaders\skybox</Filter>
     </None>
-    <None Include="Source\Shaders\lighting_casters.fs">
+    <None Include="Data\Shaders\lit\advancedLighting.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\lighting_casters.vs">
+    <None Include="Data\Shaders\lit\blinnPhong.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\lighting_maps.fs">
+    <None Include="Data\Shaders\lit\default.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\lighting_maps.vs">
+    <None Include="Data\Shaders\lit\default_simple.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\model_loading.fs">
+    <None Include="Data\Shaders\lit\multiple_lights.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\model_loading.vs">
+    <None Include="Data\Shaders\lit\multiple_lights.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\lighting.fs">
+    <None Include="Data\Shaders\lit\refraction.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\lighting.vs">
+    <None Include="Data\Shaders\lit\refraction.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\lamp.fs">
+    <None Include="Data\Shaders\lit\standard.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\lamp.vs">
+    <None Include="Data\Shaders\pbr\background.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\lit\advancedLighting.fs">
+    <None Include="Data\Shaders\pbr\background.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\pbr\background.fs">
+    <None Include="Data\Shaders\pbr\brdf.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\pbr\background.vs">
+    <None Include="Data\Shaders\pbr\brdf.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\lit\blinnPhong.fs">
+    <None Include="Data\Shaders\pbr\cubemap.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\postfx\bloom.fs">
+    <None Include="Data\Shaders\pbr\equirectangular_to_cubemap.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\postfx\bloom.vs">
+    <None Include="Data\Shaders\pbr\irradiance_convolution.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\postfx\bloom_final.fs">
+    <None Include="Data\Shaders\pbr\pbr.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\postfx\bloom_final.vs">
+    <None Include="Data\Shaders\pbr\pbr.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\postfx\blur.fs">
+    <None Include="Data\Shaders\pbr\prefilter.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\postfx\blur.vs">
+    <None Include="Data\Shaders\postfx\bloom.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\pbr\brdf.fs">
+    <None Include="Data\Shaders\postfx\bloom.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\pbr\brdf.vs">
+    <None Include="Data\Shaders\postfx\bloom_final.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\unlit\color.fs">
+    <None Include="Data\Shaders\postfx\bloom_final.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\pbr\cubemap.vs">
+    <None Include="Data\Shaders\postfx\blur.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\skybox\cubemaps.fs">
+    <None Include="Data\Shaders\postfx\blur.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\skybox\cubemaps.vs">
+    <None Include="Data\Shaders\postfx\hdr.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\lit\default.vs">
+    <None Include="Data\Shaders\postfx\hdr.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\lit\default_simple.vs">
+    <None Include="Data\Shaders\screen\framebuffer.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\deferred_light.fs">
+    <None Include="Data\Shaders\screen\framebuffer.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\deferred_light.vs">
+    <None Include="Data\Shaders\screen\fullscreenTexture.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\deferred_shading.fs">
+    <None Include="Data\Shaders\screen\fullscreenTexture.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\deferred_shading.vs">
+    <None Include="Data\Shaders\screen\ssao.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\pbr\equirectangular_to_cubemap.fs">
+    <None Include="Data\Shaders\screen\ssao.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\screen\framebuffer.fs">
+    <None Include="Data\Shaders\screen\ssao_blur.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\screen\framebuffer.vs">
+    <None Include="Data\Shaders\shadows\point_shadows_depth.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\screen\fullscreenTexture.fs">
+    <None Include="Data\Shaders\shadows\point_shadows_depth.gs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\screen\fullscreenTexture.vs">
+    <None Include="Data\Shaders\shadows\point_shadows_depth.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\gbuffer.fs">
+    <None Include="Data\Shaders\skybox\cubemaps.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\gbuffer.vs">
+    <None Include="Data\Shaders\skybox\cubemaps.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\postfx\hdr.fs">
+    <None Include="Data\Shaders\skybox\horizon_sun.fs">
+      <Filter>Shaders\skybox</Filter>
+    </None>
+    <None Include="Data\Shaders\skybox\horizontal_gradient.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\postfx\hdr.vs">
+    <None Include="Data\Shaders\skybox\skybox.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\skybox\horizontal_gradient.fs">
+    <None Include="Data\Shaders\skybox\skybox.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\pbr\irradiance_convolution.fs">
+    <None Include="Data\Shaders\unlit\color.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\lit\multiple_lights.fs">
+    <None Include="Data\Shaders\unlit\simple.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\lit\multiple_lights.vs">
+    <None Include="Data\Shaders\unlit\textured.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\pbr\pbr.fs">
+    <None Include="Data\Shaders\advanced_glsl.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\pbr\pbr.vs">
+    <None Include="Data\Shaders\deferred_light.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\shadows\point_shadows_depth.fs">
+    <None Include="Data\Shaders\deferred_light.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\shadows\point_shadows_depth.gs">
+    <None Include="Data\Shaders\deferred_shading.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\shadows\point_shadows_depth.vs">
+    <None Include="Data\Shaders\deferred_shading.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\pbr\prefilter.fs">
+    <None Include="Data\Shaders\gbuffer.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\lit\refraction.fs">
+    <None Include="Data\Shaders\gbuffer.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\lit\refraction.vs">
+    <None Include="Data\Shaders\instancing.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\unlit\simple.vs">
+    <None Include="Data\Shaders\instancing.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\skybox\skybox.fs">
+    <None Include="Data\Shaders\lamp.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\skybox\skybox.vs">
+    <None Include="Data\Shaders\lamp.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\screen\ssao.fs">
+    <None Include="Data\Shaders\light_box.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\screen\ssao.vs">
+    <None Include="Data\Shaders\lighting.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\screen\ssao_blur.fs">
+    <None Include="Data\Shaders\lighting.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\ssao_geometry.fs">
+    <None Include="Data\Shaders\lighting_casters.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\ssao_geometry.vs">
+    <None Include="Data\Shaders\lighting_casters.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\ssao_lighting.fs">
+    <None Include="Data\Shaders\lighting_maps.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\lit\standard.vs">
+    <None Include="Data\Shaders\lighting_maps.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Source\Shaders\unlit\textured.fs">
+    <None Include="Data\Shaders\model_loading.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\model_loading.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\point_shadows.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\point_shadows.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\simpleDepthShader.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\ssao_geometry.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\ssao_geometry.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\ssao_lighting.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\yellow.fs">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

@@ -22,5 +22,5 @@ private:
 	std::unordered_map<std::string, Shader> m_shaderMap;
 
 private:
-	std::string s_shaderDirectory = "Source/Shaders/";
+	std::string s_shaderDirectory = "Data/Shaders/";
 };

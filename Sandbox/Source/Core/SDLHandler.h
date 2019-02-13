@@ -1,66 +1,65 @@
 #pragma once
 
 #include <iostream>
-#include <memory>
+
 #include <vector>
 #include <unordered_map>
 
-#include "Dependencies/imgui/imgui.h"
-#include "Dependencies/imgui/imgui_impl_sdl.h"
-#include "Dependencies/imgui/imgui_impl_opengl3.h"
-
 #include "WindowParams.h"
+#include "IMGUIHandler.h"
 
-namespace Core
+class SDLHandler
 {
-	class SDLHandler
-	{
-	public:
-		SDLHandler() = default;
-		SDLHandler(WindowParams& params);
+public:
+	SDLHandler() = default;
+	SDLHandler(WindowParams& params);
 
-		~SDLHandler();
+	~SDLHandler();
 
-		bool Init();
+	bool Init();
 
-		void HandleEvents(SDL_Event* event);
-		void Update(float deltaTime);
+	void HandleEvents(SDL_Event* event);
+	void Update(float deltaTime);
 
-		void BeginRender();
-		void EndRender();
+	void BeginRender();
+	void EndRender();
+	void BeginUIRender();
+	void EndUIRender();
 
-		void SetWindowParameters(const WindowParams& params, bool initialSetup = false);
+	void SetWindowParameters(const WindowParams& params, bool initialSetup = false);
 
-		const Uint32 GetTicks() const { return SDL_GetTicks(); }
+	const Uint32 GetTicks() const { return SDL_GetTicks(); }
 
-		SDL_Window* GetSDLWindow() const { return m_window; }
-		SDL_GLContext GetGLContext() const { return m_glContext; }
+	SDL_Window* GetSDLWindow() const { return m_window; }
+	const SDL_GLContext& GetGLContext() const { return m_glContext; }
 
-		const char* GetGLSLVersion() const { return m_glslVersion; }
+	const char* GetGLSLVersion() const { return m_glslVersion; }
 
-		const std::vector<SDL_DisplayMode>& GetDisplayModes() const { return m_displayModes; }
-		const std::string& GetDisplayModeName(int index) const { 
-			auto it = m_displayModeIndexToName.find(index);
-			if (it != m_displayModeIndexToName.end() ) { return it->second; }
-			return "";
-		}
-		const SDL_DisplayMode* GetCurrentDisplayMode();
+	const std::vector<SDL_DisplayMode>& GetDisplayModes() const { return m_displayModes; }
+	const std::string& GetDisplayModeName(int index) const {
+		auto it = m_displayModeIndexToName.find(index);
+		if (it != m_displayModeIndexToName.end()) { return it->second; }
+		return "";
+	}
+	const SDL_DisplayMode* GetCurrentDisplayMode();
 
-	private:
-		void FindDisplayModes();
+private:
+	void FindDisplayModes();
 
-	private:
-		WindowParams m_params;
+private:
+	WindowParams* m_params;
 
-		SDL_Window* m_window;
-		SDL_GLContext m_glContext;
+	SDL_Window* m_window;
+	SDL_GLContext m_glContext;
 
-		const char* m_glslVersion = "#version 130";
+	IMGUIHandler m_uiHandler;
 
-		std::vector<SDL_DisplayMode> m_displayModes;
-		std::unordered_map<int, std::string> m_displayModeIndexToName;
+	const char* m_glslVersion = "#version 130";
 
-		bool m_lockMouseCursor = false;
-	};
-}
+	std::vector<SDL_DisplayMode> m_displayModes;
+	std::unordered_map<int, std::string> m_displayModeIndexToName;
+
+	bool m_lockMouseCursor = false;
+};
+
 

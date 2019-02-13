@@ -111,9 +111,9 @@ void DeferredRendering::Render(float alpha)
 	PROFILE("Render");
 
 	// configure transformation matrices
-	glm::mat4 view = m_sceneCameraComp->GetCamera().GetView();
-	glm::mat4 projection = m_sceneCameraComp->GetCamera().GetProjection();
-	glm::vec3 cameraPosition = m_sceneCameraComp->GetCamera().GetPosition();
+	glm::mat4 view = m_sceneCamera->GetCamera().GetView();
+	glm::mat4 projection = m_sceneCamera->GetCamera().GetProjection();
+	glm::vec3 cameraPosition = m_sceneCamera->GetCamera().GetPosition();
 
 	// render
 	// ------

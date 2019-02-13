@@ -36,11 +36,11 @@ public:
 	void Cleanup() override;
 
 protected:
-	Core::SDLHandler* m_sdlHandler;
-	Core::WindowParams m_windowParams;
-	Core::WindowParams currentParams;
+	SDLHandler* m_sdlHandler;
+	WindowParams m_windowParams;
+	WindowParams currentParams;
 
-	SceneCameraComponent* m_sceneCameraComp;
+	SceneCameraComponent* m_sceneCamera;
 	AssetManager* m_assetManager;
 
 	ShaderManager shaderManager;

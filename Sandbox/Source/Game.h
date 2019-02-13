@@ -4,7 +4,6 @@
 #include <chrono>
 
 #include "Core/SDLHandler.h"
-#include "Core/ImGuiHander.h"
 #include "States/State.h"
 
 #include "Managers/AssetManager.h"
@@ -21,10 +20,10 @@ public:
 
 	int Execute();
 
-	const Core::WindowParams& GetWindowParameters() const { return m_winParams; }
-	Core::SDLHandler& GetSDLHandler() { return m_sdlHandler; }
+	const WindowParams& GetWindowParameters() const { return m_winParams; }
+	SDLHandler* GetSDLHandler() { return &m_sdlHandler; }
 	SystemComponentManager* GetSystemComponentManager() const { return m_systemComponentManager.get(); }
-	AssetManager& GetAssetManager() { return *m_assetManager.get(); }
+	AssetManager* GetAssetManager() { return m_assetManager.get(); }
 
 	void ChangeState(std::shared_ptr<State> newState);
 	double GetTimeMS() const { return m_time; }
@@ -45,9 +44,9 @@ private:
 
 	std::shared_ptr<State> m_currentState;
 
-	Core::SDLHandler m_sdlHandler;
-	Core::ImGuiHandler m_uiHandler;
-	Core::WindowParams m_winParams;
+	SDLHandler m_sdlHandler;
+	WindowParams m_winParams;
+
 	std::unique_ptr<AssetManager> m_assetManager;
 
 	std::unique_ptr<SystemComponentManager> m_systemComponentManager;
