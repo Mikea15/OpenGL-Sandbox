@@ -20,9 +20,10 @@ void SceneSwitcherSystemComponent::Initialize(Game* game)
 
 	// PBR Shader requires that the textures be passed at layout = 3 instead of 0. ( or not? )
 	// still. I'll leave this comment here. I spent too much time debuging this shit.
-	m_defaultState = std::make_shared<IBLSpecState>(); 
+	// m_defaultState = std::make_shared<IBLSpecState>(); 
 	// m_defaultState = std::make_shared<OcclusionState>(); 
 	// m_defaultState = std::make_shared<DeferredRendering>();
+	m_defaultState = std::make_shared<SSAOState>();
 	// m_defaultState = std::make_shared<DefaultState>();
 	m_game->ChangeState(m_defaultState);
 }

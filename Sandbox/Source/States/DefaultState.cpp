@@ -31,12 +31,13 @@ namespace ImGui
 
 void DefaultState::Init(Game* game)
 {
-	m_windowParams = game->GetWindowParameters();
-	currentParams = m_windowParams;
 	m_sdlHandler = game->GetSDLHandler();
-
-	m_sceneCamera = &game->GetSystemComponentManager()->GetComponent<SceneCameraComponent>();
 	m_assetManager = game->GetAssetManager();
+	m_sceneCamera = &game->GetSystemComponentManager()->GetComponent<SceneCameraComponent>();
+
+	m_windowParams = game->GetWindowParameters();
+
+	currentParams = m_windowParams;
 
 	std::vector<std::string> faces
 	{

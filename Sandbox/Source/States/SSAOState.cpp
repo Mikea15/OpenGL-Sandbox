@@ -22,7 +22,9 @@ void SSAOState::Init(Game* game)
 	shaderSSAOBlur = shaderManager.LoadShader("ssaoBlur", "screen/ssao.vs", "screen/ssao_blur.fs");
 
 	ent = Entity();
-	//ent.SetModel(m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj"));
+	Model model;
+	m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj", model);
+	ent.SetModel(model);
 	ent.GetTransform().SetScale(glm::vec3(0.01f));
 
 	// objectPositions.push_back(glm::vec3(-3.0, -3.0, -3.0));
@@ -178,7 +180,7 @@ void SSAOState::Render(float alpha)
 	
 	// render
 	// ------
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// 1. geometry pass: render scene's geometry/color data into gbuffer
