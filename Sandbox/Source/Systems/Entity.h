@@ -23,6 +23,7 @@ public:
 	{
 		return m_model;
 	}
+
 	void SetModel(Model& m) 
 	{ 
 		m_model = m; 

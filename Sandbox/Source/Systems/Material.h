@@ -12,7 +12,7 @@ using namespace nlohmann;
 
 class Material
 {
-	struct MaterialProperty
+	struct Property
 	{
 		std::string name;
 		std::variant<int, float, std::string, bool> value;
@@ -34,6 +34,6 @@ private:
 	std::vector<Texture> m_textures;
 
 	std::unordered_map<unsigned int, unsigned int> m_materialMapToVectorIndex;
-	std::vector<MaterialProperty> m_materialProperties;
+	std::vector<Property> m_materialProperties;
 };
 

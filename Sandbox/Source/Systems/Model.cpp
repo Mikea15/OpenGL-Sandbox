@@ -36,7 +36,7 @@ Model& Model::operator=(const Model& assign)
 	return *this;
 }
 
-Mesh* Model::LoadMesh(const aiScene* rootScene, const aiMesh* mesh)
+Mesh* Model::LoadMesh(const aiScene* rootScene, const aiMesh* mesh, Material* outMaterial)
 {
 	std::shared_ptr<Mesh> meshData = std::make_shared<Mesh>();
 
@@ -74,8 +74,16 @@ Mesh* Model::LoadMesh(const aiScene* rootScene, const aiMesh* mesh)
 	meshData->SetupMesh(vertices, indices);
 	meshData->CreateBuffers();
 
+	unsigned int newMeshIndex = m_meshes.size();
+
+	auto iterator = m_meshToMaterial.emplace(newMeshIndex, std::make_shared<Material>());
+	if (iterator.second)
+	{
+		outMaterial = iterator.first->second.get();
+	}
+
 	m_meshes.push_back(meshData);
-	return m_meshes[m_meshes.size() - 1].get();
+	return m_meshes[newMeshIndex].get();
 }
 
 void Model::Draw(const Shader& shader)
@@ -83,7 +91,8 @@ void Model::Draw(const Shader& shader)
 	const int meshCount = m_meshes.size();
 	for (unsigned int i = 0; i < meshCount; i++)
 	{
-		m_meshes[i]->Draw(shader);
+		m_meshToMaterial[i]->SetShader(shader);
+		m_meshes[i]->Draw(*m_meshToMaterial[i]);
 	}
 }
 

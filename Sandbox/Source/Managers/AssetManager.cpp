@@ -81,7 +81,7 @@ void AssetManager::LoaderThread(std::future<void> futureObj)
 			jobResult.meshCacheIndex = textureAssetJob.meshCacheIndex;
 			jobResult.textureInfos = LoadTexturesFromAssetJob(textureAssetJob);
 			jobResult.textureType = GetTextureTypeFrom(textureAssetJob.textureType);
-			
+
 			{
 				std::scoped_lock<std::mutex> lock(m_workloadReadyMutex);
 				m_jobsTextureAssetResults.emplace(jobResult);
@@ -114,7 +114,7 @@ void AssetManager::Update()
 		m_jobsSimpleTextureResults.pop();
 
 		Texture texture = GenerateTexture(jobResult.textureInfo);
-		
+
 		// this should update the pointer. must find a better way to return the value
 		// maybe a better approach would be using a callback.
 		*jobResult.id = texture.id;
@@ -213,7 +213,7 @@ void AssetManager::LoadTextureAsync(const std::string& path, bool gammaCorrectio
 		*outId = findIt->second.id;
 		return;
 	}
-	
+
 	std::cout << "[AssetManager][" << m_threadNames[std::this_thread::get_id()] << "] Creating Simple Texture Asset Job" << std::endl;
 
 	SimpleTextureAssetJob job;
@@ -313,7 +313,7 @@ Texture AssetManager::GenerateTexture(TextureInfo info, TextureType type)
 {
 	Texture texture;
 	texture.textureType = type;
-	
+
 	GLenum internalFormat = 0;
 	GLenum dataFormat = 0;
 	if (info.channels == 1)
@@ -354,7 +354,7 @@ std::vector<TextureInfo> AssetManager::LoadTexturesFromAssetJob(TextureAssetJob&
 	for (const auto& path : job.resourcePaths)
 	{
 		TextureInfo textureInfo = LoadTextureFromFile(path, job.useGammaCorrection);
-		if (textureInfo.data != nullptr) 
+		if (textureInfo.data != nullptr)
 		{
 			textureInfos.push_back(textureInfo);
 		}
@@ -369,21 +369,11 @@ void AssetManager::ProcessModelNode(const aiScene* scene, aiNode* node, Model& m
 		const aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		const aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-		size_t pSize = material->mNumProperties;
-		for (int i = 0; i < pSize; ++i)
-		{
-			aiString string = material->mProperties[i]->mKey;
-			aiPropertyTypeInfo type = material->mProperties[i]->mType;
-			int idx = material->mProperties[i]->mIndex;
+		Material* newMaterial = nullptr;
+		Mesh* newMesh = model.LoadMesh(scene, mesh, newMaterial);
 
-			std::cout << "Material PropKey: " << string.C_Str() << std::endl;
-		}
-
-
-		Mesh* newMesh = model.LoadMesh(scene, mesh);
-
+		const int meshCacheIndex = m_meshCache.size();
 		m_meshCache.push_back(newMesh);
-		const int meshCacheIndex = m_meshCache.size() - 1;
 
 		auto diffuseTexJobs = TextureAssetJob();
 		diffuseTexJobs.meshCacheIndex = meshCacheIndex;
@@ -414,27 +404,25 @@ void AssetManager::ProcessModelNode(const aiScene* scene, aiNode* node, Model& m
 		bool enableAsyncLoading = false;
 		if (enableAsyncLoading)
 		{
+			std::scoped_lock<std::mutex> lock(m_mutex);
+			if (!diffuseTexJobs.resourcePaths.empty())
 			{
-				std::scoped_lock<std::mutex> lock(m_mutex);
-				if (!diffuseTexJobs.resourcePaths.empty())
-				{
-					m_jobsTextureAssets.emplace(diffuseTexJobs);
-				}
+				m_jobsTextureAssets.emplace(diffuseTexJobs);
+			}
 
-				if (!normalMapTexJobs.resourcePaths.empty())
-				{
-					m_jobsTextureAssets.emplace(normalMapTexJobs);
-				}
+			if (!normalMapTexJobs.resourcePaths.empty())
+			{
+				m_jobsTextureAssets.emplace(normalMapTexJobs);
+			}
 
-				if (!specMapTexJobs.resourcePaths.empty())
-				{
-					m_jobsTextureAssets.emplace(specMapTexJobs);
-				}
+			if (!specMapTexJobs.resourcePaths.empty())
+			{
+				m_jobsTextureAssets.emplace(specMapTexJobs);
+			}
 
-				if (!heightMapTexJobs.resourcePaths.empty())
-				{
-					m_jobsTextureAssets.emplace(heightMapTexJobs);
-				}
+			if (!heightMapTexJobs.resourcePaths.empty())
+			{
+				m_jobsTextureAssets.emplace(heightMapTexJobs);
 			}
 		}
 		else
@@ -475,7 +463,9 @@ void AssetManager::ProcessModelNode(const aiScene* scene, aiNode* node, Model& m
 					textures.push_back(texture);
 				}
 			}
+			
 			newMesh->SetupTextures(textures);
+			newMaterial->SetTextures(textures);		
 		}
 	}
 

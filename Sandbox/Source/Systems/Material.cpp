@@ -23,7 +23,8 @@ Material::Material()
 
 void Material::SetTextures(const std::vector<Texture>& textures)
 {
-	m_textures = textures;
+	std::copy(textures.begin(), textures.end(), m_textures.begin());
+	//m_textures = textures;
 }
 
 void Material::SetShader(const Shader& shader)
@@ -38,11 +39,11 @@ void Material::SetMaterialProperty(const std::string& name, const std::variant<i
 	auto findIt = m_materialMapToVectorIndex.find(hash);
 	if (findIt == m_materialMapToVectorIndex.end())
 	{
-		MaterialProperty mp;
+		Property mp;
 		mp.name = name;
 		mp.value = value;
+		unsigned int index = m_materialProperties.size();
 		m_materialProperties.push_back(mp);
-		unsigned int index = m_materialProperties.size() - 1;
 		m_materialMapToVectorIndex.emplace(hash, index);
 	}
 	else

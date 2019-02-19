@@ -24,15 +24,19 @@ public:
 	Model& operator =(const Model& assign); 
 	Model(std::string path) {};
 
-	Mesh* LoadMesh(const aiScene* rootScene, const aiMesh* mesh);
+	Mesh* LoadMesh(const aiScene* rootScene, const aiMesh* mesh, Material* outMaterial);
+
+	std::shared_ptr<Material> GetMaterial(unsigned int index) { return m_meshToMaterial[index]; }
 
 	void Draw(const Shader& shader);
 	void DrawInstanced(const Shader& shader, int instanceCount);
 
 	std::vector<std::shared_ptr<Mesh>>& GetMeshes() { return m_meshes; }
+	unsigned int GetMeshCount() const { return m_meshes.size(); }
 
 	bool m_useGammaCorrection;
 private:
 	std::vector<std::shared_ptr<Mesh>> m_meshes;
+	std::unordered_map<unsigned int, std::shared_ptr<Material>> m_meshToMaterial;
 
 };
