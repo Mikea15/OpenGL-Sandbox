@@ -130,7 +130,7 @@ void IBLSpecState::Init(Game* game)
 	lightColors.push_back(glm::vec3(300.0f, 300.0f, 300.0f));
 
 	unsigned int skyboxTex = m_assetManager->LoadHDRTexure("Data/Images/pbr/newport_loft.hdr");
-	iblSkybox.GenBuffers(skyboxTex);
+	iblSkybox.GenBuffers(skyboxTex, 2048);
 
 	// initialize static shader uniforms before rendering
 	// --------------------------------------------------

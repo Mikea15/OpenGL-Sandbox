@@ -153,7 +153,7 @@ void SceneCameraComponent::RenderUI()
 
 	ImGui::Begin("Scene Camera");
 
-	CameraParams currentParams = m_camera.GetParams();
+	Camera::Params currentParams = m_camera.GetParams();
 
 	ImGui::Text("Camera Speed");
 	bool changedSpeedViaButon = false;

@@ -74,6 +74,11 @@
     <OutDir>$(SolutionDir)Builds\$(Configuration)_$(PlatformTarget)\</OutDir>
     <IntDir>$(SolutionDir)Intermediate\$(Configuration)_$(PlatformTarget)\</IntDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)Builds\$(Configuration)_$(PlatformTarget)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\$(Configuration)_$(PlatformTarget)\</IntDir>
+    <SourcePath>$(VC_SourcePath)/Source</SourcePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>
@@ -113,7 +118,14 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\Work\Projects\Sandbox\Sandbox\Source;D:\CodeLibraries\SDL2-2.0.8\include;D:\CodeLibraries\glm;D:\CodeLibraries\glew-2.1.0\include;D:\CodeLibraries\assimp\include;D:\CodeLibraries\nlohmannJson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>D:\CodeLibraries\assimp\lib\x64;D:\CodeLibraries\glew-2.1.0\lib\Release\x64;D:\CodeLibraries\SDL2-2.0.8\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;SDL2.lib;SDL2main.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -146,8 +158,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Assets\SimpleTextureAssetJob.cpp" />
     <ClCompile Include="Source\Systems\Rendering\IBLSkybox.cpp" />
-    <ClCompile Include="Source\Systems\Camera\CameraParams.cpp" />
     <ClCompile Include="Source\Systems\Camera\CameraSnapshot.cpp" />
     <ClCompile Include="Source\Dependencies\imgui\imgui.cpp" />
     <ClCompile Include="Source\Dependencies\imgui\imgui_demo.cpp" />
@@ -202,8 +214,8 @@
     <ClCompile Include="Source\Systems\PostProcessing\SSAO.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Assets\SimpleTextureAssetJob.h" />
     <ClInclude Include="Source\Systems\Rendering\IBLSkybox.h" />
-    <ClInclude Include="Source\Systems\Camera\CameraParams.h" />
     <ClInclude Include="Source\Systems\Camera\CameraSnapshot.h" />
     <ClInclude Include="Source\Dependencies\imgui\imconfig.h" />
     <ClInclude Include="Source\Dependencies\imgui\imgui.h" />
@@ -261,6 +273,7 @@
     <ClInclude Include="Source\Systems\Rendering\Primitives\Sphere.h" />
     <ClInclude Include="Source\Core\WindowParams.h" />
     <ClInclude Include="Source\Systems\PostProcessing\SSAO.h" />
+    <ClInclude Include="Source\Systems\UI\UIHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Shaders\advanced_glsl.vs" />
@@ -340,4 +353,9 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties BuildVersion_StartDate="2000/1/1" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

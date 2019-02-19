@@ -49,7 +49,7 @@ public:
 	float GetHeightSize() { return m_heightSize; }
 
 private:
-	glm::vec3 CalculateNormalFromIndices(const std::vector<Vertex>& vertices, int a, int b, int c);
+	glm::vec3 CalculateNormalFromIndices(const std::vector<VertexInfo>& vertices, int a, int b, int c);
 	float GetPerlinNoise(const glm::vec2& pos);
 
 private:

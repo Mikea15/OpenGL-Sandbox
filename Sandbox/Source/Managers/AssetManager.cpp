@@ -369,6 +369,17 @@ void AssetManager::ProcessModelNode(const aiScene* scene, aiNode* node, Model& m
 		const aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		const aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
+		size_t pSize = material->mNumProperties;
+		for (int i = 0; i < pSize; ++i)
+		{
+			aiString string = material->mProperties[i]->mKey;
+			aiPropertyTypeInfo type = material->mProperties[i]->mType;
+			int idx = material->mProperties[i]->mIndex;
+
+			std::cout << "Material PropKey: " << string.C_Str() << std::endl;
+		}
+
+
 		Mesh* newMesh = model.LoadMesh(scene, mesh);
 
 		m_meshCache.push_back(newMesh);

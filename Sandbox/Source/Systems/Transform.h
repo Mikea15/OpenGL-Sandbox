@@ -37,6 +37,11 @@ public:
 	void Scale(float delta);
 	void Scale(const glm::vec3& axis, float delta);
 
+	const glm::vec3& GetUp() { return m_orientation * glm::vec3(0, 1, 0); }
+	const glm::vec3& GetRight() { return m_orientation * glm::vec3(1, 0, 0); }
+	const glm::vec3& GetForward() { return m_orientation * glm::vec3(0, 0, -1); }
+
+
 	glm::mat4 GetModelMat();
 
 

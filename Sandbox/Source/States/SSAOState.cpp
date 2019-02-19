@@ -23,7 +23,7 @@ void SSAOState::Init(Game* game)
 
 	ent = Entity();
 	Model model;
-	m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj", model);
+	m_assetManager->LoadModel("Data/Objects/default/cube1m.fbx", model);
 	ent.SetModel(model);
 	ent.GetTransform().SetScale(glm::vec3(0.01f));
 
@@ -174,7 +174,6 @@ void SSAOState::Render(float alpha)
 	ssaoFx.BindTextureMaps();
 	
 	quad.Draw();
-
 }
 
 void SSAOState::RenderUI()

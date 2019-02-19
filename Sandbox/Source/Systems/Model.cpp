@@ -40,12 +40,12 @@ Mesh* Model::LoadMesh(const aiScene* rootScene, const aiMesh* mesh)
 {
 	std::shared_ptr<Mesh> meshData = std::make_shared<Mesh>();
 
-	std::vector<Vertex> vertices;
+	std::vector<VertexInfo> vertices;
 	std::vector<unsigned int> indices;
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; ++i)
 	{
-		Vertex vertex;
+		VertexInfo vertex;
 		vertex.Position = glm::vec3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z);
 		vertex.Normal = glm::vec3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z);
 		vertex.Tangent = glm::vec3(mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z);

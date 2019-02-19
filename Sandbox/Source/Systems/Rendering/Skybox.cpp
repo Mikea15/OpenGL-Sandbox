@@ -1,6 +1,7 @@
 #include "Skybox.h"
 
 #include "Dependencies/imgui/imgui.h"
+#include "Systems/UI/UIHelper.h"
 
 Skybox::Skybox()
 {
@@ -99,25 +100,18 @@ void Skybox::Draw(const Shader& shader)
 
 void Skybox::DrawUIPanel()
 {
-	ImGui::Begin("Skybox Settings"); ImGui::BeginGroup();
+	ImGui::Begin("Skybox Settings"); 
 
-	static auto colorSliderUpdate = [&](const std::string& name, glm::vec3& outColor)
-	{
-		float color[3] = { outColor.x, outColor.y, outColor.z };
-		ImGui::ColorEdit3(name.c_str(), color, ImGuiColorEditFlags_RGB);
-		outColor = glm::vec3(color[0], color[1], color[2]);
-	};
-
-	colorSliderUpdate("Top Color", m_currentSettings.topColor);
+	ImGui::ColorEdit3("Top Color", m_currentSettings.topColor);
 	ImGui::SliderFloat("Top Exponent", &m_currentSettings.topExp, 0.0f, 100.0f);
 	ImGui::Separator();
-	colorSliderUpdate("Horizon Color", m_currentSettings.horizonColor);
+	ImGui::ColorEdit3("Horizon Color", m_currentSettings.horizonColor);
 	ImGui::Separator();
-	colorSliderUpdate("Bottom Color", m_currentSettings.bottomColor);
+	ImGui::ColorEdit3("Bottom Color", m_currentSettings.bottomColor);
 	ImGui::SliderFloat("Bottom Exponent", &m_currentSettings.bottomExp, 0.0f, 100.0f);
 	ImGui::Separator();
 	ImGui::SliderFloat("Sky Intensity", &m_currentSettings.skyIntensity, 0.0f, 2.0f);
-	colorSliderUpdate("Sun Color", m_currentSettings.sunColor);
+	ImGui::ColorEdit3("Sun Color", m_currentSettings.sunColor);
 	ImGui::Separator();
 	ImGui::SliderFloat("Sun Intensity", &m_currentSettings.sunIntensity, 0.0f, 3.0f);
 	ImGui::SliderFloat("Sun Alpha", &m_currentSettings.sunAlpha, 0.0f, 1000.0f);
@@ -125,6 +119,5 @@ void Skybox::DrawUIPanel()
 	ImGui::SliderFloat("Sun Azimuth (deg)", &m_currentSettings.sunAzimuth, 0.0f, 360.0f);
 	ImGui::SliderFloat("Sun Altitude (deg)", &m_currentSettings.sunAltitude, 0.0f, 360.0f);
 
-
-	ImGui::EndGroup(); ImGui::End();
+	ImGui::End();
 }

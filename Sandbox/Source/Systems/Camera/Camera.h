@@ -11,12 +11,37 @@
 
 #include "../Geometry/BoundingFrustum.h"
 
-#include "CameraParams.h"
 #include "CameraSnapshot.h"
+#include "../Transform.h"
 
 class Camera
 {
 public:
+	struct Params
+	{
+		float m_fov = 70.0f;
+		float m_nearPlane = 0.01f;
+		float m_farPlane = 350.0f;
+		float m_aspectRatio = 16.0f / 9.0f;
+		float m_orthoSize = 5.0f;
+
+		bool m_isOrtho = false;
+
+		bool operator==(const Params& rhs) {
+			if (m_fov != rhs.m_fov) return false;
+			if (m_nearPlane != rhs.m_nearPlane) return false;
+			if (m_farPlane != rhs.m_farPlane) return false;
+			if (m_aspectRatio != rhs.m_aspectRatio) return false;
+			if (m_orthoSize != rhs.m_orthoSize) return false;
+			if (m_isOrtho != rhs.m_isOrtho) return false;
+			return true;
+		}
+
+		bool operator!=(const Params& rhs) {
+			return !(*this == rhs);
+		}
+	};
+
 	Camera();
 	~Camera() = default;
 
@@ -59,8 +84,8 @@ public:
 		
 	const BoundingFrustum& GetBoundingFrustum() const { return m_frustum; }
 
-	const CameraParams& GetParams() const { return m_params; }
-	void SetParams(const CameraParams& params);
+	const Params& GetParams() const { return m_params; }
+	void SetParams(const Params& params);
 
 	CameraSnapshot SaveCameraSnapshot();
 	void InterpolateTo(CameraSnapshot b, float time);
@@ -70,15 +95,18 @@ private:
 	glm::mat4 m_projectionMatrix;
 	glm::mat4 m_orthographicMatrix;
 
+	Transform m_transform;
+
 	glm::vec3 m_forward;
 	glm::vec3 m_up;
 	glm::vec3 m_right;
 
 	glm::vec3 m_position;
+
 	float m_horizontalAngle;
 	float m_verticalAngle;
 
-	CameraParams m_params;
+	Params m_params;
 
 	BoundingFrustum m_frustum;
 

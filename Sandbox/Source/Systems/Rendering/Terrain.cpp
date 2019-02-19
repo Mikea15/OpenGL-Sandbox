@@ -29,7 +29,7 @@ void Terrain::GenerateMesh()
 	int nVertsPerTris = nTiles * 6;
 
 	// Create mesh data
-	std::vector<Vertex> verts;
+	std::vector<VertexInfo> verts;
 	verts.resize(nVerts);
 
 	std::vector<unsigned int> inds;
@@ -77,8 +77,8 @@ void Terrain::GenerateMesh()
 	for (int v = 0; v < vertices.size(); v += 4)
 	{
 		/* 2 --- 3
-		 * |   / |
-		 * | /   |
+		 * | \   |
+		 * |   \ |
 		 * 0 --- 1
 		 */
 		int triIndex = v / 4 * 6;
@@ -149,7 +149,7 @@ void Terrain::UpdateHeightMap()
 	m_mesh.CreateBuffers();
 }
 
-glm::vec3 Terrain::CalculateNormalFromIndices(const std::vector<Vertex>& vertices, int a, int b, int c)
+glm::vec3 Terrain::CalculateNormalFromIndices(const std::vector<VertexInfo>& vertices, int a, int b, int c)
 {
 	glm::vec3 pA = vertices[a].Position;
 	glm::vec3 pB = vertices[b].Position;

@@ -22,6 +22,8 @@
 #include "Systems/Rendering/Texture.h"
 #include "Systems/Material.h"
 
+#include "Assets/SimpleTextureAssetJob.h"
+
 static TextureType GetTextureTypeFrom(aiTextureType type)
 {
 	static std::unordered_map<aiTextureType, TextureType> map =
@@ -34,19 +36,6 @@ static TextureType GetTextureTypeFrom(aiTextureType type)
 
 	return map[type];
 }
-
-struct SimpleTextureAssetJob
-{
-	std::string path = "";
-	bool useGammaCorrection = true;
-	unsigned int* id = nullptr;
-};
-
-struct SimpleTextureAssetJobResult
-{
-	unsigned int* id = nullptr;
-	TextureInfo textureInfo;
-};
 
 struct TextureAssetJob
 {

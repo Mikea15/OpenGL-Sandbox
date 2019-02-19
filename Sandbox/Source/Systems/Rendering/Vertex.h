@@ -1,6 +1,6 @@
 #pragma once
 
-struct Vertex
+struct VertexInfo
 {
 	glm::vec3 Position;
 	glm::vec3 Normal;

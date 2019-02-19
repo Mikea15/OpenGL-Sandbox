@@ -47,5 +47,5 @@ protected:
 	Shader skyboxShader;
 
 	Skybox m_skybox;
-	SkyboxSettings skyboxSettings;
+	Skybox::Settings skyboxSettings;
 };

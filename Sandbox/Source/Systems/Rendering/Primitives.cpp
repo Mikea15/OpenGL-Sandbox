@@ -61,7 +61,7 @@ void Primitives::RenderLine(const glm::vec3& start, const glm::vec3& end)
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	//}
 
-	glLineWidth(2);
+	glLineWidth(1);
 	glBindVertexArray(lineVao);
 	glDrawArrays(GL_LINES, 0, 2);
 	glBindVertexArray(0);

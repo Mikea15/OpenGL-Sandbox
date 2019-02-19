@@ -115,7 +115,7 @@ private:
 // EG: deduced initializer lists, decl-only static const int members, 0|NULL instead of nullptr, overloaded fn names, and bitfields
 //***************
 template< class ComponentType, typename... Args >
-void SystemComponentManager::AddComponent(Args&&... params) 
+void SystemComponentManager::AddComponent(Args&&... params)
 {
 	m_components.emplace_back(std::make_unique< ComponentType >(std::forward< Args >(params)...));
 }
@@ -151,7 +151,7 @@ inline bool SystemComponentManager::RemoveComponent()
 	if (m_components.empty())
 		return false;
 
-	auto& index = std::find_if( m_components.begin(), m_components.end(), 
+	auto& index = std::find_if(m_components.begin(), m_components.end(),
 		[classType = ComponentType::Type](auto& component)
 	{
 		return component->IsClassType(classType);
@@ -202,14 +202,14 @@ inline int SystemComponentManager::RemoveComponents()
 
 	do {
 		auto& index = std::find_if(m_components.begin(), m_components.end(),
-			[classType = ComponentType::Type](auto& component) 
+			[classType = ComponentType::Type](auto& component)
 		{
 			return component->IsClassType(classType);
 		});
 
 		success = index != m_components.end();
 
-		if (success) 
+		if (success)
 		{
 			m_components.erase(index);
 			++numRemoved;

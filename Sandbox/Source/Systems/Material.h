@@ -8,10 +8,7 @@
 
 #include "nlohmann/json.hpp"
 
-class AssetManager;
-
 using namespace nlohmann;
-
 
 class Material
 {
@@ -31,8 +28,6 @@ public:
 	void SetMaterialProperty(const std::string& name, const std::variant<int, float, std::string, bool>& value);
 
 	void BindTextures();
-
-	
 
 private:
 	Shader m_shader;

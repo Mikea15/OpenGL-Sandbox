@@ -25,7 +25,7 @@ public:
 
 	virtual ~Mesh();
 
-	virtual void SetupMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices);
+	virtual void SetupMesh(std::vector<VertexInfo> vertices, std::vector<unsigned int> indices);
 	virtual void SetupTextures(std::vector<Texture> textures);
 	virtual void CreateBuffers();
 
@@ -41,7 +41,7 @@ public:
 	unsigned int GetVBO() const { return m_VBO; }
 	unsigned int GetEBO() const { return m_EBO; }
 
-	std::vector<Vertex>& GetVertices() { return m_vertices; }
+	std::vector<VertexInfo>& GetVertices() { return m_vertices; }
 	std::vector<unsigned int>& GetIndices() { return m_indices; }
 	std::vector<Texture>& GetTextures() { return m_texture; }
 
@@ -50,7 +50,7 @@ public:
 protected:
 	Material m_material;
 
-	std::vector<Vertex> m_vertices;
+	std::vector<VertexInfo> m_vertices;
 	std::vector<unsigned int> m_indices;
 	std::vector<Texture> m_texture;
 
@@ -61,7 +61,6 @@ protected:
 private:
 	unsigned int m_id;
 	bool m_isReady;
-
 
 	static unsigned int ID;
 };

@@ -54,11 +54,12 @@ Mesh& Mesh::operator=(const Mesh & assign)
 
 Mesh::~Mesh()
 {
-	// glDeleteVertexArrays(1, &m_VAO);
-	// glDeleteBuffers(1, &m_VBO);
+	glDeleteVertexArrays(1, &m_VAO);
+	glDeleteBuffers(1, &m_VBO);
+	glDeleteBuffers(1, &m_EBO);
 }
 
-void Mesh::SetupMesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices)
+void Mesh::SetupMesh(std::vector<VertexInfo> vertices, std::vector<unsigned int> indices)
 {
 	this->m_vertices = vertices;
 	this->m_indices = indices;
@@ -82,7 +83,7 @@ void Mesh::CreateBuffers()
 	// A great thing about structs is that their memory layout is sequential for all its items.
 	// The effect is that we can simply pass a pointer to the struct and it translates perfectly to a glm::vec3/2 array which
 	// again translates to 3/2 floats which translates to a byte array.
-	glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(Vertex), &m_vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_vertices.size() * sizeof(VertexInfo), &m_vertices[0], GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(unsigned int), &m_indices[0], GL_STATIC_DRAW);
@@ -90,19 +91,19 @@ void Mesh::CreateBuffers()
 	// set the vertex attribute pointers
 	// vertex Positions
 	glEnableVertexAttribArray(0); // layout (location = 0)
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)0);
 	// vertex normals
 	glEnableVertexAttribArray(1); // layout (location = 1)
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Normal));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, Normal));
 	// vertex texture coords
 	glEnableVertexAttribArray(2); // layout (location = 2)
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords));
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, TexCoords));
 	// vertex tangent
 	glEnableVertexAttribArray(3); // layout (location = 3)
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, Tangent));
 	// vertex bitangent
 	glEnableVertexAttribArray(4); // layout (location = 4)
-	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Bitangent));
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, Bitangent));
 
 	glBindVertexArray(0);
 
@@ -211,8 +212,8 @@ void Mesh::DrawInstanced(Shader shader, int instanceCount)
 	}
 
 	BindTextures(shader);
+
 	// draw mesh
-	// glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * instanceCount, &matrices[0], GL_DYNAMIC_DRAW);
 	glBindVertexArray(m_VAO);
 	glDrawElementsInstanced(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0, instanceCount);
 	glBindVertexArray(0);

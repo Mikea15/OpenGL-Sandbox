@@ -7,11 +7,9 @@
 
 using namespace nlohmann;
 
-
 class WindowParams
 {
 public:
-
 	// Window
 	int Height = 600;
 	int Width = 800;
