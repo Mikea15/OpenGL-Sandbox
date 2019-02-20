@@ -88,21 +88,22 @@ void Mesh::CreateBuffers()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(unsigned int), &m_indices[0], GL_STATIC_DRAW);
 
+	unsigned int offset = 0;
 	// set the vertex attribute pointers
 	// vertex Positions
-	glEnableVertexAttribArray(0); // layout (location = 0)
+	glEnableVertexAttribArray(offset + 0); // layout (location = 0)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)0);
 	// vertex normals
-	glEnableVertexAttribArray(1); // layout (location = 1)
+	glEnableVertexAttribArray(offset + 1); // layout (location = 1)
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, Normal));
 	// vertex texture coords
-	glEnableVertexAttribArray(2); // layout (location = 2)
+	glEnableVertexAttribArray(offset + 2); // layout (location = 2)
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, TexCoords));
 	// vertex tangent
-	glEnableVertexAttribArray(3); // layout (location = 3)
+	glEnableVertexAttribArray(offset + 3); // layout (location = 3)
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, Tangent));
 	// vertex bitangent
-	glEnableVertexAttribArray(4); // layout (location = 4)
+	glEnableVertexAttribArray(offset + 4); // layout (location = 4)
 	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, Bitangent));
 
 	glBindVertexArray(0);

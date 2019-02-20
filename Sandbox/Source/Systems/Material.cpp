@@ -23,7 +23,7 @@ Material::Material()
 
 void Material::SetTextures(const std::vector<Texture>& textures)
 {
-	std::copy(textures.begin(), textures.end(), m_textures.begin());
+	// std::copy(textures.begin(), textures.end(), m_textures.begin());
 	//m_textures = textures;
 }
 
@@ -98,6 +98,18 @@ void Material::BindTextures()
 		glBindTexture(GL_TEXTURE_2D, m_textures[i].id);
 	}
 }
+
+void Material::AddTexture(Texture texture)
+{
+	m_textures.push_back(texture);
+}
+
+void Material::AddTexturePath(TextureType type, const std::string& path)
+{
+	m_texturePathPerType[type].push_back(path);
+}
+
+
 
 
 

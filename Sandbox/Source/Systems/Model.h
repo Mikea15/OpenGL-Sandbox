@@ -21,10 +21,7 @@ public:
 	Model();
 	Model(const Model& copy);
 	Model(Model&& move);
-	Model& operator =(const Model& assign); 
-	Model(std::string path) {};
-
-	Mesh* LoadMesh(const aiScene* rootScene, const aiMesh* mesh, Material* outMaterial);
+	Model& operator=(const Model& assign); 
 
 	std::shared_ptr<Material> GetMaterial(unsigned int index) { return m_meshToMaterial[index]; }
 
@@ -33,6 +30,10 @@ public:
 
 	std::vector<std::shared_ptr<Mesh>>& GetMeshes() { return m_meshes; }
 	unsigned int GetMeshCount() const { return m_meshes.size(); }
+
+	void AddMesh(std::shared_ptr<Mesh> mesh);
+
+	
 
 	bool m_useGammaCorrection;
 private:

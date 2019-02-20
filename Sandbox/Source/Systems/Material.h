@@ -29,9 +29,18 @@ public:
 
 	void BindTextures();
 
+	void AddTexture(Texture texture);
+	void AddTexturePath(TextureType type, const std::string& path);
+
+	std::vector<std::string> GetTexturePaths(TextureType type) { return m_texturePathPerType[type]; }
+
 private:
+	std::vector<std::string> m_texturePaths;
+
 	Shader m_shader;
 	std::vector<Texture> m_textures;
+
+	std::unordered_map<TextureType, std::vector<std::string>> m_texturePathPerType;
 
 	std::unordered_map<unsigned int, unsigned int> m_materialMapToVectorIndex;
 	std::vector<Property> m_materialProperties;

@@ -78,9 +78,9 @@ void AssetManager::LoaderThread(std::future<void> futureObj)
 		if (hasTextureAssetJob)
 		{
 			TextureAssetJobResult jobResult;
-			jobResult.meshCacheIndex = textureAssetJob.meshCacheIndex;
+			jobResult.materialindex = textureAssetJob.materialIndex;
 			jobResult.textureInfos = LoadTexturesFromAssetJob(textureAssetJob);
-			jobResult.textureType = GetTextureTypeFrom(textureAssetJob.textureType);
+			jobResult.textureType = textureAssetJob.textureType;
 
 			{
 				std::scoped_lock<std::mutex> lock(m_workloadReadyMutex);
@@ -125,17 +125,15 @@ void AssetManager::Update()
 		TextureAssetJobResult jobResult = m_jobsTextureAssetResults.front();
 		m_jobsTextureAssetResults.pop();
 
-		std::vector<Texture> outTextures;
-		for (TextureInfo ti : jobResult.textureInfos)
+		if (jobResult.materialindex >= m_materialCache.size()) 
 		{
-			Texture tex = GenerateTexture(ti, jobResult.textureType);
-			outTextures.push_back(tex);
+			return;
 		}
 
-		if (jobResult.meshCacheIndex < m_meshCache.size() - 1)
+		for (TextureInfo ti : jobResult.textureInfos)
 		{
-			// these meshes are not the same. check m_VAO on Mesh.
-			m_meshCache[jobResult.meshCacheIndex]->SetupTextures(outTextures);
+			Texture texture = GenerateTexture(ti, jobResult.textureType);
+			m_materialCache[jobResult.materialindex]->AddTexture(texture);
 		}
 	}
 }
@@ -369,104 +367,46 @@ void AssetManager::ProcessModelNode(const aiScene* scene, aiNode* node, Model& m
 		const aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		const aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
-		Material* newMaterial = nullptr;
-		Mesh* newMesh = model.LoadMesh(scene, mesh, newMaterial);
+		std::shared_ptr<Mesh> loadedMesh = m_assimpLoader.LoadMesh(scene, mesh);
+		std::shared_ptr<Material> loadedMaterial = m_assimpLoader.LoadMaterial(material, directory);
 
-		const int meshCacheIndex = m_meshCache.size();
-		m_meshCache.push_back(newMesh);
-
-		auto diffuseTexJobs = TextureAssetJob();
-		diffuseTexJobs.meshCacheIndex = meshCacheIndex;
-		diffuseTexJobs.useGammaCorrection = model.m_useGammaCorrection;
-		diffuseTexJobs.textureType = aiTextureType_DIFFUSE;
-		LoadTexturesOfType(material, diffuseTexJobs.textureType, directory, diffuseTexJobs.resourcePaths);
-
-		auto normalMapTexJobs = TextureAssetJob();
-		normalMapTexJobs.meshCacheIndex = meshCacheIndex;
-		normalMapTexJobs.useGammaCorrection = model.m_useGammaCorrection;
-		normalMapTexJobs.textureType = aiTextureType_NORMALS;
-		LoadTexturesOfType(material, normalMapTexJobs.textureType, directory, normalMapTexJobs.resourcePaths);
-
-		auto specMapTexJobs = TextureAssetJob();
-		specMapTexJobs.meshCacheIndex = meshCacheIndex;
-		specMapTexJobs.useGammaCorrection = model.m_useGammaCorrection;
-		specMapTexJobs.textureType = aiTextureType_SPECULAR;
-		LoadTexturesOfType(material, specMapTexJobs.textureType, directory, specMapTexJobs.resourcePaths);
-
-		auto heightMapTexJobs = TextureAssetJob();
-		heightMapTexJobs.meshCacheIndex = meshCacheIndex;
-		heightMapTexJobs.useGammaCorrection = model.m_useGammaCorrection;
-		heightMapTexJobs.textureType = aiTextureType_HEIGHT;
-		LoadTexturesOfType(material, heightMapTexJobs.textureType, directory, heightMapTexJobs.resourcePaths);
-
-		bool useGammaCorrection = model.m_useGammaCorrection;
+		const int materialCacheIndex = m_materialCache.size(); // change gor
+		
 		// Synchronous Texture Loading
 		bool enableAsyncLoading = false;
-		if (enableAsyncLoading)
+
+		std::vector<aiTextureType> supportedTypes = m_assimpLoader.GetSupportedTypes();
+		for (aiTextureType type : supportedTypes)
 		{
-			std::scoped_lock<std::mutex> lock(m_mutex);
-			if (!diffuseTexJobs.resourcePaths.empty())
+			TextureType textureType = m_assimpLoader.GetTextureTypeFrom(type);
+			std::vector<std::string> texturePaths = loadedMaterial->GetTexturePaths(textureType);
+			if (enableAsyncLoading)
 			{
-				m_jobsTextureAssets.emplace(diffuseTexJobs);
-			}
+				TextureAssetJob job;
+				job.materialIndex = materialCacheIndex;
+				job.useGammaCorrection = model.m_useGammaCorrection;
+				job.textureType = textureType;
+				job.resourcePaths = texturePaths;
 
-			if (!normalMapTexJobs.resourcePaths.empty())
-			{
-				m_jobsTextureAssets.emplace(normalMapTexJobs);
+				std::scoped_lock<std::mutex> lock(m_mutex);
+				m_jobsTextureAssets.emplace(job);
 			}
-
-			if (!specMapTexJobs.resourcePaths.empty())
+			else
 			{
-				m_jobsTextureAssets.emplace(specMapTexJobs);
-			}
-
-			if (!heightMapTexJobs.resourcePaths.empty())
-			{
-				m_jobsTextureAssets.emplace(heightMapTexJobs);
+				for (const std::string& path : texturePaths)
+				{
+					Texture texture = LoadTexture(path, model.m_useGammaCorrection, textureType);
+					loadedMaterial->AddTexture(texture);
+				}
 			}
 		}
-		else
-		{
-			std::vector<Texture> textures;
-			for (const auto& p : diffuseTexJobs.resourcePaths)
-			{
-				Texture texture = LoadTexture(p, useGammaCorrection, TextureType::DiffuseMap);
-				if (texture.id != 0)
-				{
-					textures.push_back(texture);
-				}
-			}
 
-			for (const auto& p : specMapTexJobs.resourcePaths)
-			{
-				Texture texture = LoadTexture(p, useGammaCorrection, TextureType::SpecularMap);
-				if (texture.id != 0)
-				{
-					textures.push_back(texture);
-				}
-			}
+		loadedMesh->SetMaterial(loadedMaterial);
 
-			for (const auto& p : heightMapTexJobs.resourcePaths)
-			{
-				Texture texture = LoadTexture(p, useGammaCorrection, TextureType::HeightMap);
-				if (texture.id != 0)
-				{
-					textures.push_back(texture);
-				}
-			}
+		model.AddMesh(loadedMesh);
 
-			for (const auto& p : normalMapTexJobs.resourcePaths)
-			{
-				Texture texture = LoadTexture(p, useGammaCorrection, TextureType::NormalMap);
-				if (texture.id != 0)
-				{
-					textures.push_back(texture);
-				}
-			}
-			
-			newMesh->SetupTextures(textures);
-			newMaterial->SetTextures(textures);		
-		}
+		m_meshCache.push_back(loadedMesh);
+		m_materialCache.push_back(loadedMaterial);
 	}
 
 	for (unsigned int i = 0; i < node->mNumChildren; ++i)
@@ -474,18 +414,5 @@ void AssetManager::ProcessModelNode(const aiScene* scene, aiNode* node, Model& m
 		ProcessModelNode(scene, node->mChildren[i], model, directory);
 	}
 }
-
-void AssetManager::LoadTexturesOfType(const aiMaterial * material, aiTextureType textureType, std::string directory, std::vector<std::string>& texturePaths)
-{
-	const unsigned int textureCount = material->GetTextureCount(textureType);
-	for (unsigned int i = 0; i < textureCount; ++i)
-	{
-		aiString path;
-		material->GetTexture(textureType, i, &path);
-		texturePaths.push_back(directory + path.C_Str());
-	}
-}
-
-
 
 

@@ -10,10 +10,6 @@
 #include <mutex>
 #include <future>
 
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
 #include "Dependencies/std_image/stb_image.h"
 
 #include "Systems/Rendering/Shader.h"
@@ -22,25 +18,13 @@
 #include "Systems/Rendering/Texture.h"
 #include "Systems/Material.h"
 
+#include "Assets/AssimpLoader.h"
 #include "Assets/SimpleTextureAssetJob.h"
-
-static TextureType GetTextureTypeFrom(aiTextureType type)
-{
-	static std::unordered_map<aiTextureType, TextureType> map =
-	{
-		{ aiTextureType_DIFFUSE, TextureType::DiffuseMap },
-		{ aiTextureType_NORMALS, TextureType::NormalMap },
-		{ aiTextureType_SPECULAR, TextureType::SpecularMap },
-		{ aiTextureType_HEIGHT, TextureType::HeightMap }
-	};
-
-	return map[type];
-}
 
 struct TextureAssetJob
 {
-	int meshCacheIndex = 0;
-	aiTextureType textureType;
+	unsigned int materialIndex = 0;
+	TextureType textureType = TextureType::None;
 	std::vector<std::string> resourcePaths;
 	bool useGammaCorrection = true;
 	std::vector<TextureInfo> texDatas;
@@ -48,7 +32,7 @@ struct TextureAssetJob
 
 struct TextureAssetJobResult
 {
-	int meshCacheIndex = 0;
+	unsigned int materialindex = 0;
 	TextureType textureType = TextureType::None;
 	std::vector<TextureInfo> textureInfos;
 };
@@ -66,12 +50,9 @@ public:
 	void LoaderThread( std::future<void> futureObj );
 	void Update();
 
+	// TODO: Move to AssimLoader.
 	// Models
 	void LoadModel(const std::string& path, Model& model);
-
-	// Materials
-	// - Load Material
-	// - Get Material
 	
 	// Textures
 	Texture LoadTexture(const std::string& path, bool useGammaCorrection = false, TextureType type = TextureType::None);
@@ -89,9 +70,9 @@ private:
 
 	void ProcessModelNode(const aiScene* scene, aiNode* node, Model& model, const std::string& directory);
 
-	void LoadTexturesOfType(const aiMaterial* material, aiTextureType textureType, std::string directory, std::vector<std::string>& texturePaths);
-
 private:
+	AssimpLoader m_assimpLoader;
+
 	std::unordered_map<size_t, Texture> m_textureMap;
 
 	std::unordered_map<size_t, Model> m_modelsMap;
@@ -108,8 +89,9 @@ private:
 	std::queue<TextureAssetJob> m_jobsTextureAssets;
 	std::queue<TextureAssetJobResult> m_jobsTextureAssetResults;
 
-	std::vector<Mesh*> m_meshCache;
-	
+	std::vector<std::shared_ptr<Mesh>> m_meshCache;
+	std::vector<std::shared_ptr<Material>> m_materialCache;
+
 	int m_minThreads = 1;
 	int m_maxThreads = 2;
 

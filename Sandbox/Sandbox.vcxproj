@@ -158,6 +158,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Assets\AssimpLoader.cpp" />
     <ClCompile Include="Source\Assets\SimpleTextureAssetJob.cpp" />
     <ClCompile Include="Source\Systems\Rendering\IBLSkybox.cpp" />
     <ClCompile Include="Source\Systems\Camera\CameraSnapshot.cpp" />
@@ -214,6 +215,7 @@
     <ClCompile Include="Source\Systems\PostProcessing\SSAO.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Assets\AssimpLoader.h" />
     <ClInclude Include="Source\Assets\SimpleTextureAssetJob.h" />
     <ClInclude Include="Source\Systems\Rendering\IBLSkybox.h" />
     <ClInclude Include="Source\Systems\Camera\CameraSnapshot.h" />

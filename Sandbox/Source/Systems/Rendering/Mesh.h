@@ -27,6 +27,8 @@ public:
 
 	virtual void SetupMesh(std::vector<VertexInfo> vertices, std::vector<unsigned int> indices);
 	virtual void SetupTextures(std::vector<Texture> textures);
+	virtual void SetMaterial(std::shared_ptr<Material> material) { m_material = material; }
+
 	virtual void CreateBuffers();
 
 	virtual void BindTextures(Shader shader);
@@ -47,8 +49,10 @@ public:
 
 	const unsigned int GetId() const { return m_id; }
 
+
+
 protected:
-	Material m_material;
+	std::shared_ptr<Material> m_material;
 
 	std::vector<VertexInfo> m_vertices;
 	std::vector<unsigned int> m_indices;
