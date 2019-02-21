@@ -2,20 +2,47 @@
 
 #include "Managers/AssetManager.h"
 
-void to_json(json & j, const Material & mat)
+void to_json(json& j, const Material& p)
 {
-	j = json{
-		"MaterialProps", 1
-	};
+	j = json::object();
+
+	std::vector<Material::IntermediateData> data;
+	data.push_back({ TextureType::DiffuseMap, p.GetTexturePathsConst(TextureType::DiffuseMap) });
+	data.push_back({ TextureType::NormalMap, p.GetTexturePathsConst(TextureType::NormalMap) });
+	data.push_back({ TextureType::HeightMap, p.GetTexturePathsConst(TextureType::HeightMap) });
+	data.push_back({ TextureType::MetallicMap, p.GetTexturePathsConst(TextureType::MetallicMap) });
+	data.push_back({ TextureType::RoughnessMap, p.GetTexturePathsConst(TextureType::RoughnessMap) });
+	data.push_back({ TextureType::SpecularMap, p.GetTexturePathsConst(TextureType::SpecularMap) });
+	data.push_back({ TextureType::AOMap, p.GetTexturePathsConst(TextureType::AOMap) });
+
+	j["Material"] = data;
 }
 
-void from_json(const json & j, Material & mat)
+void from_json(const json& j, Material& p)
 {
-	int var = 0;
-	j.at("MaterialProps").get_to(var);
+	std::vector<Material::IntermediateData> data = j.at("Material").get<std::vector<Material::IntermediateData>>();
+
+	for (auto element : data)
+	{
+		for (auto paths : element.data)
+		{
+			p.AddTexturePath(element.type, paths);
+		}
+	}
 }
 
+void to_json(json& j, const Material::IntermediateData& p)
+{
+	j = json::object();
+	j["TextureType"] = p.type;
+	j["TexturePaths"] = p.data;
+}
 
+void from_json(const json& j, Material::IntermediateData& p)
+{
+	p.type = j.at("TextureType").get<TextureType>();
+	p.data = j.at("TexturePaths").get<std::vector<std::string>>();
+}
 
 Material::Material()
 {
@@ -108,6 +135,11 @@ void Material::AddTexture(Texture texture)
 void Material::AddTexturePath(TextureType type, const std::string& path)
 {
 	m_texturePathPerType[type].push_back(path);
+}
+
+void Material::AddTexturePaths(TextureType type, const std::vector<std::string>& paths)
+{
+	m_texturePathPerType[type] = paths;
 }
 
 

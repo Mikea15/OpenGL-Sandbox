@@ -12,13 +12,19 @@ using namespace nlohmann;
 
 class Material
 {
+public:
+	struct IntermediateData
+	{
+		TextureType type;
+		std::vector<std::string> data;
+	};
+
 	struct Property
 	{
 		std::string name;
 		std::variant<int, float, std::string, bool> value;
 	};
 
-public:
 	Material();
 	~Material() = default;
 
@@ -31,8 +37,18 @@ public:
 
 	void AddTexture(Texture texture);
 	void AddTexturePath(TextureType type, const std::string& path);
+	void AddTexturePaths(TextureType type, const std::vector<std::string>& paths);
 
 	std::vector<std::string> GetTexturePaths(TextureType type) { return m_texturePathPerType[type]; }
+	const std::vector<std::string> GetTexturePathsConst(TextureType type) const 
+	{ 
+		const auto findIt = m_texturePathPerType.find(type);
+		if (findIt != m_texturePathPerType.end())
+		{
+			return findIt->second;
+		}
+		return std::vector<std::string>();
+	}
 
 private:
 	Shader m_shader;
@@ -44,3 +60,8 @@ private:
 	std::vector<Property> m_materialProperties;
 };
 
+void to_json(json& j, const Material& p);
+void from_json(const json& j, Material& p);
+
+void to_json(json& j, const Material::IntermediateData& p);
+void from_json(const json& j, Material::IntermediateData& p);

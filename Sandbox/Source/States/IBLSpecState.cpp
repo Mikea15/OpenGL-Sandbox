@@ -3,6 +3,9 @@
 #include "Game.h"
 
 #include <random>
+#include <sstream>
+#include <fstream>
+
 
 #include "Systems/Material.h"
 
@@ -358,11 +361,6 @@ void IBLSpecState::Render(float alpha)
 
 		// rusted iron
 		iron.BindTextures();
-		//glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, ironAlbedoMap);
-		//glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, ironNormalMap);
-		//glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, ironMetallicMap);
-		//glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, ironRoughnessMap);
-		//glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, ironAOMap);
 		{
 			Transform t;
 			t.SetPosition(glm::vec3(-5.0, 0.0, 2.0));

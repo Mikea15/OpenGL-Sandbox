@@ -1,6 +1,5 @@
 #include "WindowParams.h"
 
-
 void to_json(json& j, const WindowParams& p)
 {
 	j = json{
