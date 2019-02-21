@@ -35,8 +35,6 @@ public:
 	std::vector<std::string> GetTexturePaths(TextureType type) { return m_texturePathPerType[type]; }
 
 private:
-	std::vector<std::string> m_texturePaths;
-
 	Shader m_shader;
 	std::vector<Texture> m_textures;
 

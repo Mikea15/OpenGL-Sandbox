@@ -9,6 +9,8 @@
 #include "Systems/QuadTree.h"
 #include "Systems/Octree.h"
 
+class Material;
+
 class IBLSpecState
 	: public DefaultState
 {
@@ -35,63 +37,15 @@ private:
 
 	Shader wireframeShader;
 
-	// load PBR material textures
-	// --------------------------
-	// rusted iron
-	unsigned int ironAlbedoMap = 0;
-	unsigned int ironNormalMap = 0;
-	unsigned int ironMetallicMap = 0;
-	unsigned int ironRoughnessMap = 0;
-	unsigned int ironAOMap = 0;
 
-	// gold
-	unsigned int goldAlbedoMap = 0;
-	unsigned int goldNormalMap = 0;
-	unsigned int goldMetallicMap = 0;
-	unsigned int goldRoughnessMap = 0;
-	unsigned int goldAOMap = 0;
-
-	// grass
-	unsigned int grassAlbedoMap = 0;
-	unsigned int grassNormalMap = 0;
-	unsigned int grassMetallicMap = 0;
-	unsigned int grassRoughnessMap = 0;
-	unsigned int grassAOMap = 0;
-
-	// plastic
-	unsigned int plasticAlbedoMap = 0;
-	unsigned int plasticNormalMap = 0;
-	unsigned int plasticMetallicMap = 0;
-	unsigned int plasticRoughnessMap = 0;
-	unsigned int plasticAOMap = 0;
-
-	// wall
-	unsigned int wallAlbedoMap = 0;
-	unsigned int wallNormalMap = 0;
-	unsigned int wallMetallicMap = 0;
-	unsigned int wallRoughnessMap = 0;
-	unsigned int wallAOMap = 0;
-
-	// marble
-	unsigned int marbleAlbedoMap = 0;
-	unsigned int marbleNormalMap = 0;
-	unsigned int marbleHeightMap = 0;
-	unsigned int marbleRoughnessMap;
-	unsigned int marbleAOMap;
-
-	// cliff granite
-	unsigned int graniteAlbedoMap = 0;
-	unsigned int graniteNormalMap = 0;
-	unsigned int graniteHeightMap = 0;
-	unsigned int graniteRoughnessMap = 0;
-	unsigned int graniteAOMap = 0;
-
-	// leather
-	unsigned int leatherAlbedoMap = 0;
-	unsigned int leatherNormalMap = 0;
-	unsigned int leatherHeightMap = 0;
-	unsigned int leatherRoughnessMap = 0;
-	unsigned int leatherAOMap = 0;
+	Material iron;
+	Material gold;
+	Material grass;
+	Material plastic;
+	Material wall;
+	Material marble;
+	Material granite;
+	Material leather;
 
 
 	std::vector<glm::vec3> lightPositions;

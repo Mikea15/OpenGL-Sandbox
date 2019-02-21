@@ -16,7 +16,10 @@ AssetManager::AssetManager()
 		TextureType::DiffuseMap,
 		TextureType::NormalMap,
 		TextureType::SpecularMap,
-		TextureType::HeightMap
+		TextureType::MetallicMap,
+		TextureType::RoughnessMap,
+		TextureType::HeightMap,
+		TextureType::AOMap,
 	};
 
 	futureObj = threadExitSignal.get_future();
@@ -202,6 +205,19 @@ std::shared_ptr<Model> AssetManager::LoadModel(const std::string& path)
 	}
 
 	return std::shared_ptr<Model>();
+}
+
+void AssetManager::LoadTexture(Material& material)
+{
+	for (TextureType type : m_supportedTextureTypes)
+	{
+		auto texturePaths = material.GetTexturePaths(type);
+		for (auto path : texturePaths)
+		{
+			Texture tex = LoadTexture(path, true, type);
+			material.AddTexture(tex);
+		}
+	}
 }
 
 Texture AssetManager::LoadTexture(const std::string& path, bool useGammaCorrection, TextureType type)

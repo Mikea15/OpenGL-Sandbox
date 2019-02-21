@@ -50,9 +50,11 @@ public:
 	void LoaderThread( std::future<void> futureObj );
 	void Update();
 
-	// TODO: Move to AssimLoader.
 	// Models
 	std::shared_ptr<Model> LoadModel(const std::string& path);
+
+	// Materials
+	void LoadTexture(Material& material);
 	
 	// Textures
 	Texture LoadTexture(const std::string& path, bool useGammaCorrection = false, TextureType type = TextureType::None);

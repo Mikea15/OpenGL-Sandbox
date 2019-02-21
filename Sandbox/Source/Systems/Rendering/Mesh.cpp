@@ -90,7 +90,7 @@ void Mesh::CreateBuffers()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(unsigned int), &m_indices[0], GL_STATIC_DRAW);
 
-	unsigned int offset = 0;
+	unsigned int offset = 3;
 	// set the vertex attribute pointers
 	// vertex Positions
 	glEnableVertexAttribArray(offset + 0); // layout (location = 0)

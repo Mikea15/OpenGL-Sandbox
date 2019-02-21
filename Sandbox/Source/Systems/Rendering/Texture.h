@@ -9,7 +9,10 @@ enum class TextureType
 	DiffuseMap,
 	NormalMap,
 	SpecularMap,
-	HeightMap
+	HeightMap,
+	MetallicMap,
+	AOMap,
+	RoughnessMap
 };
 
 struct TextureInfo

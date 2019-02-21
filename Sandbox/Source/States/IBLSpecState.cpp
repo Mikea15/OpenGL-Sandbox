@@ -4,6 +4,8 @@
 
 #include <random>
 
+#include "Systems/Material.h"
+
 static float ccCamNearPlane = 1.0f;
 static float ccCamFarPlane = 200.0f;
 static float ccCamFov = 60.0f;
@@ -51,6 +53,7 @@ void IBLSpecState::Init(Game* game)
 	pbrShader.SetInt("irradianceMap", 0);
 	pbrShader.SetInt("prefilterMap", 1);
 	pbrShader.SetInt("brdfLUT", 2);
+
 	pbrShader.SetInt("albedoMap", 3);
 	pbrShader.SetInt("normalMap", 4);
 	pbrShader.SetInt("metallicMap", 5);
@@ -64,60 +67,76 @@ void IBLSpecState::Init(Game* game)
 	// load PBR material textures
 	// --------------------------
 	// rusted iron
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/rusted_iron/albedo.png", false, &ironAlbedoMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/rusted_iron/normal.png", false, &ironNormalMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/rusted_iron/metallic.png", false, &ironMetallicMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/rusted_iron/roughness.png", false, &ironRoughnessMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/rusted_iron/ao.png", false, &ironAOMap);
+	iron.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/rusted_iron/albedo.png");
+	iron.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/rusted_iron/normal.png");
+	iron.AddTexturePath(TextureType::MetallicMap, "Data/Images/pbr/rusted_iron/metallic.png");
+	iron.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/rusted_iron/roughness.png");
+	iron.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/rusted_iron/ao.png");
+	iron.SetShader(pbrShader);
+	m_assetManager->LoadTexture(iron);
 
 	// gold
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/gold/albedo.png", false, &goldAlbedoMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/gold/normal.png", false, &goldNormalMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/gold/metallic.png", false, &goldMetallicMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/gold/roughness.png", false, &goldRoughnessMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/gold/ao.png", false, &goldAOMap);
+	gold.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/gold/albedo.png");
+	gold.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/gold/normal.png");
+	gold.AddTexturePath(TextureType::MetallicMap, "Data/Images/pbr/gold/metallic.png");
+	gold.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/gold/roughness.png");
+	gold.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/gold/ao.png");
+	gold.SetShader(pbrShader);
+	m_assetManager->LoadTexture(gold);
 
 	// grass
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/grass/albedo.png", false, &grassAlbedoMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/grass/normal.png", false, &grassNormalMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/grass/metallic.png", false, &grassMetallicMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/grass/roughness.png", false, &grassRoughnessMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/grass/ao.png", false, &grassAOMap);
+	grass.AddTexturePath(TextureType::DiffuseMap,"Data/Images/pbr/grass/albedo.png");
+	grass.AddTexturePath(TextureType::NormalMap,"Data/Images/pbr/grass/normal.png");
+	grass.AddTexturePath(TextureType::MetallicMap,"Data/Images/pbr/grass/metallic.png");
+	grass.AddTexturePath(TextureType::RoughnessMap,"Data/Images/pbr/grass/roughness.png");
+	grass.AddTexturePath(TextureType::AOMap,"Data/Images/pbr/grass/ao.png");
+	grass.SetShader(pbrShader);
+	m_assetManager->LoadTexture(grass);
 
 	// plastic
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/plastic/albedo.png", false, &plasticAlbedoMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/plastic/normal.png", false, &plasticNormalMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/plastic/metallic.png", false, &plasticMetallicMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/plastic/roughness.png", false, &plasticRoughnessMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/plastic/ao.png", false, &plasticAOMap);
+	plastic.AddTexturePath(TextureType::DiffuseMap,"Data/Images/pbr/plastic/albedo.png");
+	plastic.AddTexturePath(TextureType::NormalMap,"Data/Images/pbr/plastic/normal.png");
+	plastic.AddTexturePath(TextureType::MetallicMap,"Data/Images/pbr/plastic/metallic.png");
+	plastic.AddTexturePath(TextureType::RoughnessMap,"Data/Images/pbr/plastic/roughness.png");
+	plastic.AddTexturePath(TextureType::AOMap,"Data/Images/pbr/plastic/ao.png");
+	plastic.SetShader(pbrShader);
+	m_assetManager->LoadTexture(plastic);
 
 	// wall
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/wall/albedo.png", false, &wallAlbedoMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/wall/normal.png", false, &wallNormalMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/wall/metallic.png", false, &wallMetallicMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/wall/roughness.png", false, &wallRoughnessMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/wall/ao.png", false, &wallAOMap);
+	wall.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/wall/albedo.png");
+	wall.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/wall/normal.png");
+	wall.AddTexturePath(TextureType::MetallicMap, "Data/Images/pbr/wall/metallic.png");
+	wall.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/wall/roughness.png");
+	wall.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/wall/ao.png");
+	wall.SetShader(pbrShader);
+	m_assetManager->LoadTexture(wall);
 
 	// marble
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/marble/albedo.png", false, &marbleAlbedoMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/marble/normal.png", false, &marbleNormalMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/marble/height.png", false, &marbleHeightMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/marble/roughness.png", false, &marbleRoughnessMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/marble/ao.png", false, &marbleAOMap);
+	marble.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/marble/albedo.png");
+	marble.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/marble/normal.png");
+	marble.AddTexturePath(TextureType::HeightMap, "Data/Images/pbr/marble/height.png");
+	marble.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/marble/roughness.png");
+	marble.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/marble/ao.png");
+	marble.SetShader(pbrShader);
+	m_assetManager->LoadTexture(marble);
 
 	// granite
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/cliffgranite/albedo.png", false, &graniteAlbedoMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/cliffgranite/normal.png", false, &graniteNormalMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/cliffgranite/height.png", false, &graniteHeightMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/cliffgranite/roughness.png", false, &graniteRoughnessMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/cliffgranite/ao.png", false, &graniteAOMap);
+	granite.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/cliffgranite/albedo.png");
+	granite.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/cliffgranite/normal.png");
+	granite.AddTexturePath(TextureType::HeightMap, "Data/Images/pbr/cliffgranite/height.png");
+	granite.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/cliffgranite/roughness.png");
+	granite.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/cliffgranite/ao.png");
+	granite.SetShader(pbrShader);
+	m_assetManager->LoadTexture(granite);
 
 	// leather
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/leather/albedo.png", false, &leatherAlbedoMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/leather/normal.png", false, &leatherNormalMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/leather/height.png", false, &leatherHeightMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/leather/roughness.png", false, &leatherRoughnessMap);
-	m_assetManager->LoadTextureAsync("Data/Images/pbr/leather/ao.png", false, &leatherAOMap);
+	leather.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/leather/albedo.png");
+	leather.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/leather/normal.png");
+	leather.AddTexturePath(TextureType::HeightMap, "Data/Images/pbr/leather/height.png");
+	leather.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/leather/roughness.png");
+	leather.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/leather/ao.png");
+	leather.SetShader(pbrShader);
+	m_assetManager->LoadTexture(leather);
 
 	lightPositions.push_back(glm::vec3(-10.0f, 10.0f, 10.0f));
 	lightPositions.push_back(glm::vec3(10.0f, 10.0f, 10.0f));
@@ -338,11 +357,12 @@ void IBLSpecState::Render(float alpha)
 		iblSkybox.BindTextureMaps();
 
 		// rusted iron
-		glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, ironAlbedoMap);
-		glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, ironNormalMap);
-		glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, ironMetallicMap);
-		glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, ironRoughnessMap);
-		glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, ironAOMap);
+		iron.BindTextures();
+		//glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, ironAlbedoMap);
+		//glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, ironNormalMap);
+		//glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, ironMetallicMap);
+		//glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, ironRoughnessMap);
+		//glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, ironAOMap);
 		{
 			Transform t;
 			t.SetPosition(glm::vec3(-5.0, 0.0, 2.0));
@@ -352,11 +372,7 @@ void IBLSpecState::Render(float alpha)
 		}
 
 		// gold
-		glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, goldAlbedoMap);
-		glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, goldNormalMap);
-		glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, goldMetallicMap);
-		glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, goldRoughnessMap);
-		glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, goldAOMap);
+		gold.BindTextures();
 		{
 			Transform t;
 			t.SetPosition(glm::vec3(-3.0, 0.0, 2.0));
@@ -366,11 +382,7 @@ void IBLSpecState::Render(float alpha)
 		}
 
 		// grass
-		glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, grassAlbedoMap);
-		glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, grassNormalMap);
-		glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, grassMetallicMap);
-		glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, grassRoughnessMap);
-		glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, grassAOMap);
+		grass.BindTextures();
 		{
 			Transform t;
 			t.SetPosition(glm::vec3(-1.0, 0.0, 2.0));
@@ -380,11 +392,7 @@ void IBLSpecState::Render(float alpha)
 		}
 
 		// plastic
-		glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, plasticAlbedoMap);
-		glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, plasticNormalMap);
-		glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, plasticMetallicMap);
-		glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, plasticRoughnessMap);
-		glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, plasticAOMap);
+		plastic.BindTextures();
 		{
 			Transform t;
 			t.SetPosition(glm::vec3(1.0, 0.0, 2.0));
@@ -394,11 +402,7 @@ void IBLSpecState::Render(float alpha)
 		}
 
 		// wall
-		glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, wallAlbedoMap);
-		glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, wallNormalMap);
-		glActiveTexture(GL_TEXTURE5); glBindTexture(GL_TEXTURE_2D, wallMetallicMap);
-		glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, wallRoughnessMap);
-		glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, wallAOMap);
+		wall.BindTextures();
 		{
 			Transform t;
 			t.SetPosition(glm::vec3(3.0, 0.0, 2.0));
@@ -408,12 +412,7 @@ void IBLSpecState::Render(float alpha)
 		}
 
 		// marble
-		glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, marbleAlbedoMap);
-		glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, marbleNormalMap);
-
-		glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, marbleRoughnessMap);
-		glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, marbleAOMap);
-		glActiveTexture(GL_TEXTURE8); glBindTexture(GL_TEXTURE_2D, marbleHeightMap);
+		marble.BindTextures();
 		{
 			Transform t;
 			t.SetPosition(glm::vec3(-1.0, 2.0, 2.0));
@@ -423,12 +422,7 @@ void IBLSpecState::Render(float alpha)
 		}
 
 		// granite
-		glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, graniteAlbedoMap);
-		glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, graniteNormalMap);
-
-		glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, graniteRoughnessMap);
-		glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, graniteAOMap);
-		glActiveTexture(GL_TEXTURE8); glBindTexture(GL_TEXTURE_2D, graniteHeightMap);
+		granite.BindTextures();
 		{
 			Transform t;
 			t.SetPosition(glm::vec3(1.0, 2.0, 2.0));
@@ -438,12 +432,7 @@ void IBLSpecState::Render(float alpha)
 		}
 
 		// leather
-		glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, leatherAlbedoMap);
-		glActiveTexture(GL_TEXTURE4); glBindTexture(GL_TEXTURE_2D, leatherNormalMap);
-
-		glActiveTexture(GL_TEXTURE6); glBindTexture(GL_TEXTURE_2D, leatherRoughnessMap);
-		glActiveTexture(GL_TEXTURE7); glBindTexture(GL_TEXTURE_2D, leatherAOMap);
-		glActiveTexture(GL_TEXTURE8); glBindTexture(GL_TEXTURE_2D, leatherHeightMap);
+		leather.BindTextures();
 		{
 			Transform t;
 			t.SetPosition(glm::vec3(3.0, 2.0, 2.0));
@@ -474,8 +463,8 @@ void IBLSpecState::Render(float alpha)
 		}
 	}
 
-	bool showSpeheres = true;
-	if (showSpeheres)
+	bool showSpheres = true;
+	if (showSpheres)
 	{
 		// draw 3d grid of cubes.
 		const unsigned int size = positions.size();

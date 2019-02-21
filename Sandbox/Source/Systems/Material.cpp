@@ -56,45 +56,46 @@ void Material::SetMaterialProperty(const std::string& name, const std::variant<i
 	}
 }
 
+/*
+	Support for only one texture per texture type
+*/
 void Material::BindTextures()
 {
-	// bind appropriate textures
-	unsigned int diffuseNr = 1;
-	unsigned int specularNr = 1;
-	unsigned int normalNr = 1;
-	unsigned int heightNr = 1;
-
 	for (unsigned int i = 0; i < m_textures.size(); i++)
 	{
-		glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
-		// retrieve texture number (the N in diffuse_textureN)
-		std::string number;
-		std::string name;
 		switch (m_textures[i].textureType)
 		{
 		case TextureType::DiffuseMap:
-			number = std::to_string(diffuseNr++);
-			name = "texture_diffuse";
-			break;
-		case TextureType::HeightMap:
-			number = std::to_string(heightNr++);
-			name = "texture_height";
+			glActiveTexture(GL_TEXTURE3);
+			m_shader.SetInt("albedoMap", 3);
 			break;
 		case TextureType::NormalMap:
-			number = std::to_string(normalNr++);
-			name = "texture_normal";
+			glActiveTexture(GL_TEXTURE4);
+			m_shader.SetInt("normalMap", 4);
+			break;
+		case TextureType::MetallicMap:
+			glActiveTexture(GL_TEXTURE5);
+			m_shader.SetInt("metallicMap", 5);
+			break;
+		case TextureType::RoughnessMap:
+			glActiveTexture(GL_TEXTURE6);
+			m_shader.SetInt("roughnessMap", 6);
+			break;
+		case TextureType::AOMap:
+			glActiveTexture(GL_TEXTURE7);
+			m_shader.SetInt("aoMap", 7);
+			break;
+		case TextureType::HeightMap:
+			glActiveTexture(GL_TEXTURE8);
+			m_shader.SetInt("heightMap", 8);
 			break;
 		case TextureType::SpecularMap:
-			number = std::to_string(specularNr++);
-			name = "texture_specular";
+			glActiveTexture(GL_TEXTURE9);
+			m_shader.SetInt("specularMap", 9);
 			break;
 		default: break;
 		}
 
-		std::string propertyName = (name + number);
-		// now set the sampler to the correct texture unit
-		m_shader.SetInt(propertyName, i);
-		// and finally bind the texture
 		glBindTexture(GL_TEXTURE_2D, m_textures[i].id);
 	}
 }

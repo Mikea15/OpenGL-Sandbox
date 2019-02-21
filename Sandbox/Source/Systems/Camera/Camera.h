@@ -21,7 +21,7 @@ public:
 	{
 		float m_fov = 70.0f;
 		float m_nearPlane = 0.01f;
-		float m_farPlane = 350.0f;
+		float m_farPlane = 700.0f;
 		float m_aspectRatio = 16.0f / 9.0f;
 		float m_orthoSize = 5.0f;
 
