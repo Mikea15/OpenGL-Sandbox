@@ -266,7 +266,8 @@ __pycache__/
 .mayaSwatches/
 autosave/
 workspace.mel
-[Dd]ata/
+[Dd]ata/Objects
+[Dd]ata/Images
 [Bb]uilds/
 [Ii]ntermediate/
 [Ii]ntermediate/[Dd]ebug_x86/
