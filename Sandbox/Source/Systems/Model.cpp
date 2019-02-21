@@ -36,10 +36,19 @@ Model& Model::operator=(const Model& assign)
 	return *this;
 }
 
+void Model::Initialize()
+{
+	const int meshCount = m_meshes.size();
+	for (unsigned int i = 0; i < meshCount; ++i)
+	{
+		m_meshes[i]->CreateBuffers();
+	}
+}
+
 void Model::Draw(const Shader& shader)
 {
 	const int meshCount = m_meshes.size();
-	for (unsigned int i = 0; i < meshCount; i++)
+	for (unsigned int i = 0; i < meshCount; ++i)
 	{
 		// m_meshToMaterial[i]->SetShader(shader);
 		// m_meshes[i]->Draw(*m_meshToMaterial[i]);
@@ -50,7 +59,7 @@ void Model::Draw(const Shader& shader)
 void Model::DrawInstanced(const Shader& shader, int instanceCount)
 {
 	const int meshCount = m_meshes.size();
-	for (unsigned int i = 0; i < meshCount; i++)
+	for (unsigned int i = 0; i < meshCount; ++i)
 	{
 		m_meshes[i]->DrawInstanced(shader, instanceCount);
 	}

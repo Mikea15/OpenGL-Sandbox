@@ -225,7 +225,7 @@
     <ClCompile Include="Source\Assets\SimpleTextureAssetJob.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Assets\AssimpLoader.cpp">
+    <ClCompile Include="Source\Assets\AssimpImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -410,7 +410,7 @@
     <ClInclude Include="Source\Assets\SimpleTextureAssetJob.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Assets\AssimpLoader.h">
+    <ClInclude Include="Source\Assets\AssimpImporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

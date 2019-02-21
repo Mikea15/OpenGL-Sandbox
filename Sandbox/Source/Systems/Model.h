@@ -23,6 +23,8 @@ public:
 	Model(Model&& move);
 	Model& operator=(const Model& assign); 
 
+	void Initialize();
+
 	std::shared_ptr<Material> GetMaterial(unsigned int index) { return m_meshToMaterial[index]; }
 
 	void Draw(const Shader& shader);

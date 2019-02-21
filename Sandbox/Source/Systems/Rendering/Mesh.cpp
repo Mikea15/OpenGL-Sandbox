@@ -19,11 +19,12 @@ Mesh::Mesh(const Mesh& copy)
 	: m_id(copy.m_id)
 	, m_vertices(copy.m_vertices)
 	, m_indices(copy.m_indices)
-	, m_texture(copy.m_texture)
 	, m_VAO(copy.m_VAO)
 	, m_VBO(copy.m_VBO)
 	, m_EBO(copy.m_EBO)
 	, m_isReady(copy.m_isReady)
+	, m_name(copy.m_name)
+	, m_material(copy.m_material)
 {
 }
 
@@ -31,11 +32,12 @@ Mesh::Mesh(Mesh&& move)
 	: m_id(move.m_id)
 	, m_vertices(move.m_vertices)
 	, m_indices(move.m_indices)
-	, m_texture(move.m_texture)
 	, m_VAO(move.m_VAO)
 	, m_VBO(move.m_VBO)
 	, m_EBO(move.m_EBO)
 	, m_isReady(move.m_isReady)
+	, m_name(move.m_name)
+	, m_material(move.m_material)
 {
 }
 
@@ -44,11 +46,12 @@ Mesh& Mesh::operator=(const Mesh & assign)
 	m_id = assign.m_id;
 	m_vertices = assign.m_vertices;
 	m_indices = assign.m_indices;
-	m_texture = assign.m_texture;
 	m_VAO = assign.m_VAO;
 	m_VBO = assign.m_VBO;
 	m_EBO = assign.m_EBO;
 	m_isReady = assign.m_isReady;
+	m_name = assign.m_name;
+	m_material = assign.m_material;
 	return *this;
 }
 
@@ -59,15 +62,14 @@ Mesh::~Mesh()
 	glDeleteBuffers(1, &m_EBO);
 }
 
-void Mesh::SetupMesh(std::vector<VertexInfo> vertices, std::vector<unsigned int> indices)
+void Mesh::SetVertices(std::vector<VertexInfo> vertices)
 {
 	this->m_vertices = vertices;
-	this->m_indices = indices;
 }
 
-void Mesh::SetupTextures(std::vector<Texture> textures)
+void Mesh::SetIndices(std::vector<unsigned int> indices)
 {
-	this->m_texture = textures;
+	this->m_indices = indices;
 }
 
 void Mesh::CreateBuffers()
@@ -112,49 +114,6 @@ void Mesh::CreateBuffers()
 }
 
 
-void Mesh::BindTextures(Shader shader)
-{
-	// bind appropriate textures
-	unsigned int diffuseNr = 1;
-	unsigned int specularNr = 1;
-	unsigned int normalNr = 1;
-	unsigned int heightNr = 1;
-
-	for (unsigned int i = 0; i < m_texture.size(); i++)
-	{
-		glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
-		// retrieve texture number (the N in diffuse_textureN)
-		std::string number;
-		std::string name;
-		switch (m_texture[i].textureType)
-		{
-		case TextureType::DiffuseMap:
-			number = std::to_string(diffuseNr++);
-			name = "texture_diffuse";
-			break;
-		case TextureType::HeightMap:
-			number = std::to_string(heightNr++);
-			name = "texture_height";
-			break;
-		case TextureType::NormalMap:
-			number = std::to_string(normalNr++);
-			name = "texture_normal";
-			break;
-		case TextureType::SpecularMap:
-			number = std::to_string(specularNr++);
-			name = "texture_specular";
-			break;
-		default: break;
-		}
-
-		std::string propertyName = (name + number);
-		// now set the sampler to the correct texture unit
-		shader.SetInt(propertyName, i);
-		// and finally bind the texture
-		glBindTexture(GL_TEXTURE_2D, m_texture[i].id);
-	}
-}
-
 void Mesh::Draw(Material& material)
 {
 	if (!m_isReady) 
@@ -194,7 +153,7 @@ void Mesh::Draw(Shader shader)
 		return;
 	}
 
-	BindTextures(shader);
+	//BindTextures(shader);
 
 	// draw mesh
 	glBindVertexArray(m_VAO);
@@ -212,7 +171,7 @@ void Mesh::DrawInstanced(Shader shader, int instanceCount)
 		return;
 	}
 
-	BindTextures(shader);
+	//BindTextures(shader);
 
 	// draw mesh
 	glBindVertexArray(m_VAO);

@@ -29,16 +29,11 @@ void Terrain::GenerateMesh()
 	int nVertsPerTris = nTiles * 6;
 
 	// Create mesh data
-	std::vector<VertexInfo> verts;
-	verts.resize(nVerts);
+	std::vector<VertexInfo> vertices;
+	vertices.resize(nVerts);
 
-	std::vector<unsigned int> inds;
-	inds.resize(nVertsPerTris);
-
-	m_mesh.SetupMesh(verts, inds);
-
-	auto& vertices = m_mesh.GetVertices();
-	auto& indices = m_mesh.GetIndices();
+	std::vector<unsigned int> indices;
+	indices.resize(nVertsPerTris);
 
 	for (int z = 0; z < length; ++z)
 	{
@@ -74,6 +69,8 @@ void Terrain::GenerateMesh()
 		}
 	}
 
+	m_mesh.SetVertices(vertices);
+
 	for (int v = 0; v < vertices.size(); v += 4)
 	{
 		/* 2 --- 3
@@ -92,6 +89,8 @@ void Terrain::GenerateMesh()
 		indices[triIndex + 4] = v + 3;
 		indices[triIndex + 5] = v + 1;
 	}
+
+	m_mesh.SetIndices(indices);
 
 	CalculateNormals();
 

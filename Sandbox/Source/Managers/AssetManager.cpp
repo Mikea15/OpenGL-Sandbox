@@ -12,6 +12,13 @@ std::string AssetManager::s_shaderDirectoryPath = "Source/Shaders/";
 AssetManager::AssetManager()
 	: m_loadingThreadActive(true)
 {
+	m_supportedTextureTypes = {
+		TextureType::DiffuseMap,
+		TextureType::NormalMap,
+		TextureType::SpecularMap,
+		TextureType::HeightMap
+	};
+
 	futureObj = threadExitSignal.get_future();
 
 	for (int i = 0; i < m_maxThreads; ++i)
@@ -138,28 +145,63 @@ void AssetManager::Update()
 	}
 }
 
-void AssetManager::LoadModel(const std::string& path, Model& model)
+std::shared_ptr<Model> AssetManager::LoadModel(const std::string& path)
 {
 	std::string lowercasePath = path;
 	std::transform(lowercasePath.begin(), lowercasePath.end(), lowercasePath.begin(), ::tolower);
 
 	size_t pathHash = std::hash<std::string>{}(lowercasePath);
 
-	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(lowercasePath, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
-	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+	// Synchronous Texture Loading
+	bool enableAsyncLoading = false;
+
+	std::shared_ptr<Model> model = m_assimpImporter.LoadModel(lowercasePath);
+	if (model) 
 	{
-		std::cout << "[AssetManager] Model: " << path << " failed to load." << std::endl;
-		std::cout << "[Error] Assimp: " << importer.GetErrorString() << std::endl;
-		return;
+		m_modelsMap.emplace(pathHash, model);
+
+		std::cout << "[AssetManager] Model: " << lowercasePath << " loaded." << std::endl;
+
+		const auto& meshes = model->GetMeshes();
+		const unsigned int meshCount = meshes.size();
+		for (auto mesh : meshes)
+		{
+			unsigned int meshIndex = m_meshCache.size();
+			unsigned int materialIndex = m_materialCache.size();
+
+			auto material = mesh->GetMaterial();
+			for (auto textureType : m_supportedTextureTypes)
+			{
+				std::vector<std::string> texturePaths = material->GetTexturePaths(textureType);
+				if (enableAsyncLoading)
+				{
+					TextureAssetJob job;
+					job.materialIndex = materialIndex;
+					job.useGammaCorrection = model->m_useGammaCorrection;
+					job.textureType = textureType;
+					job.resourcePaths = texturePaths;
+
+					std::scoped_lock<std::mutex> lock(m_mutex);
+					m_jobsTextureAssets.emplace(job);
+				}
+				else
+				{
+					for (const std::string& path : texturePaths)
+					{
+						Texture texture = LoadTexture(path, model->m_useGammaCorrection, textureType);
+						material->AddTexture(texture);
+					}
+				}
+			}
+
+			m_materialCache.push_back(material);
+			m_meshCache.push_back(mesh);
+		}
+
+		return model;
 	}
 
-	std::string currentDirectory = lowercasePath.substr(0, lowercasePath.find_last_of('/') + 1);
-
-	ProcessModelNode(scene, scene->mRootNode, model, currentDirectory);
-	m_modelsMap.emplace(pathHash, model);
-
-	std::cout << "[AssetManager] Model: " << lowercasePath << " loaded." << std::endl;
+	return std::shared_ptr<Model>();
 }
 
 Texture AssetManager::LoadTexture(const std::string& path, bool useGammaCorrection, TextureType type)
@@ -296,7 +338,6 @@ unsigned int AssetManager::LoadHDRTexure(const std::string& path)
 	return textureId;
 }
 
-
 TextureInfo AssetManager::LoadTextureFromFile(const std::string& path, bool useGammaCorrection)
 {
 	TextureInfo info;
@@ -359,60 +400,4 @@ std::vector<TextureInfo> AssetManager::LoadTexturesFromAssetJob(TextureAssetJob&
 	}
 	return textureInfos;
 }
-
-void AssetManager::ProcessModelNode(const aiScene* scene, aiNode* node, Model& model, const std::string& directory)
-{
-	for (unsigned int i = 0; i < node->mNumMeshes; ++i)
-	{
-		const aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-		const aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
-
-		std::shared_ptr<Mesh> loadedMesh = m_assimpLoader.LoadMesh(scene, mesh);
-		std::shared_ptr<Material> loadedMaterial = m_assimpLoader.LoadMaterial(material, directory);
-
-		const int materialCacheIndex = m_materialCache.size(); // change gor
-		
-		// Synchronous Texture Loading
-		bool enableAsyncLoading = false;
-
-		std::vector<aiTextureType> supportedTypes = m_assimpLoader.GetSupportedTypes();
-		for (aiTextureType type : supportedTypes)
-		{
-			TextureType textureType = m_assimpLoader.GetTextureTypeFrom(type);
-			std::vector<std::string> texturePaths = loadedMaterial->GetTexturePaths(textureType);
-			if (enableAsyncLoading)
-			{
-				TextureAssetJob job;
-				job.materialIndex = materialCacheIndex;
-				job.useGammaCorrection = model.m_useGammaCorrection;
-				job.textureType = textureType;
-				job.resourcePaths = texturePaths;
-
-				std::scoped_lock<std::mutex> lock(m_mutex);
-				m_jobsTextureAssets.emplace(job);
-			}
-			else
-			{
-				for (const std::string& path : texturePaths)
-				{
-					Texture texture = LoadTexture(path, model.m_useGammaCorrection, textureType);
-					loadedMaterial->AddTexture(texture);
-				}
-			}
-		}
-
-		loadedMesh->SetMaterial(loadedMaterial);
-
-		model.AddMesh(loadedMesh);
-
-		m_meshCache.push_back(loadedMesh);
-		m_materialCache.push_back(loadedMaterial);
-	}
-
-	for (unsigned int i = 0; i < node->mNumChildren; ++i)
-	{
-		ProcessModelNode(scene, node->mChildren[i], model, directory);
-	}
-}
-
 

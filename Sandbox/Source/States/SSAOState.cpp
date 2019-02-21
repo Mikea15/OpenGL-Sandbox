@@ -22,9 +22,8 @@ void SSAOState::Init(Game* game)
 	shaderSSAOBlur = shaderManager.LoadShader("ssaoBlur", "screen/ssao.vs", "screen/ssao_blur.fs");
 
 	ent = Entity();
-	Model model;
-	m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj", model);
-	ent.SetModel(model);
+	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj");
+	ent.SetModel(*model.get());
 	ent.GetTransform().SetScale(glm::vec3(0.01f));
 
 	// objectPositions.push_back(glm::vec3(-3.0, -3.0, -3.0));

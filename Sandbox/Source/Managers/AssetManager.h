@@ -18,7 +18,7 @@
 #include "Systems/Rendering/Texture.h"
 #include "Systems/Material.h"
 
-#include "Assets/AssimpLoader.h"
+#include "Assets/AssimpImporter.h"
 #include "Assets/SimpleTextureAssetJob.h"
 
 struct TextureAssetJob
@@ -52,7 +52,7 @@ public:
 
 	// TODO: Move to AssimLoader.
 	// Models
-	void LoadModel(const std::string& path, Model& model);
+	std::shared_ptr<Model> LoadModel(const std::string& path);
 	
 	// Textures
 	Texture LoadTexture(const std::string& path, bool useGammaCorrection = false, TextureType type = TextureType::None);
@@ -71,11 +71,12 @@ private:
 	void ProcessModelNode(const aiScene* scene, aiNode* node, Model& model, const std::string& directory);
 
 private:
-	AssimpLoader m_assimpLoader;
+	AssimpImporter m_assimpImporter;
+	std::vector<TextureType> m_supportedTextureTypes;
 
 	std::unordered_map<size_t, Texture> m_textureMap;
 
-	std::unordered_map<size_t, Model> m_modelsMap;
+	std::unordered_map<size_t, std::shared_ptr<Model>> m_modelsMap;
 	std::unordered_map<size_t, unsigned int> m_textureCubeMap;
 
 	static std::string s_assetDirectoryPath;

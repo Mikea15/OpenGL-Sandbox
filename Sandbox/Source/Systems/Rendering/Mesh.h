@@ -23,46 +23,47 @@ public:
 
 	Mesh& operator=(const Mesh& assign);
 
-	virtual ~Mesh();
+	~Mesh();
 
-	virtual void SetupMesh(std::vector<VertexInfo> vertices, std::vector<unsigned int> indices);
-	virtual void SetupTextures(std::vector<Texture> textures);
-	virtual void SetMaterial(std::shared_ptr<Material> material) { m_material = material; }
-
-	virtual void CreateBuffers();
-
-	virtual void BindTextures(Shader shader);
-
-	virtual void Draw(Material& material);
-	virtual void DrawInstanced(Material& material, int instanceCount);
-
-	virtual void Draw(Shader shader);
-	virtual void DrawInstanced(Shader shader, int instanceCount);
-
-	unsigned int GetVAO() const { return m_VAO; }
-	unsigned int GetVBO() const { return m_VBO; }
-	unsigned int GetEBO() const { return m_EBO; }
-
+	void SetVertices(std::vector<VertexInfo> vertices);
+	const std::vector<VertexInfo>& GetVerticesConst() const { return m_vertices; }
 	std::vector<VertexInfo>& GetVertices() { return m_vertices; }
+
+	void SetIndices(std::vector<unsigned int> indices);
+	const std::vector<unsigned int>& GetIndicesConst() const { return m_indices; }
 	std::vector<unsigned int>& GetIndices() { return m_indices; }
-	std::vector<Texture>& GetTextures() { return m_texture; }
+
+	void SetName(const std::string& name) { m_name = name; }
+	const std::string& GetName() const { return m_name; }
+	
+	void SetMaterial(std::shared_ptr<Material> material) { m_material = material; }
+	std::shared_ptr<Material> GetMaterial() { return m_material; }
+	
+	void CreateBuffers();
+
+	void Draw(Material& material);
+	void DrawInstanced(Material& material, int instanceCount);
+
+	void Draw(Shader shader);
+	void DrawInstanced(Shader shader, int instanceCount);
+
+	const unsigned int GetVAO() const { return m_VAO; }
+	const unsigned int GetVBO() const { return m_VBO; }
+	const unsigned int GetEBO() const { return m_EBO; }
 
 	const unsigned int GetId() const { return m_id; }
 
-
-
-protected:
+private:
+	std::string m_name;
 	std::shared_ptr<Material> m_material;
 
 	std::vector<VertexInfo> m_vertices;
 	std::vector<unsigned int> m_indices;
-	std::vector<Texture> m_texture;
 
 	unsigned int m_VAO; // vertex array object
 	unsigned int m_VBO; // vertex buffer object
 	unsigned int m_EBO; // element buffer object
 
-private:
 	unsigned int m_id;
 	bool m_isReady;
 

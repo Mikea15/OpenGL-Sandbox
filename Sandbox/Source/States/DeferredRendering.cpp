@@ -21,7 +21,8 @@ void DeferredRendering::Init(Game* game)
 	shaderLightBox = shaderManager.LoadShader("deferredLightBox2", "deferred_light.vs", "deferred_light.fs");
 
 	ent = Entity();
-	m_assetManager->LoadModel("Data/Objects/default/shaderball/shaderBall.obj", ent.GetModel());
+	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/default/shaderball/shaderBall.obj");
+	ent.SetModel(*model.get());
 	ent.GetTransform().SetScale(glm::vec3(0.01f));
 
 	// objectPositions.push_back(glm::vec3(-3.0, -3.0, -3.0));
