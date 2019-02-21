@@ -7,22 +7,8 @@
 *.userosscache
 *.sln.docstates
 
-Intermediate/Debug_x86/*
-
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
-
-.mayaSwatches/
-autosave/
-workspace.mel
-[Dd]ata/
-[Bb]uilds/
-[Ii]ntermediate/[Dd]ebug_x86/
-[Ii]ntermediate/[Dd]ebug_x64/
-[Bb]uilds/[Dd]ebug_x86/
-[Bb]uilds/[Dd]ebug_x64/
-[Dd]ebug_x86/
-[Dd]ebug_x64/
 
 *.idb
 *.tlog
@@ -277,4 +263,15 @@ paket-files/
 __pycache__/
 *.pyc
 
-Intermediate/Debug_x86/
+.mayaSwatches/
+autosave/
+workspace.mel
+[Dd]ata/
+[Bb]uilds/
+[Ii]ntermediate/
+[Ii]ntermediate/[Dd]ebug_x86/
+[Ii]ntermediate/[Dd]ebug_x64/
+[Bb]uilds/[Dd]ebug_x86/
+[Bb]uilds/[Dd]ebug_x64/
+[Dd]ebug_x86/
+[Dd]ebug_x64/
