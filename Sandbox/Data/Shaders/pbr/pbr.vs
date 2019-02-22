@@ -18,7 +18,7 @@ uniform vec3 viewPos;
 
 void main()
 {
-    TexCoords = aTexCoords * 3;
+    TexCoords = aTexCoords;
     WorldPos = vec3(model * vec4(aPos, 1.0));
     Normal = normalize(mat3(model) * aNormal);  
 	

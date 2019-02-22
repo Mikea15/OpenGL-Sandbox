@@ -90,7 +90,7 @@ void Mesh::CreateBuffers()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(unsigned int), &m_indices[0], GL_STATIC_DRAW);
 
-	unsigned int offset = 3;
+	unsigned int offset = 0;
 	// set the vertex attribute pointers
 	// vertex Positions
 	glEnableVertexAttribArray(offset + 0); // layout (location = 0)
@@ -114,46 +114,15 @@ void Mesh::CreateBuffers()
 }
 
 
-void Mesh::Draw(Material& material)
+void Mesh::Draw(const Shader& shader)
 {
 	if (!m_isReady) 
 	{
 		return;
 	}
 
-	material.BindTextures();
-
-	glBindVertexArray(m_VAO);
-	glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
-	glBindVertexArray(0);
-
-	glActiveTexture(GL_TEXTURE0);
-}
-
-void Mesh::DrawInstanced(Material& material, int instanceCount)
-{
-	if (!m_isReady) 
-	{
-		return;
-	}
-
-	material.BindTextures();
-
-	glBindVertexArray(m_VAO);
-	glDrawElementsInstanced(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0, instanceCount);
-	glBindVertexArray(0);
-
-	glActiveTexture(GL_TEXTURE0);
-}
-
-void Mesh::Draw(Shader shader)
-{
-	if (!m_isReady) 
-	{
-		return;
-	}
-
-	//BindTextures(shader);
+	m_material->SetShader(shader);
+	m_material->BindTextures();
 
 	// draw mesh
 	glBindVertexArray(m_VAO);

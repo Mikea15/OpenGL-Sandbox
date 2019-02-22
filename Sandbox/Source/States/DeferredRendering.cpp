@@ -21,7 +21,8 @@ void DeferredRendering::Init(Game* game)
 	shaderLightBox = shaderManager.LoadShader("deferredLightBox2", "deferred_light.vs", "deferred_light.fs");
 
 	ent = Entity();
-	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/default/shaderball/shaderBall.obj");
+	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj");
+	model->Initialize();
 	ent.SetModel(*model.get());
 	ent.GetTransform().SetScale(glm::vec3(0.01f));
 

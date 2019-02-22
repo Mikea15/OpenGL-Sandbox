@@ -54,6 +54,7 @@ public:
 	std::shared_ptr<Model> LoadModel(const std::string& path);
 
 	// Materials
+	Material LoadMaterial(const std::string& materialPath);
 	void LoadTexture(Material& material);
 	
 	// Textures
@@ -70,7 +71,9 @@ private:
 	
 	std::vector<TextureInfo> LoadTexturesFromAssetJob(TextureAssetJob& job);
 
-	void ProcessModelNode(const aiScene* scene, aiNode* node, Model& model, const std::string& directory);
+	nlohmann::json ReadJsonFile(const std::string& path);
+	void SaveJsonFile(const std::string& path, const nlohmann::json& data);
+
 
 private:
 	AssimpImporter m_assimpImporter;

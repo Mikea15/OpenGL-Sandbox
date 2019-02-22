@@ -207,6 +207,16 @@ std::shared_ptr<Model> AssetManager::LoadModel(const std::string& path)
 	return std::shared_ptr<Model>();
 }
 
+Material AssetManager::LoadMaterial(const std::string& materialPath)
+{
+	nlohmann::json data = ReadJsonFile(materialPath);
+	if (!data.is_null()) {
+		Material material = data;
+		return material;
+	}
+	return Material();
+}
+
 void AssetManager::LoadTexture(Material& material)
 {
 	for (TextureType type : m_supportedTextureTypes)
@@ -415,5 +425,36 @@ std::vector<TextureInfo> AssetManager::LoadTexturesFromAssetJob(TextureAssetJob&
 		}
 	}
 	return textureInfos;
+}
+
+nlohmann::json AssetManager::ReadJsonFile(const std::string& path)
+{
+	std::stringstream stream;
+	std::fstream file(path, std::fstream::in);
+	if (file.is_open())
+	{
+		while (!file.eof())
+		{
+			std::string buffer;
+			std::getline(file, buffer);
+			stream << buffer;
+		}
+	}
+
+	if (!stream.str().empty())
+	{
+		return json::parse(stream.str());
+	}
+
+	return json::object();
+}
+
+void AssetManager::SaveJsonFile(const std::string & path, const nlohmann::json& data)
+{
+	std::ofstream file;
+	file.open(path, std::fstream::out);
+
+	file << data.dump(4);
+	file.close();
 }
 

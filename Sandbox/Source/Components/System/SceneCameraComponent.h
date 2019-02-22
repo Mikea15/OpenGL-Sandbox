@@ -34,9 +34,9 @@ private:
 	float m_cameraInterpolationTime = 1.0f;
 
 	glm::vec3 m_cameraMovement;
-	float m_cameraVelocity = 10.0f;
-	float m_cameraSensitivity = 1.0f;
-	float m_cameraMovementDamping = 0.85f;
+	float m_cameraVelocity = 1.0f;
+	float m_cameraSensitivity = 0.7f;
+	float m_cameraMovementDamping = 0.65f;
 	float m_cameraMovementSpeedBoostMult = 5.0f;
 
 	glm::vec2 m_mousePosition;

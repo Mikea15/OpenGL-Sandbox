@@ -38,13 +38,10 @@ public:
 	
 	void SetMaterial(std::shared_ptr<Material> material) { m_material = material; }
 	std::shared_ptr<Material> GetMaterial() { return m_material; }
-	
+
 	void CreateBuffers();
 
-	void Draw(Material& material);
-	void DrawInstanced(Material& material, int instanceCount);
-
-	void Draw(Shader shader);
+	void Draw(const Shader& shader);
 	void DrawInstanced(Shader shader, int instanceCount);
 
 	const unsigned int GetVAO() const { return m_VAO; }
