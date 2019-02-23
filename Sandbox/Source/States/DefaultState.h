@@ -48,4 +48,7 @@ protected:
 
 	Skybox m_skybox;
 	Skybox::Settings skyboxSettings;
+
+	std::shared_ptr<Model> m_model;
+	Shader m_simpleShader;
 };

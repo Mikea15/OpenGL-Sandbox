@@ -29,6 +29,7 @@ private:
 	Shader shaderGeometryPass;
 	Shader shaderLightingPass;
 	Shader shaderLightBox;
+
 	Shader shaderSSAO;
 	Shader shaderSSAOBlur;
 

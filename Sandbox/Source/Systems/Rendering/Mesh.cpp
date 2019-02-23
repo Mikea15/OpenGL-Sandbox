@@ -90,22 +90,21 @@ void Mesh::CreateBuffers()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indices.size() * sizeof(unsigned int), &m_indices[0], GL_STATIC_DRAW);
 
-	unsigned int offset = 0;
 	// set the vertex attribute pointers
 	// vertex Positions
-	glEnableVertexAttribArray(offset + 0); // layout (location = 0)
+	glEnableVertexAttribArray(0); // layout (location = 0)
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)0);
 	// vertex normals
-	glEnableVertexAttribArray(offset + 1); // layout (location = 1)
+	glEnableVertexAttribArray(1); // layout (location = 1)
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, Normal));
 	// vertex texture coords
-	glEnableVertexAttribArray(offset + 2); // layout (location = 2)
+	glEnableVertexAttribArray(2); // layout (location = 2)
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, TexCoords));
 	// vertex tangent
-	glEnableVertexAttribArray(offset + 3); // layout (location = 3)
+	glEnableVertexAttribArray(3); // layout (location = 3)
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, Tangent));
 	// vertex bitangent
-	glEnableVertexAttribArray(offset + 4); // layout (location = 4)
+	glEnableVertexAttribArray(4); // layout (location = 4)
 	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(VertexInfo), (void*)offsetof(VertexInfo, Bitangent));
 
 	glBindVertexArray(0);
@@ -121,8 +120,11 @@ void Mesh::Draw(const Shader& shader)
 		return;
 	}
 
-	m_material->SetShader(shader);
-	m_material->BindTextures();
+	if (m_material != nullptr) 
+	{
+		m_material->SetShader(shader);
+		m_material->BindTextures();
+	}
 
 	// draw mesh
 	glBindVertexArray(m_VAO);
@@ -133,14 +135,14 @@ void Mesh::Draw(const Shader& shader)
 	glActiveTexture(GL_TEXTURE0);
 }
 
-void Mesh::DrawInstanced(Shader shader, int instanceCount)
+void Mesh::DrawInstanced(const Shader& shader, int instanceCount)
 {
 	if (!m_isReady)
 	{
 		return;
 	}
-
-	//BindTextures(shader);
+	m_material->SetShader(shader);
+	m_material->BindTextures();
 
 	// draw mesh
 	glBindVertexArray(m_VAO);

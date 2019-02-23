@@ -279,12 +279,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Shaders\advanced_glsl.vs" />
-    <None Include="Data\Shaders\deferred_light.fs" />
-    <None Include="Data\Shaders\deferred_light.vs" />
-    <None Include="Data\Shaders\deferred_shading.fs" />
-    <None Include="Data\Shaders\deferred_shading.vs" />
-    <None Include="Data\Shaders\gbuffer.fs" />
-    <None Include="Data\Shaders\gbuffer.vs" />
+    <None Include="Data\Shaders\deferred\deferred_light_box.fs" />
+    <None Include="Data\Shaders\deferred\deferred_light_box.vs" />
+    <None Include="Data\Shaders\deferred\deferred_shading.fs" />
+    <None Include="Data\Shaders\deferred\deferred_shading.vs" />
+    <None Include="Data\Shaders\deferred\gbuffer.fs" />
+    <None Include="Data\Shaders\deferred\gbuffer.vs" />
     <None Include="Source\Shaders\horizontal_gradient.fs" />
     <None Include="Data\Shaders\instancing.fs" />
     <None Include="Data\Shaders\instancing.vs" />

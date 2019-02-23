@@ -559,24 +559,6 @@
     <None Include="Data\Shaders\advanced_glsl.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\deferred_light.fs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Data\Shaders\deferred_light.vs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Data\Shaders\deferred_shading.fs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Data\Shaders\deferred_shading.vs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Data\Shaders\gbuffer.fs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Data\Shaders\gbuffer.vs">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Data\Shaders\instancing.fs">
       <Filter>Shaders</Filter>
     </None>
@@ -635,6 +617,24 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Data\Shaders\yellow.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\deferred\deferred_shading.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\deferred\deferred_shading.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\deferred\gbuffer.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\deferred\gbuffer.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\deferred\deferred_light_box.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\deferred\deferred_light_box.vs">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

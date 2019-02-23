@@ -161,9 +161,7 @@ void SSAOState::Render(float alpha)
 	const float quadratic = 0.032;
 	shaderLightingPass.SetFloat("light.Linear", linear);
 	shaderLightingPass.SetFloat("light.Quadratic", quadratic);
-
 	shaderLightingPass.SetVec3("viewPos", cameraPosition);
-
 	shaderLightingPass.SetBool("enableSSAO", enableSSAO);
 	shaderLightingPass.SetBool("ssaoIntensity", ssaoFx.GetParams().Intensity);
 
@@ -172,7 +170,6 @@ void SSAOState::Render(float alpha)
 	glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, gAlbedo);
 	
 	ssaoFx.BindTextureMaps();
-	
 	quad.Draw();
 }
 

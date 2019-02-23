@@ -42,7 +42,7 @@ public:
 	void CreateBuffers();
 
 	void Draw(const Shader& shader);
-	void DrawInstanced(Shader shader, int instanceCount);
+	void DrawInstanced(const Shader& shader, int instanceCount);
 
 	const unsigned int GetVAO() const { return m_VAO; }
 	const unsigned int GetVBO() const { return m_VBO; }

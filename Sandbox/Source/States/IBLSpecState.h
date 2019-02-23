@@ -37,7 +37,6 @@ private:
 
 	Shader wireframeShader;
 
-
 	Material iron;
 	Material gold;
 	Material grass;

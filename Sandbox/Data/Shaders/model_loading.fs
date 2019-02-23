@@ -3,7 +3,7 @@ out vec4 FragColor;
 
 in vec2 TexCoords;
 
-uniform sampler2D texture_diffuse1;
+uniform sampler2D albedoMap;
 
 float near = 0.1; 
 float far  = 100.0; 
@@ -21,7 +21,8 @@ in VS_OUT
 
 void main()
 {    
-    FragColor = texture(texture_diffuse1, TexCoords) * vec4(1.0, 1.0, 1.0, 1.0);
 	// float depth = LinearizeDepth(gl_FragCoord.z) / far; // divide by far for demonstration
     // FragColor = vec4(vec3(depth), 1.0);
+	
+    FragColor = texture(albedoMap, TexCoords) * vec4(1.0, 1.0, 1.0, 1.0);
 }

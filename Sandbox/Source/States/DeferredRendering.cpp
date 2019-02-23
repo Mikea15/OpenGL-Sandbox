@@ -16,9 +16,9 @@ void DeferredRendering::Init(Game* game)
 {
 	DefaultState::Init(game);
 
-	shaderGeometryPass = shaderManager.LoadShader("gbuffer2", "gbuffer.vs", "gbuffer.fs");
-	shaderLightingPass = shaderManager.LoadShader("deferredShading2", "deferred_shading.vs", "deferred_shading.fs");
-	shaderLightBox = shaderManager.LoadShader("deferredLightBox2", "deferred_light.vs", "deferred_light.fs");
+	shaderGeometryPass	= shaderManager.LoadShader("gBuff",		"deferred/gbuffer.vs",				"deferred/gbuffer.fs");
+	shaderLightingPass	= shaderManager.LoadShader("lightPass",	"deferred/deferred_shading.vs",		"deferred/deferred_shading.fs");
+	shaderLightBox		= shaderManager.LoadShader("lighBox",	"deferred/deferred_light_box.vs",	"deferred/deferred_light_box.fs");
 
 	ent = Entity();
 	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj");
@@ -76,13 +76,13 @@ void DeferredRendering::Init(Game* game)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// setup lighting
-	srand(13);
+	srand(time(NULL));
 	for (unsigned int i = 0; i < nLights; i++)
 	{
 		// calculate slightly random offsets
-		float xPos = ((rand() % 100) / 100.0) * 6.0 - 3.0;
-		float yPos = ((rand() % 100) / 100.0) * 15.0 - 4.0;
-		float zPos = ((rand() % 100) / 100.0) * 15.0 - 3.0;
+		float xPos = ((rand() % 100) / 100.0) * 3.0 - 3.0;
+		float yPos = ((rand() % 100) / 100.0) * 15.0 - 0.0;
+		float zPos = ((rand() % 100) / 100.0) * 5.0 - 5.0;
 		lightPositions.push_back(glm::vec3(xPos, yPos, zPos));
 		// also calculate random color
 		float rColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
@@ -198,7 +198,6 @@ void DeferredRendering::Render(float alpha)
 		lightTransform.SetScale(glm::vec3(0.125f));
 		shaderLightBox.SetMat4("model", lightTransform.GetModelMat());
 		shaderLightBox.SetVec3("lightColor", lightColors[i]);
-		// cube.Draw();
 		Primitives::RenderCube();
 	}
 
@@ -228,9 +227,9 @@ void DeferredRendering::RenderUI()
 	DefaultState::RenderUI();
 
 	ImGui::Begin("Light Settings");
-	ImGui::SliderFloat("Constant", &lConstant, 0.0f, 3.0f);
-	ImGui::SliderFloat("Linear", &llinear, 0.0f, 3.0f);
-	ImGui::SliderFloat("Quadratic", &lquadratic, 0.0f, 3.0f);
+	ImGui::SliderFloat("Constant", &lConstant, 0.0f, 10.0f);
+	ImGui::SliderFloat("Linear", &llinear, 0.0f, 5.0f);
+	ImGui::SliderFloat("Quadratic", &lquadratic, 0.01f, 10.0f);
 	ImGui::End();
 	ImGui::Begin("Show Buffers");
 

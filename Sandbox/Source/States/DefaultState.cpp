@@ -55,6 +55,11 @@ void DefaultState::Init(Game* game)
 	m_skybox.SetTexture(skyboxTex);
 
 	skyboxShader = shaderManager.LoadShader("gradientSkybox", "skybox/skybox.vs", "skybox/horizon_sun.fs");
+
+	m_model = m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj");
+	m_model->Initialize();
+
+	m_simpleShader = shaderManager.LoadShader("pbrShader", "model_loading.vs", "model_loading.fs");
 }
 
 void DefaultState::HandleInput(SDL_Event * event)
@@ -78,6 +83,16 @@ void DefaultState::Render(float alpha)
 
 	glm::mat4 projection = m_sceneCamera->GetCamera().GetProjection();
 	glm::mat4 view = m_sceneCamera->GetCamera().GetView();
+
+	Transform transform;
+	transform.SetPosition(glm::vec3(0.0f));
+	transform.SetScale(glm::vec3(0.1f));
+
+	m_simpleShader.Use();
+	m_simpleShader.SetMat4("projection", projection);
+	m_simpleShader.SetMat4("view", view);
+	m_simpleShader.SetMat4("model", transform.GetModelMat());
+	m_model->Draw(m_simpleShader);
 
 	// render skybox last. but before transparent objects
 	skyboxShader.Use();
