@@ -10,6 +10,7 @@
 #include "Core/SDLHandler.h"
 
 #include "Managers/ShaderManager.h"
+#include "Managers/SceneManager.h"
 
 #include "Systems/Entity.h"
 #include "Systems/Camera/Camera.h"
@@ -44,8 +45,9 @@ protected:
 	AssetManager* m_assetManager;
 
 	ShaderManager shaderManager;
+	SceneManager m_sceneManager;
+	
 	Shader skyboxShader;
-
 	Skybox m_skybox;
 	Skybox::Settings skyboxSettings;
 

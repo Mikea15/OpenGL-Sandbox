@@ -27,6 +27,8 @@ public:
 
 	std::shared_ptr<Material> GetMaterial(unsigned int index) { return m_meshToMaterial[index]; }
 
+	void Draw();
+	void Draw(Material& material);
 	void Draw(const Shader& shader);
 	void DrawInstanced(const Shader& shader, int instanceCount);
 
@@ -34,8 +36,6 @@ public:
 	unsigned int GetMeshCount() const { return m_meshes.size(); }
 
 	void AddMesh(std::shared_ptr<Mesh> mesh);
-
-	
 
 	bool m_useGammaCorrection;
 private:

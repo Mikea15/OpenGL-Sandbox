@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <vector>
+#include <memory>
 
 class Entity;
 
@@ -11,8 +12,13 @@ public:
 	SceneManager();
 	~SceneManager();
 
-	const std::vector<Entity*>& GetSceneObjects() { return m_sceneObjects; }
+	void AddEntity(std::shared_ptr<Entity> entity);
+
+	const std::vector<std::shared_ptr<Entity>>& GetSceneObjects() { return m_sceneObjects; }
+
+	void Update(float deltaTime);
+	void Draw();
 
 private:
-	std::vector<Entity*> m_sceneObjects;
+	std::vector<std::shared_ptr<Entity>> m_sceneObjects;
 };

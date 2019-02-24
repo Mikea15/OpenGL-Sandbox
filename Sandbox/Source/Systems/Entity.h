@@ -3,15 +3,14 @@
 #include "Model.h"
 #include "Transform.h"
 
-#include <nlohmann/json.hpp>
-
-using json = nlohmann::json;
-
 class Entity
 {
 public:
 	Entity();
 	Entity(const Entity& copy);
+	Entity(Entity&& move);
+	Entity& operator=(const Entity& assign);
+
 	~Entity() = default;
 
 	void LoadModel(const std::string& modelPath);
@@ -29,8 +28,8 @@ public:
 		m_model = m; 
 	}
 
-	// friend void to_json(json& j, const Entity& e);
-	// friend void from_json(const json& j, Entity& e);
+	void Update(float deltaTime);
+	void Draw();
 
 private:
 	unsigned int m_id;
@@ -42,15 +41,3 @@ private:
 
 	static unsigned int ID;
 };
-
-//void to_json(json& j, const Entity& e)
-//{
-//	j = json{
-//		"transform", e.m_transform
-//	};
-//}
-//
-//void from_json(const json& j, Entity& e)
-//{
-//	j.at("transform").get_to(e.m_transform);
-//}

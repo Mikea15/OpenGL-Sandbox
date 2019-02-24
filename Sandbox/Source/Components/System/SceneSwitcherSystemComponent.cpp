@@ -22,10 +22,10 @@ void SceneSwitcherSystemComponent::Initialize(Game* game)
 	// still. I'll leave this comment here. I spent too much time debuging this shit.
 	// m_defaultState = std::make_shared<IBLSpecState>(); 
 	// m_defaultState = std::make_shared<OcclusionState>(); 
-	m_defaultState = std::make_shared<DeferredRendering>();
+	// m_defaultState = std::make_shared<DeferredRendering>();
 	// m_defaultState = std::make_shared<SSAOState>();
 	// m_defaultState = std::make_shared<InstancingState>();
-	// m_defaultState = std::make_shared<DefaultState>();
+	m_defaultState = std::make_shared<DefaultState>();
 	m_game->ChangeState(m_defaultState);
 }
 

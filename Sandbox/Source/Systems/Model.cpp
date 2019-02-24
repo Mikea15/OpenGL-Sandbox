@@ -45,6 +45,24 @@ void Model::Initialize()
 	}
 }
 
+void Model::Draw()
+{
+	const int meshCount = m_meshes.size();
+	for (unsigned int i = 0; i < meshCount; ++i)
+	{
+		m_meshes[i]->Draw();
+	}
+}
+
+void Model::Draw(Material& material)
+{
+	const int meshCount = m_meshes.size();
+	for (unsigned int i = 0; i < meshCount; ++i)
+	{
+		m_meshes[i]->Draw(material);
+	}
+}
+
 void Model::Draw(const Shader& shader)
 {
 	const int meshCount = m_meshes.size();

@@ -112,6 +112,45 @@ void Mesh::CreateBuffers()
 	m_isReady = m_VAO != 0;
 }
 
+void Mesh::Draw()
+{
+	if (!m_isReady)
+	{
+		return;
+	}
+
+	if (m_material != nullptr)
+	{
+		m_material->BindTextures();
+	}
+
+	// draw mesh
+	glBindVertexArray(m_VAO);
+	glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+
+	// always good practice to set everything back to defaults once configured.
+	glActiveTexture(GL_TEXTURE0);
+}
+
+void Mesh::Draw(Material& material)
+{
+	if (!m_isReady)
+	{
+		return;
+	}
+
+	material.BindTextures();
+
+	// draw mesh
+	glBindVertexArray(m_VAO);
+	glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+	glBindVertexArray(0);
+
+	// always good practice to set everything back to defaults once configured.
+	glActiveTexture(GL_TEXTURE0);
+}
+
 
 void Mesh::Draw(const Shader& shader)
 {

@@ -41,6 +41,8 @@ public:
 
 	void CreateBuffers();
 
+	void Draw();
+	void Draw(Material& material);
 	void Draw(const Shader& shader);
 	void DrawInstanced(const Shader& shader, int instanceCount);
 
