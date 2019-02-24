@@ -1,10 +1,12 @@
-## Modern OpenGL sandbox application.
+# Modern OpenGL Sandbox
 
-This is a simple sandbox application that I've built upon reading a few different tutorials. It's purpose is purely educational. I research topics I find interesting and implement them here. These topics range from general game development best practices to rendering.
+This is a simple sandbox that I've built upon reading a few different tutorials. It's purpose is purely educational. I research topics I find interesting and implement them here. These topics range from general game development best practices, data structure optimization, serialization, multi-threading, custom game-loops, rendering techniques, and any other I find interesting.
 
 Do not expect optimized or neatly structured code here. I focus first on functional implementation, then making it efficient. The later becomes less important when my curiosity leads me to a new topic.
 
 ---
+<img src="gifs/main_1.jpg" width="650">
+
 Frustum Culling
 
 <img src="gifs/frustum_culling.gif" width="650">
@@ -26,13 +28,14 @@ Camera Snapshot Interpolation
 - [x] Simple Settings Serialization
 
 ### Things Planned, Started or Unfinished
-- [ ] Material Definitions, Async Loading
 - [ ] Scene Graph
+- [ ] Material Definitions, Async Loading
 - [ ] Occlusion and Portal Culling
 - [ ] Simple Profiler ( w/ ImGUI Display )
 - [ ] Entity Components and Serialization
 - [ ] Water caustics
 - [ ] Others stuff I'll remember later
+- [ ] Asset Browser ( Data Folder )
 
 ### Dependencies
 - [SDL2 v2.0.8](https://www.libsdl.org/)

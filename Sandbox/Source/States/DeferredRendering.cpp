@@ -26,17 +26,8 @@ void DeferredRendering::Init(Game* game)
 	ent.SetModel(*model.get());
 	ent.GetTransform().SetScale(glm::vec3(0.01f));
 
-	// objectPositions.push_back(glm::vec3(-3.0, -3.0, -3.0));
-	// objectPositions.push_back(glm::vec3(0.0, -3.0, -3.0));
-	// objectPositions.push_back(glm::vec3(3.0, -3.0, -3.0));
-	// objectPositions.push_back(glm::vec3(-3.0, -3.0, 0.0));
-	// objectPositions.push_back(glm::vec3(0.0, -3.0, 0.0));
-	// objectPositions.push_back(glm::vec3(3.0, -3.0, 0.0));
-	// objectPositions.push_back(glm::vec3(-3.0, -3.0, 3.0));
-	// objectPositions.push_back(glm::vec3(0.0, -3.0, 3.0));
-	// objectPositions.push_back(glm::vec3(3.0, -3.0, 3.0));
 	objectPositions.push_back(glm::vec3(0.0, 0.0, 0.0));
-
+	
 	// configure g-buffer framebuffer
 	// ------------------------------
 	glGenFramebuffers(1, &gBuffer);
@@ -77,12 +68,14 @@ void DeferredRendering::Init(Game* game)
 
 	// setup lighting
 	srand(time(NULL));
+	const float min = 0.0f;
+	const float max = 5.0f;
 	for (unsigned int i = 0; i < nLights; i++)
 	{
 		// calculate slightly random offsets
-		float xPos = ((rand() % 100) / 100.0) * 3.0 - 3.0;
-		float yPos = ((rand() % 100) / 100.0) * 15.0 - 0.0;
-		float zPos = ((rand() % 100) / 100.0) * 5.0 - 5.0;
+		float xPos = ((rand() % 100) / 100.0) * max - min;
+		float yPos = ((rand() % 100) / 100.0) * max - min;
+		float zPos = ((rand() % 100) / 100.0) * max - min;
 		lightPositions.push_back(glm::vec3(xPos, yPos, zPos));
 		// also calculate random color
 		float rColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
@@ -170,7 +163,7 @@ void DeferredRendering::Render(float alpha)
 		shaderLightingPass.SetFloat("lights[" + std::to_string(i) + "].Radius", radius);
 	}
 	shaderLightingPass.SetVec3("viewPos", cameraPosition);
-	quad.Draw();
+	Primitives::RenderQuad();
 	
 
 	// 2.5. copy content of geometry's depth buffer to default framebuffer's depth buffer
@@ -198,28 +191,14 @@ void DeferredRendering::Render(float alpha)
 		lightTransform.SetScale(glm::vec3(0.125f));
 		shaderLightBox.SetMat4("model", lightTransform.GetModelMat());
 		shaderLightBox.SetVec3("lightColor", lightColors[i]);
-		Primitives::RenderCube();
+		Primitives::RenderSphere();
 	}
 
 	// render skybox last. but before transparent objects
 	skyboxShader.Use();
 	skyboxShader.SetMat4("projection", projection);
 	skyboxShader.SetMat4("view", view);
-	skyboxShader.SetVec3("TopColor", skyboxSettings.topColor);
-	skyboxShader.SetFloat("TopExponent", skyboxSettings.topExp);
-	skyboxShader.SetVec3("HorizonColor", skyboxSettings.horizonColor);
-	skyboxShader.SetVec3("BottomColor", skyboxSettings.bottomColor);
-	skyboxShader.SetFloat("BottomExponent", skyboxSettings.bottomExp);
-	skyboxShader.SetFloat("SkyIntensity", skyboxSettings.skyIntensity);
-	skyboxShader.SetVec3("SunColor", skyboxSettings.sunColor);
-	skyboxShader.SetFloat("SunIntensity", skyboxSettings.sunIntensity);
-	skyboxShader.SetFloat("SunAlpha", skyboxSettings.sunAlpha);
-	skyboxShader.SetFloat("SunBeta", skyboxSettings.sunBeta);
-	skyboxShader.SetFloat("SunAzimuth", skyboxSettings.sunAzimuth);
-	skyboxShader.SetFloat("SunAltitude", skyboxSettings.sunAltitude);
-
 	m_skybox.Draw(skyboxShader);
-
 }
 
 void DeferredRendering::RenderUI()

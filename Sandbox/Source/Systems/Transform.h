@@ -41,9 +41,7 @@ public:
 	const glm::vec3& GetRight() { return m_orientation * glm::vec3(1, 0, 0); }
 	const glm::vec3& GetForward() { return m_orientation * glm::vec3(0, 0, -1); }
 
-
 	glm::mat4 GetModelMat();
-
 
 private:
 	glm::vec3 m_position;
@@ -58,9 +56,8 @@ namespace glm
 
 	void to_json(json& j, const glm::quat& p);
 	void from_json(const json& j, glm::quat& p);
+
+	void to_json(json& j, const Transform& p);
+	void from_json(const json& j, Transform& p);
 }
-
-void to_json(json& j, const Transform& p);
-void from_json(const json& j, Transform& p);
-
 

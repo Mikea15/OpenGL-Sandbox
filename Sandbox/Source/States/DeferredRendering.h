@@ -4,8 +4,8 @@
 
 #include "DefaultState.h"
 
-#include "Systems/Rendering/Primitives/Quad.h"
-#include "Systems/Rendering/Primitives/Cube.h"
+#include "Systems/Rendering/Primitives.h"
+
 
 class DeferredRendering
 	: public DefaultState
@@ -33,7 +33,6 @@ private:
 	Shader shaderSSAO;
 	Shader shaderSSAOBlur;
 
-	Quad quad;
 	Entity ent;
 	std::vector<glm::vec3> objectPositions;
 

@@ -35,7 +35,6 @@ private:
 
 	glm::vec3 m_cameraMovement;
 	float m_cameraVelocity = 1.0f;
-	float m_cameraSensitivity = 0.7f;
 	float m_cameraMovementDamping = 0.65f;
 	float m_cameraMovementSpeedBoostMult = 5.0f;
 
@@ -49,12 +48,10 @@ private:
 	float m_fovDamping = 0.85f;
 
 	bool m_inputGrabMouse = false;
-	bool m_inputMoveLeft = false;
-	bool m_inputMoveRight = false;
-	bool m_inputMoveForward = false;
-	bool m_inputMoveBack = false;
-	bool m_inputMoveUp = false;
-	bool m_inputMoveDown = false;
+	float m_inputMoveUp = 0.0f;
+	float m_inputMoveRight = 0.0f;
+	float m_inputMoveForward = 0.0f;
+
 	bool m_inputEnableMovementBoost = false;
 	bool m_inputToggleOrthoCamera = false;
 

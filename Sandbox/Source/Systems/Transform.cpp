@@ -35,32 +35,31 @@ namespace glm
 		j.at("z").get_to(p.z);
 		j.at("w").get_to(p.w);
 	}
+
+	void to_json(json& j, const Transform& p)
+	{
+		j = json{
+			{ "position", p.GetPosition() },
+			{ "scale", p.GetScale() },
+			{ "rotation", p.GetOrientation() }
+		};
+	}
+
+	void from_json(const json& j, Transform& p)
+	{
+		glm::vec3 position;
+		glm::vec3 scale;
+		glm::quat orientation;
+
+		j.at("position").get_to(position);
+		j.at("scale").get_to(scale);
+		j.at("rotation").get_to(orientation);
+
+		p.SetPosition(position);
+		p.SetScale(scale);
+		p.SetOrientation(orientation);
+	}
 }
-
-void to_json(json& j, const Transform& p)
-{
-	j = json{
-		{ "position", p.GetPosition() },
-		{ "scale", p.GetScale() },
-		{ "rotation", p.GetOrientation() }
-	};
-}
-
-void from_json(const json& j, Transform& p)
-{
-	glm::vec3 position;
-	glm::vec3 scale;
-	glm::quat orientation;
-
-	j.at("position").get_to(position);
-	j.at("scale").get_to(scale);
-	j.at("rotation").get_to(orientation);
-
-	p.SetPosition(position);
-	p.SetScale(scale);
-	p.SetOrientation(orientation);
-}
-
 
 Transform::Transform()
 	: m_position(0.0f)

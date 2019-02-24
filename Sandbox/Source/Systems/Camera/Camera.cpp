@@ -63,11 +63,6 @@ void Camera::Update(float deltaTime)
 	* Possible Solution for Matrix based camera.
 	* https://stackoverflow.com/questions/42263325/3d-camera-has-unintended-roll
 	*/
-	// override with transform
-	// m_forward = m_transform.GetForward();
-	// m_right = m_transform.GetRight();
-	// m_up = m_transform.GetUp();
-
 	const float hSize = m_params.m_orthoSize * 0.5f;
 	const float wSize = m_params.m_orthoSize * 0.5f * m_params.m_aspectRatio;
 
@@ -96,19 +91,6 @@ void Camera::UpdateFov(float delta)
 
 void Camera::UpdateLookAt(const glm::vec2& mouseMovement)
 {
-	float len = glm::length(mouseMovement);
-	glm::vec axis = glm::normalize(mouseMovement);
-
-	glm::quat roty = glm::angleAxis(glm::radians(-mouseMovement.x), glm::vec3(0, 1, 0));
-	glm::quat yaw = m_transform.GetOrientation() * roty;
-	yaw = glm::normalize(yaw);
-
-	glm::quat rotx = glm::angleAxis(glm::radians(-mouseMovement.y), glm::vec3(1, 0, 0));
-	glm::quat pitch = m_transform.GetOrientation() * rotx;
-	pitch = glm::normalize(pitch);
-	
-	m_transform.SetOrientation(pitch * yaw);
-	
 	m_horizontalAngle -= mouseMovement.x;
 	m_verticalAngle -= mouseMovement.y;
 	NormalizeAngles();
@@ -116,8 +98,6 @@ void Camera::UpdateLookAt(const glm::vec2& mouseMovement)
 
 void Camera::Move(const glm::vec3& movement)
 {
-	m_transform.Translate(movement);
-	
 	m_position += movement;
 }
 
@@ -136,16 +116,12 @@ void Camera::SetFov(float fov)
 
 void Camera::SetNearFarPlane(float nearPlane, float farPlane)
 {
-	//assert(nearPlane > 0.0f);
-	//assert(farPlane > nearPlane);
-
 	m_params.m_nearPlane = nearPlane;
 	m_params.m_farPlane = farPlane;
 }
 
 void Camera::SetAspectRatio(float ratio)
 {
-	//assert(ratio > 0.0);
 	m_params.m_aspectRatio = ratio;
 }
 
@@ -179,7 +155,6 @@ void Camera::ToggleOrthographicCamera()
 
 void Camera::LookAt(const glm::vec3& position)
 {
-	assert(position != m_position);
 	glm::vec3 direction = glm::normalize(position - m_position);
 	m_horizontalAngle = -glm::radians(atan2f(-direction.x, -direction.z));
 	m_verticalAngle = glm::radians(asinf(-direction.y));
