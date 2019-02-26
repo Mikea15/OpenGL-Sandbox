@@ -7,14 +7,14 @@
 void InputVec3(const char* label, glm::vec3& outVec, const char* format = "%.3f", ImGuiInputTextFlags flags = 0)
 {
 	float vec[3] = { outVec.x, outVec.y, outVec.z };
-	ImGui::SliderFloat3(label, vec, -10000.0f, 10000.0f);
+	ImGui::DragFloat3(label, vec, 0.1f, -10000.0f, 10000.0f);
 	outVec = glm::vec3(vec[0], vec[1], vec[2]);
 }
 
 void InputQuat(const char* label, glm::quat& outVec, const char* format = "%.3f", ImGuiInputTextFlags flags = 0)
 {
 	float vec[4] = { outVec.w, outVec.x, outVec.y, outVec.z };
-	ImGui::SliderFloat4(label, vec, -10000.0f, 10000.0f);
+	ImGui::DragFloat4(label, vec, 0.1f, -10000.0f, 10000.0f);
 	outVec = glm::quat(vec[0], vec[1], vec[2], vec[3]);
 }
 
@@ -63,7 +63,7 @@ void SceneManager::RenderUI()
 		{
 			ImGui::PushID(uid);
 			ImGui::AlignTextToFramePadding();
-			bool node_open = ImGui::TreeNode("Transform", "%u", uid);
+			bool node_open = ImGui::TreeNode("TransformNode", "%u", uid);
 
 			if (node_open)
 			{
@@ -73,15 +73,36 @@ void SceneManager::RenderUI()
 
 				glm::vec3 pos = transform.GetPosition();
 				glm::vec3 scale = transform.GetScale();
-				glm::quat rot = transform.GetOrientation();
+				glm::vec3 euler = glm::degrees(glm::eulerAngles(transform.GetOrientation()));
 
-				InputVec3("Position", pos);
-				InputQuat("Rotation", rot);
-				InputVec3("Scale", scale);
+				if (ImGui::Button("P")) 
+				{
+					pos = glm::vec3(0.0f);
+				}
+				ImGui::SameLine(); InputVec3("Position", pos);
+				
+				if (ImGui::Button("R")) 
+				{
+					euler = glm::vec3(0.0f);
+				}
+				ImGui::SameLine(); InputVec3("Rotation", euler);
+				
+				if (ImGui::Button("S"))
+				{
+					scale = glm::vec3(1.0f);
+				}
+				ImGui::SameLine(); InputVec3("Scale", scale);
 
 				transform.SetPosition(pos);
 				transform.SetScale(scale);
-				transform.SetOrientation(rot);
+				
+				glm::quat qPitch	= glm::normalize(glm::angleAxis(glm::radians(euler.x), glm::vec3(1.0f, 0.0f, 0.0f)));
+				glm::quat qYaw		= glm::normalize(glm::angleAxis(glm::radians(euler.y), glm::vec3(0.0f, 1.0f, 0.0f)));
+				glm::quat qRoll		= glm::normalize(glm::angleAxis(glm::radians(euler.z), glm::vec3(0.0f, 0.0f, 1.0f)));
+				glm::quat rotQuat	= qRoll * qYaw * qPitch;
+				rotQuat = glm::normalize(rotQuat);
+
+				transform.SetOrientation(rotQuat);
 
 				ImGui::TreePop();
 			}
