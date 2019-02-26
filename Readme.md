@@ -5,14 +5,16 @@ This is a simple sandbox that I've built upon reading a few different tutorials.
 Do not expect optimized or neatly structured code here. I focus first on functional implementation, then making it efficient. The later becomes less important when my curiosity leads me to a new topic.
 
 ---
+## Images
 
-<img src="gifs/main_1.jpg" height="200"> <img src="gifs/default_1.png" height="200">
+<img src="gifs/main_1.jpg" width="300">
 
-<img src="gifs/frustum_culling.gif" height="200"> <img src="gifs/camera_interpolation.gif" height="200">
+<img src="gifs/frustum_culling.gif" width="300">
 
+<img src="gifs/camera_interpolation.gif" width="300">
 
 ---
-### Things Implemented
+## Things Implemented
 - [x] Modern OpenGL rendering pipeline
 - [x] Deferred Rendering, Render to Texture, Shadow Mapping, Image based Lighting, Point/Directional Lights, Reflection Cubemaps...
 - [x] Post Processing: Bloom, SSAO
@@ -26,7 +28,7 @@ Do not expect optimized or neatly structured code here. I focus first on functio
 - [x] Material Definition and Serialization
 - [x] Assimp Model/Material Loading
 
-### Things Planned, Started or Unfinished
+## Things Planned, Started or Unfinished
 - [ ] Scene Graph
 - [ ] Material Definitions, Async Loading
 - [ ] Occlusion and Portal Culling
@@ -36,7 +38,7 @@ Do not expect optimized or neatly structured code here. I focus first on functio
 - [ ] Others stuff I'll remember later
 - [ ] Asset Browser ( Data Folder )
 
-### Dependencies
+## Dependencies
 - [SDL2 v2.0.8](https://www.libsdl.org/)
 - [GLEW v2.1.0](http://glew.sourceforge.net/)
 - [GLM v0.9.9.0](https://glm.g-truc.net/0.9.9/index.html)
