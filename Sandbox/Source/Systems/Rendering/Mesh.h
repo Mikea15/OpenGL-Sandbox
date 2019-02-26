@@ -25,11 +25,11 @@ public:
 
 	~Mesh();
 
-	void SetVertices(std::vector<VertexInfo> vertices);
+	void SetVertices(const std::vector<VertexInfo>& vertices);
 	const std::vector<VertexInfo>& GetVerticesConst() const { return m_vertices; }
 	std::vector<VertexInfo>& GetVertices() { return m_vertices; }
 
-	void SetIndices(std::vector<unsigned int> indices);
+	void SetIndices(const std::vector<unsigned int>& indices);
 	const std::vector<unsigned int>& GetIndicesConst() const { return m_indices; }
 	std::vector<unsigned int>& GetIndices() { return m_indices; }
 

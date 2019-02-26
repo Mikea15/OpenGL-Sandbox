@@ -47,7 +47,7 @@ public:
 
 	void Initialize();
 
-	void LoaderThread( std::future<void> futureObj );
+	void LoaderThread( const std::future<void>& futureObj );
 	void Update();
 
 	// Models

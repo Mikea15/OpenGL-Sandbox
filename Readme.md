@@ -5,15 +5,13 @@ This is a simple sandbox that I've built upon reading a few different tutorials.
 Do not expect optimized or neatly structured code here. I focus first on functional implementation, then making it efficient. The later becomes less important when my curiosity leads me to a new topic.
 
 ---
-<img src="gifs/main_1.jpg" width="650">
 
-Frustum Culling
+<img src="gifs/main_1.jpg" height="200">
+<img src="gifs/default_1.png" height="200">
 
-<img src="gifs/frustum_culling.gif" width="650">
+<img src="gifs/frustum_culling.gif" height="200">
+<img src="gifs/camera_interpolation.gif" height="200">
 
-Camera Snapshot Interpolation
-
-<img src="gifs/camera_interpolation.gif" width="650">
 
 ---
 ### Things Implemented
@@ -23,9 +21,12 @@ Camera Snapshot Interpolation
 - [x] Asynchronous texture loading across multiple threads ( producer / consumer )
 - [x] ImGUI Integration
 - [x] LivePP Integration ( Trial over now )
-- [x] QuadTree / Octrees Implementation
+- [x] Quadtree / Octrees Implementation
 - [x] Frustum Culling ( with and without Octrees )
 - [x] Simple Settings Serialization
+- [x] Simple Editor Inspector ( Transform )
+- [x] Material Definition and Serialization
+- [x] Assimp Model/Material Loading
 
 ### Things Planned, Started or Unfinished
 - [ ] Scene Graph

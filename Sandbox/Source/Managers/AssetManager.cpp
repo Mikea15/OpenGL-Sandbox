@@ -53,7 +53,7 @@ void AssetManager::Initialize()
 	m_defaultTex = LoadTexture("Data/Images/default.jpg", false).id;
 }
 
-void AssetManager::LoaderThread(std::future<void> futureObj)
+void AssetManager::LoaderThread(const std::future<void>& futureObj)
 {
 	std::this_thread::sleep_for(std::chrono::milliseconds(10000));
 	while (m_loadingThreadActive)

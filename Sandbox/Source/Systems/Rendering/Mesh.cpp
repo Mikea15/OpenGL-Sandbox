@@ -62,12 +62,12 @@ Mesh::~Mesh()
 	glDeleteBuffers(1, &m_EBO);
 }
 
-void Mesh::SetVertices(std::vector<VertexInfo> vertices)
+void Mesh::SetVertices(const std::vector<VertexInfo>& vertices)
 {
 	this->m_vertices = vertices;
 }
 
-void Mesh::SetIndices(std::vector<unsigned int> indices)
+void Mesh::SetIndices(const std::vector<unsigned int>& indices)
 {
 	this->m_indices = indices;
 }
