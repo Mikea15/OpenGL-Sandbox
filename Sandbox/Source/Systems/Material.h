@@ -29,8 +29,7 @@ public:
 	~Material() = default;
 
 	void SetShader(const Shader& shader);
-
-	void SetTextures(const std::vector<Texture>& textures);
+	void SetMVP(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection);
 	void SetMaterialProperty(const std::string& name, const std::variant<int, float, std::string, bool>& value);
 
 	void BindTextures();

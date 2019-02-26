@@ -4,7 +4,6 @@
 
 #include "Dependencies/imgui/imgui.h"
 
-
 class IMGUIHandler
 {
 public:

@@ -55,14 +55,16 @@ void DefaultState::Init(Game* game)
 	m_skybox.SetTexture(skyboxTex);
 
 	skyboxShader = shaderManager.LoadShader("gradientSkybox", "skybox/skybox.vs", "skybox/horizon_sun.fs");
+	m_simpleShader = shaderManager.LoadShader("simple_textured", "model_loading.vs", "model_loading.fs");
+	// m_simpleShader = shaderManager.LoadShader("wireframeSimple", "unlit/simple.vs", "unlit/color.fs");
 
 	m_model = m_assetManager->LoadModel("Data/Objects/nanosuit/nanosuit.obj");
 	m_model->Initialize();
-
-	m_simpleShader = shaderManager.LoadShader("pbrShader", "model_loading.vs", "model_loading.fs");
+	m_model->SetShader(m_simpleShader);
 
 	std::shared_ptr<Entity> entity = std::make_shared<Entity>();
 	entity->SetModel(*m_model);
+	entity->GetTransform().SetScale(glm::vec3(1.0f));
 
 	m_sceneManager.AddEntity(entity);
 }
@@ -90,17 +92,21 @@ void DefaultState::Render(float alpha)
 	glm::mat4 projection = m_sceneCamera->GetCamera().GetProjection();
 	glm::mat4 view = m_sceneCamera->GetCamera().GetView();
 
-	// Transform transform;
-	// transform.SetPosition(glm::vec3(0.0f));
-	// transform.SetScale(glm::vec3(0.1f));
+	auto objects = m_sceneManager.GetSceneObjects();
+	// m_sceneManager.Draw();
+	static auto RenderPass_Diffuse = [&objects, &view, &projection]() -> void {
+		for (const auto& ent : objects)
+		{
+			auto meshes = ent->GetModel().GetMeshes();
+			for (const auto& mesh : meshes)
+			{
+				mesh->GetMaterial()->SetMVP(ent->GetTransform().GetModelMat(), view, projection);
+				mesh->Draw();
+			}
+		}
+	};
 
-	m_sceneManager.Draw();
-
-	// m_simpleShader.Use();
-	// m_simpleShader.SetMat4("projection", projection);
-	// m_simpleShader.SetMat4("view", view);
-	// m_simpleShader.SetMat4("model", transform.GetModelMat());
-	// m_model->Draw(m_simpleShader);
+	RenderPass_Diffuse();
 
 	// render skybox last. but before transparent objects
 	skyboxShader.Use();
@@ -112,6 +118,8 @@ void DefaultState::Render(float alpha)
 void DefaultState::RenderUI()
 {
 	PROFILE("RenderUI");
+
+	m_sceneManager.RenderUI();
 
 	m_skybox.DrawUIPanel();
 

@@ -18,6 +18,7 @@ public:
 
 	void Update(float deltaTime);
 	void Draw();
+	void RenderUI();
 
 private:
 	std::vector<std::shared_ptr<Entity>> m_sceneObjects;

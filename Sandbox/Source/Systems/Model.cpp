@@ -7,7 +7,7 @@
 #include "Core/Utils.h"
 
 #include "Rendering/Vertex.h"
-
+#include "Rendering/Shader.h"
 #include "Managers/AssetManager.h"
 
 Model::Model()
@@ -42,6 +42,15 @@ void Model::Initialize()
 	for (unsigned int i = 0; i < meshCount; ++i)
 	{
 		m_meshes[i]->CreateBuffers();
+	}
+}
+
+void Model::SetShader(const Shader& shader)
+{
+	const int meshCount = m_meshes.size();
+	for (unsigned int i = 0; i < meshCount; ++i)
+	{
+		m_meshes[i]->GetMaterial()->SetShader(shader);
 	}
 }
 

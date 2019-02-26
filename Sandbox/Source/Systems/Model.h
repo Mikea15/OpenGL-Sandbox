@@ -24,8 +24,7 @@ public:
 	Model& operator=(const Model& assign); 
 
 	void Initialize();
-
-	std::shared_ptr<Material> GetMaterial(unsigned int index) { return m_meshToMaterial[index]; }
+	void SetShader(const Shader& shader);
 
 	void Draw();
 	void Draw(Material& material);
@@ -40,6 +39,4 @@ public:
 	bool m_useGammaCorrection;
 private:
 	std::vector<std::shared_ptr<Mesh>> m_meshes;
-	std::unordered_map<unsigned int, std::shared_ptr<Material>> m_meshToMaterial;
-
 };

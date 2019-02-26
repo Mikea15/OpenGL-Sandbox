@@ -1,6 +1,5 @@
 #include "Skybox.h"
 
-#include "Dependencies/imgui/imgui.h"
 #include "Systems/UI/UIHelper.h"
 
 Skybox::Skybox()

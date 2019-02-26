@@ -1,8 +1,14 @@
 #pragma once
 
-#include "glm/glm.hpp"
-
 #include "Dependencies/imgui/imgui.h"
+
+#define GLM_ENABLE_EXPERIMENTAL
+
+#include <glm/gtx/transform.hpp>
+#include <glm/gtx/quaternion.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
+
 
 namespace ImGui
 {
@@ -12,4 +18,5 @@ namespace ImGui
 		ColorEdit3(label, color, flags);
 		outColor = glm::vec3(color[0], color[1], color[2]);
 	}
+
 }

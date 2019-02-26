@@ -48,20 +48,22 @@ Material::Material()
 {
 }
 
-void Material::SetTextures(const std::vector<Texture>& textures)
-{
-	// std::copy(textures.begin(), textures.end(), m_textures.begin());
-	//m_textures = textures;
-}
-
 void Material::SetShader(const Shader& shader)
 {
 	m_shader = shader;
 }
 
+void Material::SetMVP(const glm::mat4& model, const glm::mat4& view, const glm::mat4 & projection)
+{
+	m_shader.Use();
+	m_shader.SetMat4("view", view);
+	m_shader.SetMat4("projection", projection);
+	m_shader.SetMat4("model", model);
+}
+
 void Material::SetMaterialProperty(const std::string& name, const std::variant<int, float, std::string, bool>& value)
 {
-	unsigned int hash = std::hash < std::string>{}(name);
+	unsigned int hash = std::hash<std::string>{}(name);
 
 	auto findIt = m_materialMapToVectorIndex.find(hash);
 	if (findIt == m_materialMapToVectorIndex.end())
@@ -88,6 +90,7 @@ void Material::SetMaterialProperty(const std::string& name, const std::variant<i
 */
 void Material::BindTextures()
 {
+	m_shader.Use();
 	for (unsigned int i = 0; i < m_textures.size(); i++)
 	{
 		switch (m_textures[i].textureType)
