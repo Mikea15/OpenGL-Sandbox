@@ -6,11 +6,9 @@ Do not expect optimized or neatly structured code here. I focus first on functio
 
 ---
 
-<img src="gifs/main_1.jpg" height="200">
-<img src="gifs/default_1.png" height="200">
+<img src="gifs/main_1.jpg" height="200"> <img src="gifs/default_1.png" height="200">
 
-<img src="gifs/frustum_culling.gif" height="200">
-<img src="gifs/camera_interpolation.gif" height="200">
+<img src="gifs/frustum_culling.gif" height="200"> <img src="gifs/camera_interpolation.gif" height="200">
 
 
 ---
