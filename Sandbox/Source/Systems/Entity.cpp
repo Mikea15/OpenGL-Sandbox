@@ -24,6 +24,7 @@ Entity::Entity(Entity&& move)
 
 Entity& Entity::operator=(const Entity& assign)
 {
+	m_id = assign.m_id;
 	m_transform = assign.m_transform;
 	m_model = assign.m_model;
 	return *this;
