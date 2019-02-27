@@ -40,8 +40,11 @@ void SceneManager::Update(float deltaTime)
 	}
 }
 
-void SceneManager::Draw(const glm::mat4& view, const glm::mat4& projection)
+void SceneManager::Draw(const Camera& camera)
 {
+	const glm::mat4& view = camera.GetView();
+	const glm::mat4& projection = camera.GetProjection();
+
 	for (auto& entity : m_sceneObjects)
 	{
 		entity->Draw(view, projection);

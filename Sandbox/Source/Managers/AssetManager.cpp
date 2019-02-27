@@ -180,7 +180,7 @@ std::shared_ptr<Model> AssetManager::LoadModel(const std::string& path)
 				{
 					TextureAssetJob job;
 					job.materialIndex = materialIndex;
-					job.useGammaCorrection = true;
+					job.useGammaCorrection = false;
 					job.textureType = textureType;
 					job.resourcePaths = texturePaths;
 
@@ -191,7 +191,7 @@ std::shared_ptr<Model> AssetManager::LoadModel(const std::string& path)
 				{
 					for (const std::string& path : texturePaths)
 					{
-						Texture texture = LoadTexture(path, true, textureType);
+						Texture texture = LoadTexture(path, false, textureType);
 						material->AddTexture(texture);
 					}
 				}

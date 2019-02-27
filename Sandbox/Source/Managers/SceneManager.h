@@ -3,7 +3,8 @@
 #include <iostream>
 #include <vector>
 #include <memory>
-#include <glm/glm.hpp>
+
+#include "Systems/Camera/Camera.h"
 
 class Entity;
 
@@ -18,7 +19,7 @@ public:
 	const std::vector<std::shared_ptr<Entity>>& GetSceneObjects() { return m_sceneObjects; }
 
 	void Update(float deltaTime);
-	void Draw(const glm::mat4& view, const glm::mat4& projection);
+	void Draw(const Camera& camera);
 	void RenderUI();
 
 private:

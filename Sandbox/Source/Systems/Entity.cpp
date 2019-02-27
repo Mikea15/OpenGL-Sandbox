@@ -31,10 +31,13 @@ Entity& Entity::operator=(const Entity& assign)
 
 void Entity::Update(float deltaTime)
 {
+	// for each component, 
+	// check if component active
+	// update component.
 }
 
 void Entity::Draw(const glm::mat4& view, const glm::mat4& projection)
 {
-	m_model.Draw(GetTransform().GetModelMat(), view, projection);
+	m_model.Draw(m_transform.GetModelMat(), view, projection);
 }
 

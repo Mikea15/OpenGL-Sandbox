@@ -89,24 +89,14 @@ void DefaultState::Render(float alpha)
 	glViewport(0, 0, m_windowParams.Width, m_windowParams.Height);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glm::mat4 projection = m_sceneCamera->GetCamera().GetProjection();
-	glm::mat4 view = m_sceneCamera->GetCamera().GetView();
+	const Camera& camera = m_sceneCamera->GetCamera();
 
-	//auto objects = m_sceneManager.GetSceneObjects();
-	m_sceneManager.Draw(view, projection);/*
-	static auto RenderPass_Diffuse = [&objects, &view, &projection]() -> void {
-		for (const auto& ent : objects)
-		{
-			ent->Draw(view, projection);
-		}
-	};
-
-	RenderPass_Diffuse();*/
+	m_sceneManager.Draw(camera);
 
 	// render skybox last. but before transparent objects
 	skyboxShader.Use();
-	skyboxShader.SetMat4("projection", projection);
-	skyboxShader.SetMat4("view", view);
+	skyboxShader.SetMat4("projection", camera.GetProjection());
+	skyboxShader.SetMat4("view", camera.GetView());
 	m_skybox.Draw(skyboxShader);
 }
 
