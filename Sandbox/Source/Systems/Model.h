@@ -22,11 +22,12 @@ public:
 	Model(const Model& copy);
 	Model(Model&& move);
 	Model& operator=(const Model& assign); 
+	~Model();
 
 	void Initialize();
 	void SetShader(const Shader& shader);
 
-	void Draw();
+	void Draw(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection);
 	void Draw(Material& material);
 	void Draw(const Shader& shader);
 	void DrawInstanced(const Shader& shader, int instanceCount);
@@ -36,7 +37,6 @@ public:
 
 	void AddMesh(std::shared_ptr<Mesh> mesh);
 
-	bool m_useGammaCorrection;
 private:
 	std::vector<std::shared_ptr<Mesh>> m_meshes;
 };

@@ -11,29 +11,29 @@
 #include "Managers/AssetManager.h"
 
 Model::Model()
-	: m_useGammaCorrection(false)
 {
 
 }
 
 Model::Model(const Model& copy)
-	: m_useGammaCorrection(copy.m_useGammaCorrection)
-	, m_meshes(copy.m_meshes)
+	: m_meshes(copy.m_meshes)
 {
 }
 
 Model::Model(Model&& move)
-	: m_useGammaCorrection(move.m_useGammaCorrection)
-	, m_meshes(move.m_meshes)
+	: m_meshes(move.m_meshes)
 {
 	
 }
 
 Model& Model::operator=(const Model& assign)
 {
-	m_useGammaCorrection = assign.m_useGammaCorrection;
 	m_meshes = assign.m_meshes;
 	return *this;
+}
+
+Model::~Model()
+{
 }
 
 void Model::Initialize()
@@ -54,11 +54,12 @@ void Model::SetShader(const Shader& shader)
 	}
 }
 
-void Model::Draw()
+void Model::Draw(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection)
 {
 	const int meshCount = m_meshes.size();
 	for (unsigned int i = 0; i < meshCount; ++i)
 	{
+		m_meshes[i]->GetMaterial()->SetMVP(model, view, projection);
 		m_meshes[i]->Draw();
 	}
 }

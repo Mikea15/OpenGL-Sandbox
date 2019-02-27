@@ -36,15 +36,15 @@ void SceneManager::Update(float deltaTime)
 {
 	for (auto entity : m_sceneObjects)
 	{
-		// entity->Update(deltaTime);
+		entity->Update(deltaTime);
 	}
 }
 
-void SceneManager::Draw()
+void SceneManager::Draw(const glm::mat4& view, const glm::mat4& projection)
 {
-	for (auto entity : m_sceneObjects)
+	for (auto& entity : m_sceneObjects)
 	{
-		entity->Draw();
+		entity->Draw(view, projection);
 	}
 }
 

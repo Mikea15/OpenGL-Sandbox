@@ -13,8 +13,6 @@ public:
 
 	~Entity() = default;
 
-	void LoadModel(const std::string& modelPath);
-
 	void SetTransform(const Transform& newTransform) { m_transform = newTransform; }
 	Transform& GetTransform() { return m_transform; }
 
@@ -29,7 +27,7 @@ public:
 	}
 
 	void Update(float deltaTime);
-	void Draw();
+	void Draw(const glm::mat4& view, const glm::mat4& projection);
 
 private:
 	unsigned int m_id;

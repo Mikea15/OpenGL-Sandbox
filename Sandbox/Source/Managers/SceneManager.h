@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <glm/glm.hpp>
 
 class Entity;
 
@@ -17,7 +18,7 @@ public:
 	const std::vector<std::shared_ptr<Entity>>& GetSceneObjects() { return m_sceneObjects; }
 
 	void Update(float deltaTime);
-	void Draw();
+	void Draw(const glm::mat4& view, const glm::mat4& projection);
 	void RenderUI();
 
 private:
