@@ -46,3 +46,6 @@ Do not expect optimized or neatly structured code here. I focus first on functio
 - [ImGui v1.67](https://github.com/ocornut/imgui)
 - [stb_image v2.19](https://github.com/nothings/stb)
 - [nlohmannJson v3.4.0](https://github.com/nlohmann/json)
+
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3de291961f3644afa783253eb3e967df)](https://www.codacy.com/app/michael.adaixo/OpenGL-Sandbox?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=Mikea15/OpenGL-Sandbox&amp;utm_campaign=Badge_Grade)
