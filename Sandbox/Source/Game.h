@@ -39,8 +39,8 @@ private:
 	bool m_isRunning;
 
 	std::chrono::high_resolution_clock::time_point m_currentTime;
-	double m_deltaTime;
-	double m_time;
+	float m_deltaTime;
+	float m_time;
 
 	std::shared_ptr<State> m_currentState;
 

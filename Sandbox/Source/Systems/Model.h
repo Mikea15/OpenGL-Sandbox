@@ -33,10 +33,11 @@ public:
 	void DrawInstanced(const Shader& shader, int instanceCount);
 
 	std::vector<std::shared_ptr<Mesh>>& GetMeshes() { return m_meshes; }
-	unsigned int GetMeshCount() const { return m_meshes.size(); }
+	unsigned int GetMeshCount() const { return static_cast<unsigned int>(m_meshes.size()); }
 
 	void AddMesh(std::shared_ptr<Mesh> mesh);
 
 private:
 	std::vector<std::shared_ptr<Mesh>> m_meshes;
+	int i;
 };

@@ -63,7 +63,7 @@ void Material::SetMVP(const glm::mat4& model, const glm::mat4& view, const glm::
 
 void Material::SetMaterialProperty(const std::string& name, const std::variant<int, float, std::string, bool>& value)
 {
-	unsigned int hash = std::hash<std::string>{}(name);
+	unsigned int hash = static_cast<unsigned int>(std::hash<std::string>{}(name));
 
 	auto findIt = m_materialMapToVectorIndex.find(hash);
 	if (findIt == m_materialMapToVectorIndex.end())
@@ -71,14 +71,14 @@ void Material::SetMaterialProperty(const std::string& name, const std::variant<i
 		Property mp;
 		mp.name = name;
 		mp.value = value;
-		unsigned int index = m_materialProperties.size();
+		unsigned int index = static_cast<unsigned int>(m_materialProperties.size());
 		m_materialProperties.push_back(mp);
 		m_materialMapToVectorIndex.emplace(hash, index);
 	}
 	else
 	{
-		int index = findIt->second;
-		if (index < m_materialProperties.size())
+		unsigned int index = findIt->second;
+		if (index < static_cast<unsigned int>(m_materialProperties.size()))
 		{
 			m_materialProperties[index].value = value;
 		}
@@ -91,7 +91,8 @@ void Material::SetMaterialProperty(const std::string& name, const std::variant<i
 void Material::BindTextures()
 {
 	m_shader.Use();
-	for (unsigned int i = 0; i < m_textures.size(); i++)
+	const unsigned int textureSize = static_cast<unsigned int>(m_textures.size());
+	for (unsigned int i = 0; i < textureSize; i++)
 	{
 		switch (m_textures[i].textureType)
 		{

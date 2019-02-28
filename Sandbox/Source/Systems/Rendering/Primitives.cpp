@@ -32,7 +32,7 @@ void Primitives::RenderPoint(int size)
 		glEnableVertexAttribArray(0);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	}
-	glPointSize(size);
+	glPointSize(static_cast<GLfloat>(size));
 	glBindVertexArray(pointVao);
 	glDrawArrays(GL_POINTS, 0, 1);
 	glBindVertexArray(0);

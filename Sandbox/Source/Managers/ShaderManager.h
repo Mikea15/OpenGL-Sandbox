@@ -14,9 +14,9 @@ public:
 	ShaderManager();
 	~ShaderManager();
 
-	const Shader& LoadShader(const std::string& name, const std::string& vertex,
+	Shader LoadShader(const std::string& name, const std::string& vertex,
 		const std::string& fragment, const std::string& geometry = "");
-	const Shader& GetShader(const std::string& name);
+	Shader GetShader(const std::string& name);
 
 private:
 	std::unordered_map<std::string, Shader> m_shaderMap;

@@ -15,7 +15,7 @@ const char* Game::s_configFileName = "Levels/config.json";
 
 Game::Game()
 	: m_isRunning(true)
-	, m_deltaTime(1.0 / 60.0)
+	, m_deltaTime(1.0f / 60.0f)
 {
 	LoadConfig();
 
@@ -41,7 +41,7 @@ Game::~Game()
 
 void Game::InitSystems()
 {
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(NULL)));
 
 	m_sdlHandler.Init();
 
@@ -56,13 +56,13 @@ int Game::Execute()
 	InitSystems();
 
 	m_currentTime = std::chrono::high_resolution_clock::now();
-	double accumulator = 0.0;
+	float accumulator = 0.0f;
 
 	while (m_isRunning)
 	{
 		auto now = std::chrono::high_resolution_clock::now();
 		auto timeSpan = std::chrono::duration_cast<std::chrono::duration<double>>(now - m_currentTime);
-		double frameTime = timeSpan.count();
+		float frameTime = static_cast<float>(timeSpan.count());
 
 		m_time += frameTime;
 
@@ -125,7 +125,7 @@ int Game::Execute()
 			accumulator -= m_deltaTime;
 		}
 
-		const double alpha = accumulator / m_deltaTime;
+		const float alpha = accumulator / m_deltaTime;
 		
 		// Render
 		m_sdlHandler.BeginRender();

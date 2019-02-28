@@ -8,7 +8,7 @@
 
 struct HeightmapParams
 {
-	int octaves;
+	unsigned int octaves;
 	float lacunarity;
 	float persistence;
 

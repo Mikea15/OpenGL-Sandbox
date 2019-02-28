@@ -78,10 +78,10 @@ ContainmentType BoundingBox::Contains(const BoundingBox& box) const
 ContainmentType BoundingBox::Contains(const BoundingFrustum& frustum) const
 {
 	//Because question is not frustum contain box but reverse and this is not the same
-	int i;
-	ContainmentType contained;
+	unsigned int i;
+
 	const std::vector<glm::vec3> corners = frustum.GetCorners();
-	const unsigned int cornersSize = corners.size();
+	const unsigned int cornersSize = static_cast<unsigned int>(corners.size());
 	// First we check if frustum is in box
 	for (i = 0; i < cornersSize; ++i)
 	{

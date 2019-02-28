@@ -38,7 +38,7 @@ Model::~Model()
 
 void Model::Initialize()
 {
-	const int meshCount = m_meshes.size();
+	const unsigned int meshCount = static_cast<unsigned int>(m_meshes.size());
 	for (unsigned int i = 0; i < meshCount; ++i)
 	{
 		m_meshes[i]->CreateBuffers();
@@ -47,7 +47,7 @@ void Model::Initialize()
 
 void Model::SetShader(const Shader& shader)
 {
-	const int meshCount = m_meshes.size();
+	const unsigned int meshCount = static_cast<unsigned int>(m_meshes.size());
 	for (unsigned int i = 0; i < meshCount; ++i)
 	{
 		m_meshes[i]->GetMaterial()->SetShader(shader);
@@ -56,7 +56,7 @@ void Model::SetShader(const Shader& shader)
 
 void Model::Draw(const glm::mat4& model, const glm::mat4& view, const glm::mat4& projection)
 {
-	const int meshCount = m_meshes.size();
+	const unsigned int meshCount = static_cast<unsigned int>(m_meshes.size());
 	for (unsigned int i = 0; i < meshCount; ++i)
 	{
 		m_meshes[i]->GetMaterial()->SetMVP(model, view, projection);
@@ -66,7 +66,7 @@ void Model::Draw(const glm::mat4& model, const glm::mat4& view, const glm::mat4&
 
 void Model::Draw(Material& material)
 {
-	const int meshCount = m_meshes.size();
+	const unsigned int meshCount = static_cast<unsigned int>(m_meshes.size());
 	for (unsigned int i = 0; i < meshCount; ++i)
 	{
 		m_meshes[i]->Draw(material);
@@ -75,7 +75,7 @@ void Model::Draw(Material& material)
 
 void Model::Draw(const Shader& shader)
 {
-	const int meshCount = m_meshes.size();
+	const unsigned int meshCount = static_cast<unsigned int>(m_meshes.size());
 	for (unsigned int i = 0; i < meshCount; ++i)
 	{
 		m_meshes[i]->Draw(shader);
@@ -84,7 +84,7 @@ void Model::Draw(const Shader& shader)
 
 void Model::DrawInstanced(const Shader& shader, int instanceCount)
 {
-	const int meshCount = m_meshes.size();
+	const unsigned int meshCount = static_cast<unsigned int>(m_meshes.size());
 	for (unsigned int i = 0; i < meshCount; ++i)
 	{
 		m_meshes[i]->DrawInstanced(shader, instanceCount);

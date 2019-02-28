@@ -64,7 +64,7 @@ void AssetManager::LoaderThread(const std::future<void>& futureObj)
 		TextureAssetJob textureAssetJob;
 		SimpleTextureAssetJob simpleJob;
 
-		int workLoadSizeRemaining = 0;
+		unsigned int workLoadSizeRemaining = 0;
 
 		// scope the lock for reading, that is writen from another thread.
 		{
@@ -73,14 +73,14 @@ void AssetManager::LoaderThread(const std::future<void>& futureObj)
 			{
 				textureAssetJob = m_jobsTextureAssets.front();
 				m_jobsTextureAssets.pop();
-				workLoadSizeRemaining += m_jobsTextureAssets.size();
+				workLoadSizeRemaining += static_cast<unsigned int>(m_jobsTextureAssets.size());
 				hasTextureAssetJob = true;
 			}
 			else if (!m_jobsSimpleTextureAsset.empty())
 			{
 				simpleJob = m_jobsSimpleTextureAsset.front();
 				m_jobsSimpleTextureAsset.pop();
-				workLoadSizeRemaining += m_jobsSimpleTextureAsset.size();
+				workLoadSizeRemaining += static_cast<unsigned int>(m_jobsSimpleTextureAsset.size());
 				hasSimpleTextureJob = true;
 			}
 		}
@@ -166,11 +166,11 @@ std::shared_ptr<Model> AssetManager::LoadModel(const std::string& path)
 		std::cout << "[AssetManager] Model: " << lowercasePath << " loaded." << std::endl;
 
 		const auto& meshes = model->GetMeshes();
-		const unsigned int meshCount = meshes.size();
+		const unsigned int meshCount = static_cast<unsigned int>(meshes.size());
 		for (auto mesh : meshes)
 		{
-			unsigned int meshIndex = m_meshCache.size();
-			unsigned int materialIndex = m_materialCache.size();
+			unsigned int meshIndex = static_cast<unsigned int>(m_meshCache.size());
+			unsigned int materialIndex = static_cast<unsigned int>(m_materialCache.size());
 
 			auto material = mesh->GetMaterial();
 			for (auto textureType : m_supportedTextureTypes)
@@ -309,7 +309,7 @@ unsigned int AssetManager::LoadCubemap(const std::string& cubemapName, const std
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapId);
 
 	int width = 0, height = 0, nrChannels = 0;
-	const int imageListSize = paths.size();
+	const unsigned int imageListSize = static_cast<unsigned int>(paths.size());
 	for (unsigned int i = 0; i < imageListSize; ++i)
 	{
 		unsigned char *data = stbi_load(paths[i].c_str(), &width, &height, &nrChannels, 0);

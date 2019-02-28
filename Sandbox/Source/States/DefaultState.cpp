@@ -18,14 +18,14 @@ namespace ImGui
 	{
 		if (values.empty()) { return false; }
 		return Combo(label, currIndex, vector_getter,
-			static_cast<void*>(&values), values.size());
+			static_cast<void*>(&values), static_cast<int>(values.size()));
 	}
 
 	bool ListBox(const char* label, int* currIndex, std::vector<std::string>& values)
 	{
 		if (values.empty()) { return false; }
 		return ListBox(label, currIndex, vector_getter,
-			static_cast<void*>(&values), values.size());
+			static_cast<void*>(&values), static_cast<int>(values.size()));
 	}
 }
 
@@ -110,10 +110,10 @@ void DefaultState::RenderUI()
 
 	{
 		auto displayModes = m_sdlHandler->GetDisplayModes();
-		const unsigned int size = displayModes.size();
+		const unsigned int size = static_cast<unsigned int>(displayModes.size());
 		std::vector<std::string> displayNamesStr;
 
-		for (int i = 0; i < size; ++i)
+		for (unsigned int i = 0; i < size; ++i)
 		{
 			const std::string name = m_sdlHandler->GetDisplayModeName(i);
 			displayNamesStr.push_back(name);

@@ -465,7 +465,7 @@ void IBLSpecState::Render(float alpha)
 	if (showSpheres)
 	{
 		// draw 3d grid of cubes.
-		const unsigned int size = positions.size();
+		const unsigned int size = static_cast<unsigned int>(positions.size());
 		for (unsigned int i = 0; i < size; ++i)
 		{
 			scratchTransform.SetPosition(positions[i]);
@@ -513,7 +513,7 @@ void IBLSpecState::Render(float alpha)
 	{
 		std::vector<Rect> quadTreeVis;
 		m_qTree.GetAllBoundingBoxes(quadTreeVis);
-		const unsigned int qSize = quadTreeVis.size();
+		const unsigned int qSize = static_cast<unsigned int>(quadTreeVis.size());
 		for (unsigned int i = 0; i < qSize; ++i)
 		{
 			Transform origin;
@@ -537,7 +537,7 @@ void IBLSpecState::Render(float alpha)
 	{
 		std::vector<BoundingBox> ocTreeVis;
 		m_oTree.GetAllBoundingBoxes(ocTreeVis);
-		const unsigned int qSize = ocTreeVis.size();
+		const unsigned int qSize = static_cast<unsigned int>(ocTreeVis.size());
 		for (unsigned int i = 0; i < qSize; ++i)
 		{
 			Transform origin;
@@ -590,7 +590,7 @@ void IBLSpecState::Render(float alpha)
 		wireframeShader.SetMat4("projection", ortho);
 
 		// draw 3d grid of cubes.
-		const unsigned int size = positions.size();
+		const unsigned int size = static_cast<unsigned int>(positions.size());
 		for (unsigned int i = 0; i < size; ++i)
 		{
 			switch (visible[i])

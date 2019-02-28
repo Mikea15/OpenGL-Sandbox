@@ -50,14 +50,14 @@ void ProfilerSystemComponent::RenderUI()
 		// Display random stuff (for the sake of this trivial demo we are using basic Button+SameLine. If you want to create your own time line for a real application you may be better off
 		// manipulating the cursor position yourself, aka using SetCursorPos/SetCursorScreenPos to position the widgets yourself. You may also want to use the lower-level ImDrawList API)
 		const auto& dataRef = *m_profileData;
-		const int size = dataRef.size();
+		const unsigned int size = static_cast<unsigned int>(dataRef.size());
 		const int margin = 5;
 		const int hSize = 20;
 		ImVec2 pos = ImGui::GetCursorScreenPos();
 		ImGui::BeginGroup();
-		for (size_t i = 0; i < 10; i++)
+		for (unsigned int i = 0; i < 10; i++)
 		{
-			int rSize = 5 * i;
+			unsigned int rSize = 5 * i;
 			ImGui::GetWindowDrawList()->AddRectFilled(pos, ImVec2(pos.x + rSize, pos.y + hSize), IM_COL32(90, 90, 120, 255));
 			ImGui::GetWindowDrawList()->AddText(ImVec2(pos.x, pos.y + 2), IM_COL32(255, 255, 255, 255), "Hi");
 			pos.x += rSize + margin;

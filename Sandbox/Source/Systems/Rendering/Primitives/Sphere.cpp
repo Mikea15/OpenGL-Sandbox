@@ -18,7 +18,7 @@ Sphere::Sphere(unsigned int xDiv, unsigned int yDiv)
 
 void Sphere::Init()
 {
-	const float PI = 3.14159265359;
+	const float PI = 3.14159265359f;
 	for (unsigned int y = 0; y <= yDiv; ++y)
 	{
 		for (unsigned int x = 0; x <= xDiv; ++x)
@@ -37,11 +37,11 @@ void Sphere::Init()
 	}
 
 	bool oddRow = false;
-	for (int y = 0; y < yDiv; ++y)
+	for (unsigned int y = 0; y < yDiv; ++y)
 	{
 		if (!oddRow) // even rows: y == 0, y == 2; and so on
 		{
-			for (int x = 0; x <= xDiv; ++x)
+			for (unsigned int x = 0; x <= xDiv; ++x)
 			{
 				indices.push_back(y       * (xDiv + 1) + x);
 				indices.push_back((y + 1) * (xDiv + 1) + x);
@@ -49,7 +49,7 @@ void Sphere::Init()
 		}
 		else
 		{
-			for (int x = xDiv; x >= 0; --x)
+			for (unsigned int x = xDiv; x >= 0; --x)
 			{
 				indices.push_back((y + 1) * (xDiv + 1) + x);
 				indices.push_back(y       * (xDiv + 1) + x);
@@ -59,7 +59,7 @@ void Sphere::Init()
 	}
 
 	std::vector<float> data;
-	const unsigned int posSize = positions.size();
+	const unsigned int posSize = static_cast<unsigned int>(positions.size());
 	for (unsigned int i = 0; i < posSize; ++i)
 	{
 		data.push_back(positions[i].x);
@@ -89,7 +89,7 @@ void Sphere::Init()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
 	
-	float stride = (3 + 2 + 3) * sizeof(float);
+	GLsizei stride = (3 + 2 + 3) * sizeof(float);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
 	glEnableVertexAttribArray(1);

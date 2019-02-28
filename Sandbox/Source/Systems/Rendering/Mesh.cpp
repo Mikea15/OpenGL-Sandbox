@@ -126,7 +126,7 @@ void Mesh::Draw()
 
 	// draw mesh
 	glBindVertexArray(m_VAO);
-	glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_indices.size()), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 
 	// always good practice to set everything back to defaults once configured.
@@ -144,7 +144,7 @@ void Mesh::Draw(Material& material)
 
 	// draw mesh
 	glBindVertexArray(m_VAO);
-	glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_indices.size()), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 
 	// always good practice to set everything back to defaults once configured.
@@ -167,7 +167,7 @@ void Mesh::Draw(const Shader& shader)
 
 	// draw mesh
 	glBindVertexArray(m_VAO);
-	glDrawElements(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_indices.size()), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 
 	// always good practice to set everything back to defaults once configured.
@@ -185,7 +185,7 @@ void Mesh::DrawInstanced(const Shader& shader, int instanceCount)
 
 	// draw mesh
 	glBindVertexArray(m_VAO);
-	glDrawElementsInstanced(GL_TRIANGLES, m_indices.size(), GL_UNSIGNED_INT, 0, instanceCount);
+	glDrawElementsInstanced(GL_TRIANGLES, static_cast<GLsizei>(m_indices.size()), GL_UNSIGNED_INT, 0, instanceCount);
 	glBindVertexArray(0);
 
 	glActiveTexture(GL_TEXTURE0);

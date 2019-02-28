@@ -127,7 +127,7 @@ void SDLHandler::SetWindowParameters(const WindowParams& params, bool initialSet
 const SDL_DisplayMode* SDLHandler::GetCurrentDisplayMode()
 {
 	SDL_DisplayMode* displayMode = nullptr;
-	const unsigned int displayModesSize = m_displayModes.size();
+	const int displayModesSize = static_cast<int>(m_displayModes.size());
 	if (m_params->ResolutionIndex >= 0 && m_params->ResolutionIndex < displayModesSize)
 	{
 		displayMode = &m_displayModes[m_params->ResolutionIndex];

@@ -3,6 +3,7 @@
 
 ShaderManager::ShaderManager()
 {
+	LoadShader("default", "unlit/simple.vs", "unlit/color.fs");
 	LoadShader("lighting", "lighting.vs", "lighting.fs");
 	LoadShader("skybox", "skybox/skybox.vs", "skybox/skybox.fs");
 	LoadShader("cubemaps", "skybox/cubemaps.vs", "skybox/cubemaps.fs");
@@ -14,7 +15,7 @@ ShaderManager::~ShaderManager()
 {
 }
 
-const Shader& ShaderManager::LoadShader(const std::string& name, const std::string& vertex,
+Shader ShaderManager::LoadShader(const std::string& name, const std::string& vertex,
 	const std::string& fragment, const std::string& geometry)
 {
 	if (name.empty() || vertex.empty() || fragment.empty())
@@ -22,6 +23,7 @@ const Shader& ShaderManager::LoadShader(const std::string& name, const std::stri
 		std::cerr << "[ShaderManager] Wanna load a shader maybe?" << std::endl;
 		return Shader();
 	}
+
 	const auto& findIt = m_shaderMap.find(name);
 	if (findIt != m_shaderMap.end())
 	{
@@ -36,12 +38,16 @@ const Shader& ShaderManager::LoadShader(const std::string& name, const std::stri
 
 	Shader shader = Shader(vertexPath.c_str(), fragmentPath.c_str(), !geometry.empty() ? geometryPath.c_str() : nullptr );
 
-	m_shaderMap.emplace(name, shader);
+	auto result = m_shaderMap.emplace(name, shader);
+	if (result.second)
+	{
+		return result.first->second;
+	}
 
-	return shader;
+	return Shader();
 }
 
-const Shader& ShaderManager::GetShader(const std::string& name)
+Shader ShaderManager::GetShader(const std::string& name)
 {
 	const auto& findIt = m_shaderMap.find(name);
 	if (findIt != m_shaderMap.end())

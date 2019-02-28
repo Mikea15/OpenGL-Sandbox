@@ -14,8 +14,8 @@ public:
 	void Draw();
 	void DrawInstanced(unsigned int count);
 
-	unsigned int GetIndexCount() const { return indices.size(); }
-	unsigned int GetVertexCount() const { return static_cast<int>(GetIndexCount() * 3 / 4); }
+	unsigned int GetIndexCount() const { return static_cast<unsigned int>(indices.size()); }
+	unsigned int GetVertexCount() const { return static_cast<unsigned int>(GetIndexCount() * 3 / 4); }
 
 	const unsigned int GetVAO() const { return m_VAO; }
 

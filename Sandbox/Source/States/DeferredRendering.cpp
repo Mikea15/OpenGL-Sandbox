@@ -67,20 +67,20 @@ void DeferredRendering::Init(Game* game)
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// setup lighting
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(NULL)));
 	const float min = 0.0f;
 	const float max = 5.0f;
 	for (unsigned int i = 0; i < nLights; i++)
 	{
 		// calculate slightly random offsets
-		float xPos = ((rand() % 100) / 100.0) * max - min;
-		float yPos = ((rand() % 100) / 100.0) * max - min;
-		float zPos = ((rand() % 100) / 100.0) * max - min;
+		float xPos = ((rand() % 100) / 100.0f) * max - min;
+		float yPos = ((rand() % 100) / 100.0f) * max - min;
+		float zPos = ((rand() % 100) / 100.0f) * max - min;
 		lightPositions.push_back(glm::vec3(xPos, yPos, zPos));
 		// also calculate random color
-		float rColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
-		float gColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
-		float bColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
+		float rColor = ((rand() % 100) / 200.0f) + 0.5f; // between 0.5 and 1.0
+		float gColor = ((rand() % 100) / 200.0f) + 0.5f; // between 0.5 and 1.0
+		float bColor = ((rand() % 100) / 200.0f) + 0.5f; // between 0.5 and 1.0
 		lightColors.push_back(glm::vec3(rColor, gColor, bColor));
 	}
 

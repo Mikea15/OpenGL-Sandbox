@@ -156,9 +156,9 @@ void SSAOState::Render(float alpha)
 	shaderLightingPass.SetVec3("light.Position", glm::vec3(0.2, 0.2, 0.7));
 	shaderLightingPass.SetVec3("light.Color", glm::vec3(0.2, 0.2, 0.7));
 	// Update attenuation parameters
-	const float constant = 1.0; // note that we don't send this to the shader, we assume it is always 1.0 (in our case)
-	const float linear = 0.09;
-	const float quadratic = 0.032;
+	const float constant = 1.0f; // note that we don't send this to the shader, we assume it is always 1.0 (in our case)
+	const float linear = 0.09f;
+	const float quadratic = 0.032f;
 	shaderLightingPass.SetFloat("light.Linear", linear);
 	shaderLightingPass.SetFloat("light.Quadratic", quadratic);
 	shaderLightingPass.SetVec3("viewPos", cameraPosition);

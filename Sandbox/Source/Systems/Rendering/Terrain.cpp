@@ -101,9 +101,9 @@ void Terrain::CalculateNormals()
 {
 	auto& vertices = m_mesh.GetVertices();
 	auto& indices = m_mesh.GetIndices();
-	const int indicesSize = indices.size() / 3;
-	const int verticesSize = vertices.size();
-	for (int t = 0; t < indicesSize; ++t)
+	const unsigned int indicesSize = static_cast<unsigned int>(indices.size() / 3);
+	const unsigned int verticesSize = static_cast<unsigned int>(vertices.size());
+	for (unsigned int t = 0; t < indicesSize; ++t)
 	{
 		int triangleIndex = t * 3;
 		int indA = indices[triangleIndex + 0];
@@ -116,7 +116,7 @@ void Terrain::CalculateNormals()
 		vertices[indC].Normal += normal;
 	}
 
-	for (int v = 0; v < verticesSize; ++v)
+	for (unsigned int v = 0; v < verticesSize; ++v)
 	{
 		vertices[v].Normal = glm::normalize(vertices[v].Normal);
 	}

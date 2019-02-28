@@ -128,7 +128,7 @@ void Camera::SetAspectRatio(float ratio)
 bool Camera::IsInFieldOfView(const glm::vec3& position) const
 {
 	const glm::vec3 camToObj = position - m_position;
-	const float distSq = camToObj.length() * camToObj.length();
+	const float distSq = static_cast<float>(camToObj.length() * camToObj.length());
 	if (distSq > m_params.m_farPlane * m_params.m_farPlane)
 	{
 		return false;

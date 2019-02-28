@@ -73,7 +73,7 @@ void OcclusionState::Render(float alpha)
 	wireframeShader.SetVec3("camPos", cameraPosition);
 
 	// draw 3d grid of cubes.
-	const unsigned int size = positions.size();
+	const unsigned int size = static_cast<unsigned int>(positions.size());
 	for (unsigned int i = 0; i < size; ++i)
 	{
 		scratchTransform.SetPosition(positions[i]);

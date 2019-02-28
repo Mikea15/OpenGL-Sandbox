@@ -36,10 +36,11 @@ public:
 	const char* GetGLSLVersion() const { return m_glslVersion; }
 
 	const std::vector<SDL_DisplayMode>& GetDisplayModes() const { return m_displayModes; }
-	const std::string& GetDisplayModeName(int index) const {
+	
+	std::string GetDisplayModeName(int index) const {
 		auto it = m_displayModeIndexToName.find(index);
 		if (it != m_displayModeIndexToName.end()) { return it->second; }
-		return "";
+		return std::string();
 	}
 	const SDL_DisplayMode* GetCurrentDisplayMode();
 

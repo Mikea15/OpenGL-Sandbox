@@ -4,7 +4,7 @@
 
 #include "Systems/Camera/Camera.h"
 
-struct WindowParams;
+class WindowParams;
 
 class SceneCameraComponent
 	: public SystemComponent
