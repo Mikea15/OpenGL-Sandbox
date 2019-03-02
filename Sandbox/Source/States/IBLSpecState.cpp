@@ -10,8 +10,8 @@
 #include "Systems/Material.h"
 
 static float ccCamNearPlane = 1.0f;
-static float ccCamFarPlane = 200.0f;
-static float ccCamFov = 60.0f;
+static float ccCamFarPlane = 600.0f;
+static float ccCamFov = 75.0f;
 static float ccRotationSpeed = 10.0f;
 
 IBLSpecState::IBLSpecState()
@@ -229,8 +229,6 @@ void IBLSpecState::Init(Game* game)
 	
 	cc.SetNearFarPlane(ccCamNearPlane, ccCamFarPlane);
 	cc.SetFov(ccCamFov);
-
-
 }
 
 void IBLSpecState::HandleInput(SDL_Event* event)
@@ -440,7 +438,7 @@ void IBLSpecState::Render(float alpha)
 		}
 	}
 
-	bool showLights = false;
+	bool showLights = true;
 	if (showLights)
 	{
 
@@ -499,11 +497,9 @@ void IBLSpecState::Render(float alpha)
 				pbrShader.SetMat4("view", view);
 				pbrShader.SetMat4("projection", projection);
 				pbrShader.SetVec3("camPos", cameraPosition);
-
 				pbrShader.SetMat4("model", scratchTransform.GetModelMat());
 				Primitives::RenderSphere(false);
 			}
-			
 			
 			vertexCountStats += Primitives::sphere.GetVertexCount();
 		}
@@ -631,6 +627,7 @@ void IBLSpecState::RenderUI()
 
 	ImGui::End();
 
+
 	ImGui::Begin("Camera Q/O Tree Magic");
 
 	ImGui::Checkbox("Insert Camera Positions", &includeCamPosIntoTrees);
@@ -644,6 +641,7 @@ void IBLSpecState::RenderUI()
 	ImGui::Checkbox("Show Octree", &showOctree);
 
 	ImGui::End();
+	
 
 	ImGui::Begin("Show Buffers");
 	const float screenRatio = m_windowParams.Height / static_cast<float>(m_windowParams.Width);

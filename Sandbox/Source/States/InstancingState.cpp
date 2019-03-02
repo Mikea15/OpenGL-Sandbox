@@ -15,10 +15,16 @@ void InstancingState::Init(Game* game)
 	planetShader = shaderManager.LoadShader("planetShade3r", "lit/default_simple.vs", "unlit/textured.fs");
 	
 	rockEnt = Entity();
-	//rockEnt.SetModel(m_assetManager->LoadModel("Data/Objects/rock/rock.obj"));
+	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/rock/rock.obj");
+	model->Initialize();
+	model->SetShader(asteroidShader);
+	rockEnt.SetModel(*model);
 	
 	planetEnt = Entity();
-	//planetEnt.SetModel(m_assetManager->LoadModel("Data/Objects/test/test.fbx"));
+	std::shared_ptr<Model> model2 = m_assetManager->LoadModel("Data/Objects/test/test.fbx");
+	model2->Initialize();
+	model2->SetShader(asteroidShader);
+	planetEnt.SetModel(*model2);
 	planetEnt.GetTransform().SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 	planetEnt.GetTransform().Scale(1.0f);
 
@@ -45,9 +51,11 @@ void InstancingState::Render(float alpha)
 	glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	const Camera& camera = m_sceneCamera->GetCamera();
+
 	// configure transformation matrices
-	glm::mat4 view = m_sceneCamera->GetCamera().GetView();
-	glm::mat4 projection = m_sceneCamera->GetCamera().GetProjection();
+	glm::mat4 view = camera.GetView();
+	glm::mat4 projection = camera.GetProjection();
 
 	// draw planet
 	planetShader.Use();
@@ -64,21 +72,8 @@ void InstancingState::Render(float alpha)
 
 	// render skybox last. but before transparent objects
 	skyboxShader.Use();
-	skyboxShader.SetMat4("projection", projection);
-	skyboxShader.SetMat4("view", view);
-	skyboxShader.SetVec3("TopColor", skyboxSettings.topColor);
-	skyboxShader.SetFloat("TopExponent", skyboxSettings.topExp);
-	skyboxShader.SetVec3("HorizonColor", skyboxSettings.horizonColor);
-	skyboxShader.SetVec3("BottomColor", skyboxSettings.bottomColor);
-	skyboxShader.SetFloat("BottomExponent", skyboxSettings.bottomExp);
-	skyboxShader.SetFloat("SkyIntensity", skyboxSettings.skyIntensity);
-	skyboxShader.SetVec3("SunColor", skyboxSettings.sunColor);
-	skyboxShader.SetFloat("SunIntensity", skyboxSettings.sunIntensity);
-	skyboxShader.SetFloat("SunAlpha", skyboxSettings.sunAlpha);
-	skyboxShader.SetFloat("SunBeta", skyboxSettings.sunBeta);
-	skyboxShader.SetFloat("SunAzimuth", skyboxSettings.sunAzimuth);
-	skyboxShader.SetFloat("SunAltitude", skyboxSettings.sunAltitude);
-
+	skyboxShader.SetMat4("projection", camera.GetProjection());
+	skyboxShader.SetMat4("view", camera.GetView());
 	m_skybox.Draw(skyboxShader);
 }
 

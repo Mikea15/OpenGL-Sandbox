@@ -7,7 +7,6 @@
 #include "States/InstancingState.h"
 #include "States/DeferredRendering.h"
 #include "States/SSAOState.h"
-#include "States/OcclusionState.h"
 
 class SceneSwitcherSystemComponent
 	: public SystemComponent

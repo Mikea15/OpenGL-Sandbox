@@ -204,9 +204,6 @@
     <ClCompile Include="Source\Managers\AssetManager.cpp">
       <Filter>Source Files\Managers</Filter>
     </ClCompile>
-    <ClCompile Include="Source\States\OcclusionState.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Core\WindowParams.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -385,9 +382,6 @@
     </ClInclude>
     <ClInclude Include="Source\Managers\AssetManager.h">
       <Filter>Source Files\Managers</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\States\OcclusionState.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\Core\WindowParams.h">
       <Filter>Header Files</Filter>

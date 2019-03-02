@@ -41,7 +41,7 @@ void Sphere::Init()
 	{
 		if (!oddRow) // even rows: y == 0, y == 2; and so on
 		{
-			for (unsigned int x = 0; x <= xDiv; ++x)
+			for (int x = 0; x <= xDiv; ++x)
 			{
 				indices.push_back(y       * (xDiv + 1) + x);
 				indices.push_back((y + 1) * (xDiv + 1) + x);
@@ -49,7 +49,7 @@ void Sphere::Init()
 		}
 		else
 		{
-			for (unsigned int x = xDiv; x >= 0; --x)
+			for ( int x = xDiv; x >= 0; --x)
 			{
 				indices.push_back((y + 1) * (xDiv + 1) + x);
 				indices.push_back(y       * (xDiv + 1) + x);
