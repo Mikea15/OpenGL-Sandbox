@@ -7,11 +7,11 @@ out vec3 FragPos;
 out vec2 TexCoords;
 out vec3 Normal;
 
-uniform bool invertedNormals;
-
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+
+uniform bool invertedNormals;
 
 void main()
 {

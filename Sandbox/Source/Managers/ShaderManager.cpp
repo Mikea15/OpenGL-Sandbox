@@ -3,12 +3,12 @@
 
 ShaderManager::ShaderManager()
 {
-	LoadShader("default", "unlit/simple.vs", "unlit/color.fs");
-	LoadShader("lighting", "lighting.vs", "lighting.fs");
-	LoadShader("skybox", "skybox/skybox.vs", "skybox/skybox.fs");
-	LoadShader("cubemaps", "skybox/cubemaps.vs", "skybox/cubemaps.fs");
-	LoadShader("refraction", "lit/refraction.vs", "lit/refraction.fs");
-	LoadShader("hdr", "postfx/hdr.vs", "postfx/hdr.fs");
+	// LoadShader("default", "basic.vs", "unlit/color.fs");
+	// LoadShader("lighting", "lighting.vs", "lighting.fs");
+	// LoadShader("skybox", "skybox/skybox.vs", "skybox/skybox.fs");
+	// LoadShader("cubemaps", "skybox/cubemaps.vs", "skybox/cubemaps.fs");
+	// LoadShader("refraction", "lit/refraction.vs", "lit/refraction.fs");
+	// LoadShader("hdr", "postfx/hdr.vs", "postfx/hdr.fs");
 }
 
 ShaderManager::~ShaderManager()
@@ -31,10 +31,9 @@ Shader ShaderManager::LoadShader(const std::string& name, const std::string& ver
 		return Shader();
 	}
 
-	std::string vertexPath = s_shaderDirectory + vertex;
-	std::string fragmentPath = s_shaderDirectory + fragment;
-
-	std::string geometryPath = s_shaderDirectory + geometry;
+	const std::string vertexPath = s_shaderDirectory + vertex;
+	const std::string fragmentPath = s_shaderDirectory + fragment;
+	const std::string geometryPath = s_shaderDirectory + geometry;
 
 	Shader shader = Shader(vertexPath.c_str(), fragmentPath.c_str(), !geometry.empty() ? geometryPath.c_str() : nullptr );
 

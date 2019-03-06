@@ -277,12 +277,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Data\Shaders\advanced_glsl.vs" />
+    <None Include="Data\Shaders\basic.vs" />
     <None Include="Data\Shaders\deferred\deferred_light_box.fs" />
     <None Include="Data\Shaders\deferred\deferred_light_box.vs" />
     <None Include="Data\Shaders\deferred\deferred_shading.fs" />
     <None Include="Data\Shaders\deferred\deferred_shading.vs" />
     <None Include="Data\Shaders\deferred\gbuffer.fs" />
     <None Include="Data\Shaders\deferred\gbuffer.vs" />
+    <None Include="Data\Shaders\lit\blinn_phong.fs" />
+    <None Include="Data\Shaders\lit\blinn_phong_shadows.fs" />
+    <None Include="Data\Shaders\basic_texture.vs" />
+    <None Include="Data\Shaders\unlit\white.fs" />
     <None Include="Source\Shaders\horizontal_gradient.fs" />
     <None Include="Data\Shaders\instancing.fs" />
     <None Include="Data\Shaders\instancing.vs" />
@@ -327,9 +332,8 @@
     <None Include="Data\Shaders\postfx\hdr.fs" />
     <None Include="Data\Shaders\postfx\hdr.vs" />
     <None Include="Data\Shaders\screen\framebuffer.fs" />
-    <None Include="Data\Shaders\screen\framebuffer.vs" />
-    <None Include="Data\Shaders\screen\fullscreenTexture.fs" />
-    <None Include="Data\Shaders\screen\fullscreenTexture.vs" />
+    <None Include="Data\Shaders\screen\screen_texture.fs" />
+    <None Include="Data\Shaders\screen\screen_texture.vs" />
     <None Include="Data\Shaders\screen\ssao.fs" />
     <None Include="Data\Shaders\screen\ssao.vs" />
     <None Include="Data\Shaders\screen\ssao_blur.fs" />
@@ -343,9 +347,9 @@
     <None Include="Data\Shaders\skybox\horizon_sun.fs" />
     <None Include="Data\Shaders\skybox\skybox.fs" />
     <None Include="Data\Shaders\skybox\skybox.vs" />
-    <None Include="Data\Shaders\ssao_geometry.fs" />
-    <None Include="Data\Shaders\ssao_geometry.vs" />
-    <None Include="Data\Shaders\ssao_lighting.fs" />
+    <None Include="Data\Shaders\deferred\ssao_geometryBuffer.fs" />
+    <None Include="Data\Shaders\deferred\ssao_geometryBuffer.vs" />
+    <None Include="Data\Shaders\deferred\ssao_lighting.fs" />
     <None Include="Data\Shaders\unlit\color.fs" />
     <None Include="Data\Shaders\unlit\simple.vs" />
     <None Include="Data\Shaders\unlit\textured.fs" />

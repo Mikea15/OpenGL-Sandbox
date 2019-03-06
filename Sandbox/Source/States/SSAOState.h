@@ -4,8 +4,7 @@
 
 #include "Systems/PostProcessing/SSAO.h"
 
-#include "Systems/Rendering/Primitives/Quad.h"
-#include "Systems/Rendering/Primitives/Cube.h"
+#include "Systems/Rendering/Primitives.h"
 
 class SSAOState
 	: public DefaultState
@@ -29,16 +28,13 @@ private:
 	bool enableSSAO = true;
 
 	Shader shaderGeometryPass;
+
 	Shader shaderLightingPass;
 	Shader shaderLightBox;
-	Shader shaderSSAO;
-	Shader shaderSSAOBlur;
+
 	
 	Entity ent;
 	std::vector<glm::vec3> objectPositions;
-
-	Quad quad;
-	Cube cube;
 
 	SSAO ssaoFx;
 };

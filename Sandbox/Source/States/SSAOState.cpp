@@ -16,11 +16,6 @@ void SSAOState::Init(Game* game)
 {
 	DefaultState::Init(game);
 
-	shaderGeometryPass = shaderManager.LoadShader("ssao_geometry", "ssao_geometry.vs", "ssao_geometry.fs");
-	shaderLightingPass = shaderManager.LoadShader("ssao_lighting", "screen/ssao.vs", "ssao_lighting.fs");
-	shaderSSAO = shaderManager.LoadShader("ssao", "screen/ssao.vs", "screen/ssao.fs");
-	shaderSSAOBlur = shaderManager.LoadShader("ssaoBlur", "screen/ssao.vs", "screen/ssao_blur.fs");
-
 	ent = Entity();
 	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj");
 	model->Initialize();
@@ -36,7 +31,7 @@ void SSAOState::Init(Game* game)
 	// objectPositions.push_back(glm::vec3(-3.0, -3.0, 3.0));
 	// objectPositions.push_back(glm::vec3(0.0, -3.0, 3.0));
 	// objectPositions.push_back(glm::vec3(3.0, -3.0, 3.0));
-	objectPositions.push_back(glm::vec3(0.0, -3.0, 0.0));
+	objectPositions.push_back(glm::vec3(0.0, 0.0, 0.0));
 
 	// configure g-buffer framebuffer
 	// ------------------------------
@@ -83,23 +78,17 @@ void SSAOState::Init(Game* game)
 		std::cout << "Framebuffer not complete!" << std::endl;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	ssaoFx.LoadShaders(shaderManager);
 	ssaoFx.GenBuffers(m_windowParams.Width, m_windowParams.Height);
-	ssaoFx.SetupShaders(shaderSSAO, shaderSSAOBlur);
 
-	// setup shaders
+	shaderGeometryPass = shaderManager.LoadShader("ssao_geometry", "ssao_geometry.vs", "ssao_geometry.fs");
+
+	shaderLightingPass = shaderManager.LoadShader("ssao_lighting", "screen/ssao.vs", "deferred/ssao_lighting.fs");
 	shaderLightingPass.Use();
 	shaderLightingPass.SetInt("gPosition", 0);
 	shaderLightingPass.SetInt("gNormal", 1);
 	shaderLightingPass.SetInt("gAlbedo", 2);
 	shaderLightingPass.SetInt("ssao", 3);
-
-	shaderSSAO.Use();
-	shaderSSAO.SetInt("gPosition", 0);
-	shaderSSAO.SetInt("gNormal", 1);
-	shaderSSAO.SetInt("texNoise", 2);
-
-	shaderSSAOBlur.Use();
-	shaderSSAOBlur.SetInt("ssaoInput", 0);
 }
 
 void SSAOState::HandleInput(SDL_Event* event)
@@ -152,15 +141,18 @@ void SSAOState::Render(float alpha)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	shaderLightingPass.Use();
 
-	// send light relevant uniforms
-	shaderLightingPass.SetVec3("light.Position", glm::vec3(0.2, 0.2, 0.7));
-	shaderLightingPass.SetVec3("light.Color", glm::vec3(0.2, 0.2, 0.7));
-	// Update attenuation parameters
 	const float constant = 1.0f; // note that we don't send this to the shader, we assume it is always 1.0 (in our case)
 	const float linear = 0.09f;
 	const float quadratic = 0.032f;
+
+	// send light relevant uniforms
+	// fill Light Struct
+	shaderLightingPass.SetVec3("light.Position", glm::vec3(0.2, 0.2, 0.7));
+	shaderLightingPass.SetVec3("light.Color", glm::vec3(0.2, 0.2, 0.7));
+
 	shaderLightingPass.SetFloat("light.Linear", linear);
 	shaderLightingPass.SetFloat("light.Quadratic", quadratic);
+
 	shaderLightingPass.SetVec3("viewPos", cameraPosition);
 	shaderLightingPass.SetBool("enableSSAO", enableSSAO);
 	shaderLightingPass.SetBool("ssaoIntensity", ssaoFx.GetParams().Intensity);
@@ -170,7 +162,7 @@ void SSAOState::Render(float alpha)
 	glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, gAlbedo);
 	
 	ssaoFx.BindTextureMaps();
-	quad.Draw();
+	Primitives::RenderQuad();
 }
 
 void SSAOState::RenderUI()

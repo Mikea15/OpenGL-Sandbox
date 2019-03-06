@@ -2,6 +2,8 @@
 
 #include "Core/Utils.h"
 
+#include "Managers/ShaderManager.h"
+
 SSAO::SSAO()
 {
 }
@@ -11,38 +13,44 @@ SSAO::~SSAO()
 {
 }
 
-void SSAO::SetupShaders(Shader ssao, Shader ssaoBlur)
+void SSAO::LoadShaders(ShaderManager& shaderManager)
 {
-	shaderSSAO = ssao;
-	shaderSSAOBlur = ssaoBlur;
+	shaderSSAO = shaderManager.LoadShader("ssao", "screen/ssao.vs", "screen/ssao.fs");
+	shaderSSAO.Use();
+	shaderSSAO.SetInt("gPosition", 0);
+	shaderSSAO.SetInt("gNormal", 1);
+	shaderSSAO.SetInt("texNoise", 2);
+
+	shaderSSAOBlur = shaderManager.LoadShader("ssaoBlur", "screen/ssao.vs", "screen/ssao_blur.fs");
+	shaderSSAOBlur.SetInt("ssaoInput", 0);
 }
 
 void SSAO::GenBuffers(unsigned int width, unsigned int height)
 {
 	// also create framebuffer to hold SSAO processing stage 
 	// -----------------------------------------------------
-	glGenFramebuffers(1, &ssaoFBO);
-	glGenFramebuffers(1, &ssaoBlurFBO);
-	glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
-
+	glGenFramebuffers(1, &m_FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 	// SSAO color buffer
-	glGenTextures(1, &ssaoColorBuffer);
-	glBindTexture(GL_TEXTURE_2D, ssaoColorBuffer);
+	glGenTextures(1, &m_colorBuffer);
+	glBindTexture(GL_TEXTURE_2D, m_colorBuffer);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssaoColorBuffer, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorBuffer, 0);
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "SSAO Framebuffer not complete!" << std::endl;
 
+	
+	glGenFramebuffers(1, &m_blurFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_blurFBO);
 	// and blur stage
-	glBindFramebuffer(GL_FRAMEBUFFER, ssaoBlurFBO);
-	glGenTextures(1, &ssaoColorBufferBlur);
-	glBindTexture(GL_TEXTURE_2D, ssaoColorBufferBlur);
+	glGenTextures(1, &m_colorBlurBuffer);
+	glBindTexture(GL_TEXTURE_2D, m_colorBlurBuffer);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ssaoColorBufferBlur, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorBlurBuffer, 0);
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		std::cout << "SSAO Blur Framebuffer not complete!" << std::endl;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -51,12 +59,17 @@ void SSAO::GenBuffers(unsigned int width, unsigned int height)
 	// ----------------------
 	std::uniform_real_distribution<GLfloat> randomFloats(0.0, 1.0); // generates random floats between 0.0 and 1.0
 	std::default_random_engine generator;
-	for (unsigned int i = 0; i < 64; ++i)
+	for (unsigned int i = 0; i < static_cast<unsigned int>(m_params.KernelSize); ++i)
 	{
-		glm::vec3 sample(randomFloats(generator) * 2.0 - 1.0, randomFloats(generator) * 2.0 - 1.0, randomFloats(generator));
+		glm::vec3 sample(
+			randomFloats(generator) * 2.0f - 1.0f,
+			randomFloats(generator) * 2.0f - 1.0f, 
+			randomFloats(generator)
+		);
+
 		sample = glm::normalize(sample);
 		sample *= randomFloats(generator);
-		float scale = float(i) / 64.0f;
+		float scale = static_cast<float>(i / m_params.KernelSize);
 
 		// scale samples s.t. they're more aligned to center of kernel
 		scale = MathUtils::Lerp(0.1f, 1.0f, scale * scale);
@@ -64,8 +77,10 @@ void SSAO::GenBuffers(unsigned int width, unsigned int height)
 		ssaoKernel.push_back(sample);
 	}
 
+	// TODO: Can include this in previous loop.
 	// Send kernel + rotation 
-	for (unsigned int i = 0; i < 64; ++i) {
+	for (unsigned int i = 0; i < static_cast<unsigned int>(m_params.KernelSize); ++i)
+	{
 		shaderSSAO.SetVec3("samples[" + std::to_string(i) + "]", ssaoKernel[i]);
 	}
 
@@ -78,50 +93,50 @@ void SSAO::GenBuffers(unsigned int width, unsigned int height)
 		ssaoNoise.push_back(noise);
 	}
 
-	glGenTextures(1, &noiseTexture);
-	glBindTexture(GL_TEXTURE_2D, noiseTexture);
+	glGenTextures(1, &m_noiseTexture);
+	glBindTexture(GL_TEXTURE_2D, m_noiseTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, 4, 4, 0, GL_RGB, GL_FLOAT, &ssaoNoise[0]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
 }
 
 void SSAO::Process(const glm::mat4& projection, unsigned int gPosition, unsigned int gNormal)
 {
 	// 1.1. generate SSAO texture
 	// ------------------------
-	glBindFramebuffer(GL_FRAMEBUFFER, ssaoFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 	glClear(GL_COLOR_BUFFER_BIT);
 	
 	shaderSSAO.Use();
+	shaderSSAO.SetMat4("projection", projection);
+
 	shaderSSAO.SetInt("kernelSize", m_params.KernelSize);
 	shaderSSAO.SetFloat("radius", m_params.Radius);
 	shaderSSAO.SetFloat("bias", m_params.Bias);
-	shaderSSAO.SetMat4("projection", projection);
 
 	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, gPosition);
 	glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, gNormal);
-	glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, noiseTexture);
+	glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, m_noiseTexture);
 
-	quad.Draw();
-
+	Primitives::RenderQuad();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// 1.2. blur SSAO texture to remove noise
 	// ------------------------------------
-	glBindFramebuffer(GL_FRAMEBUFFER, ssaoBlurFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_blurFBO);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	shaderSSAOBlur.Use();
-	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, ssaoColorBuffer);
+	// Send color buffer to blur phase.
+	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, m_colorBuffer);
 
-	quad.Draw();
+	Primitives::RenderQuad();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void SSAO::BindTextureMaps()
 {
-	glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, ssaoColorBufferBlur);
+	glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, m_colorBlurBuffer);
 }

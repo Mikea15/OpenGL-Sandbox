@@ -4,8 +4,10 @@
 
 #include <random>
 
-#include "../Rendering/Shader.h"
-#include "../Rendering/Primitives/Quad.h"
+#include "Systems/Rendering/Shader.h"
+#include "Systems/Rendering/Primitives.h"
+
+class ShaderManager;
 
 class SSAO
 {
@@ -13,7 +15,7 @@ public:
 	struct Params
 	{
 		float Intensity = 1.0f;
-		int KernelSize = 64;
+		int KernelSize = 4;
 		float Radius = 0.5f;
 		float Bias = 0.025f;
 
@@ -33,7 +35,7 @@ public:
 	SSAO();
 	~SSAO();
 
-	void SetupShaders(Shader ssao, Shader ssaoBlur);
+	void LoadShaders(ShaderManager& shaderManager);
 	void GenBuffers(unsigned int width, unsigned int height);
 	void Process(const glm::mat4& projection, unsigned int gPosition, unsigned int gNormal);
 	void BindTextureMaps();
@@ -41,23 +43,22 @@ public:
 	Params GetParams() const { return m_params; }
 	void SetParams(Params params) { m_params = params; }
 
-	unsigned int GetColorBuffer() const { return ssaoColorBuffer; }
-	unsigned int GetColorBufferBlur() const { return ssaoColorBufferBlur; }
+	unsigned int GetColorBuffer() const { return m_colorBuffer; }
+	unsigned int GetColorBufferBlur() const { return m_colorBlurBuffer; }
 
 private:
 	// ssao
 	std::vector<glm::vec3> ssaoKernel;
-	unsigned int noiseTexture;
-	unsigned int ssaoFBO;
-	unsigned int ssaoBlurFBO;
-	unsigned int ssaoColorBuffer;
-	unsigned int ssaoColorBufferBlur;
+
+	unsigned int m_FBO;
+	unsigned int m_blurFBO;
+	unsigned int m_colorBuffer;
+	unsigned int m_colorBlurBuffer;
+	unsigned int m_noiseTexture;
 
 	Params m_params;
 
 	Shader shaderSSAO;
 	Shader shaderSSAOBlur;
-
-	Quad quad;
 };
 

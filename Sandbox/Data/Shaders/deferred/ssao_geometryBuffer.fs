@@ -14,5 +14,5 @@ void main()
     // also store the per-fragment normals into the gbuffer
     gNormal = normalize(Normal);
     // and the diffuse per-fragment color
-    gAlbedo.rgb = vec3(0.95);
+    gAlbedo.rgb = vec3(1.0);
 }

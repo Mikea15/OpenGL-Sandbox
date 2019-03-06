@@ -11,8 +11,8 @@ void InstancingState::Init(Game* game)
 {
 	DefaultState::Init(game);
 
-	asteroidShader = shaderManager.LoadShader("instancing___", "instancing.vs", "instancing.fs");
-	planetShader = shaderManager.LoadShader("planetShade3r", "lit/default_simple.vs", "unlit/textured.fs");
+	asteroidShader = shaderManager.LoadShader("asteroidInstancing", "instancing.vs", "lit/blinn_phong.fs");
+	planetShader = shaderManager.LoadShader("planetShader", "lit/default_simple.vs", "unlit/blinn_phong_shadows.fs");
 	
 	rockEnt = Entity();
 	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/rock/rock.obj");
@@ -28,9 +28,6 @@ void InstancingState::Init(Game* game)
 	planetEnt.GetTransform().SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 	planetEnt.GetTransform().Scale(1.0f);
 
-	asteroidShader.Use();
-	asteroidShader.SetVec3("Color", glm::vec3(0.6f, 0.2f, 0.9f));
-
 	GenerateAsteroidBelt();
 }
 
@@ -42,7 +39,6 @@ void InstancingState::HandleInput(SDL_Event* event)
 void InstancingState::Update(float deltaTime)
 {
 	DefaultState::Update(deltaTime);
-
 }
 
 void InstancingState::Render(float alpha)

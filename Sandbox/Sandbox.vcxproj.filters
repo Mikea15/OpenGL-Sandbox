@@ -496,15 +496,6 @@
     <None Include="Data\Shaders\screen\framebuffer.fs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\screen\framebuffer.vs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Data\Shaders\screen\fullscreenTexture.fs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Data\Shaders\screen\fullscreenTexture.vs">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Data\Shaders\screen\ssao.fs">
       <Filter>Shaders</Filter>
     </None>
@@ -601,15 +592,6 @@
     <None Include="Data\Shaders\simpleDepthShader.vs">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\ssao_geometry.fs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Data\Shaders\ssao_geometry.vs">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Data\Shaders\ssao_lighting.fs">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Data\Shaders\yellow.fs">
       <Filter>Shaders</Filter>
     </None>
@@ -629,6 +611,26 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Data\Shaders\deferred\deferred_light_box.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\basic.vs" />
+    <None Include="Data\Shaders\lit\blinn_phong_shadows.fs" />
+    <None Include="Data\Shaders\lit\blinn_phong.fs" />
+    <None Include="Data\Shaders\unlit\white.fs" />
+    <None Include="Data\Shaders\deferred\ssao_geometryBuffer.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\deferred\ssao_geometryBuffer.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\screen\screen_texture.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\screen\screen_texture.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Data\Shaders\basic_texture.vs" />
+    <None Include="Data\Shaders\deferred\ssao_lighting.fs">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
