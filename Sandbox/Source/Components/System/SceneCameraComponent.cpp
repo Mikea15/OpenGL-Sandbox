@@ -9,7 +9,8 @@ SceneCameraComponent::SceneCameraComponent()
 	: m_mouseSensitivity(10.0f)
 	, m_cameraMovement(0.0f)
 {
-	m_camera.SetPosition(glm::vec3(0.0f, 1.0f, 7.0f));
+	m_camera.SetPosition(glm::vec3(0.0f, 0.0f, -3.0f));
+	m_camera.LookAt(glm::vec3(0.0f));
 	m_mousePosition = glm::vec2(m_windowParams.Width * 0.5f, m_windowParams.Height * 0.5f);
 }
 

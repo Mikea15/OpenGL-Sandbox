@@ -5,7 +5,7 @@
 #include <random>
 
 #include "Systems/Rendering/Shader.h"
-#include "Systems/Rendering/Primitives/Quad.h"
+#include "Systems/Rendering/Primitives.h"
 
 class ShaderManager;
 
@@ -15,15 +15,17 @@ public:
 	struct Params
 	{
 		float Intensity = 1.0f;
-		int KernelSize = 128;
+		int KernelSize = 16;
 		float Radius = 2.5f;
-		float Bias = 0.005f;
+		float Bias = 0.05f;
+		int BlurSize = 4;
 
 		bool operator==(const Params& rhs) {
 			if (Intensity != rhs.Intensity) return false;
 			if (KernelSize != rhs.KernelSize) return false;
 			if (Radius != rhs.Radius) return false;
 			if (Bias != rhs.Bias) return false;
+			if (BlurSize != rhs.BlurSize) return false;
 			return true;
 		}
 
@@ -35,8 +37,8 @@ public:
 	SSAO();
 	~SSAO();
 
-	void LoadShaders(ShaderManager& shaderManager);
-	void GenBuffers(unsigned int width, unsigned int height);
+	void LoadShaders(ShaderManager& shaderManager, unsigned int width, unsigned int height);
+	void GenBuffers();
 	void GenSampleKernel();
 	void GenNoiseTexture();
 	void Process(const glm::mat4& projection, unsigned int gPosition, unsigned int gNormal);
@@ -61,11 +63,14 @@ private:
 	unsigned int m_colorBlurBuffer;
 	unsigned int m_noiseTexture;
 
+	unsigned int m_screenWidth;
+	unsigned int m_screenHeight;
+
 	Params m_params;
 
 	Shader shaderSSAO;
 	Shader shaderSSAOBlur;
 
-	Quad quad;
+	static float s_MaxKernelSamples;
 };
 

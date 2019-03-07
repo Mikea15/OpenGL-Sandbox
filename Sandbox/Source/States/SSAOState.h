@@ -5,7 +5,6 @@
 #include "Systems/PostProcessing/SSAO.h"
 
 #include "Systems/Rendering/Primitives.h"
-#include "Systems/Rendering/Primitives/Quad.h"
 
 class SSAOState
 	: public DefaultState
@@ -36,8 +35,6 @@ private:
 	
 	Entity ent;
 	std::vector<glm::vec3> objectPositions;
-
-	Quad q;
 
 	SSAO ssaoFx;
 };

@@ -17,10 +17,12 @@ void SSAOState::Init(Game* game)
 	DefaultState::Init(game);
 
 	ent = Entity();
+	// std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/buddha/buddha.obj");
+	// std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/dragon/dragon.obj");
 	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj");
 	model->Initialize();
 	ent.SetModel(*model.get());
-	ent.GetTransform().SetScale(glm::vec3(0.01f));
+	ent.GetTransform().SetScale(glm::vec3(0.1f));
 
 	// objectPositions.push_back(glm::vec3(-3.0, -3.0, -3.0));
 	// objectPositions.push_back(glm::vec3(0.0, -3.0, -3.0));
@@ -78,8 +80,8 @@ void SSAOState::Init(Game* game)
 		std::cout << "Framebuffer not complete!" << std::endl;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	ssaoFx.LoadShaders(shaderManager);
-	ssaoFx.GenBuffers(m_windowParams.Width, m_windowParams.Height);
+	ssaoFx.LoadShaders(shaderManager, m_windowParams.Width, m_windowParams.Height);
+	ssaoFx.GenBuffers();
 
 	shaderGeometryPass = shaderManager.LoadShader("ssao_geometry", "deferred/ssao_geometryBuffer.vs", "deferred/ssao_geometryBuffer.fs");
 
@@ -110,7 +112,7 @@ void SSAOState::Render(float alpha)
 	
 	// render
 	// ------
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// 1. geometry pass: render scene's geometry/color data into gbuffer
@@ -131,7 +133,7 @@ void SSAOState::Render(float alpha)
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
-	
+
 	ssaoFx.Process(projection, gPosition, gNormal);
 	
 	// 2. lighting pass: calculate lighting by iterating over a screen filled quad pixel-by-pixel using the gbuffer's content.
@@ -159,7 +161,27 @@ void SSAOState::Render(float alpha)
 	glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, gAlbedo);
 	
 	ssaoFx.BindTextureMaps();
-	q.Draw();
+
+	Primitives::RenderQuad();
+
+	// copy content of geometry depth buffer to default framebuffer depth buffer
+	// this is so the lights are rendered with correct depth values, etc..
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, gBuffer);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+
+	// blit to default framebuffer. Note that this may or may not work as the internal formats of both the FBO and default framebuffer have to match.
+	// the internal formats are implementation defined. This works on all of my systems, but if it doesn't on yours you'll likely have to write to the 		
+	// depth buffer in another shader stage (or somehow see to match the default framebuffer's internal format with the FBO's internal format).
+	glBlitFramebuffer(0, 0, m_windowParams.Width, m_windowParams.Height, 0, 0,
+		m_windowParams.Width, m_windowParams.Height, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// should now render as if forward rendering?
+	// render skybox last. but before transparent objects
+	skyboxShader.Use();
+	skyboxShader.SetMat4("projection", projection);
+	skyboxShader.SetMat4("view", view);
+	m_skybox.Draw(skyboxShader);
 }
 
 void SSAOState::RenderUI()
@@ -170,10 +192,11 @@ void SSAOState::RenderUI()
 	SSAO::Params ssaoParams = ssaoFx.GetParams();
 
 	ImGui::Checkbox("Enable", &enableSSAO);
-	ImGui::SliderFloat("Intensity", &ssaoParams.Intensity, 0.0f, 3.0f);
-	ImGui::SliderInt("Kernel Size", &ssaoParams.KernelSize, 1, 512);
-	ImGui::SliderFloat("Kernel Radius", &ssaoParams.Radius, 0, 5);
+	ImGui::SliderFloat("Intensity", &ssaoParams.Intensity, 0.0f, 10.0f);
+	ImGui::SliderInt("Kernel Size", &ssaoParams.KernelSize, 1, 256);
+	ImGui::SliderFloat("Kernel Radius", &ssaoParams.Radius, 0, 10);
 	ImGui::SliderFloat("Bias", &ssaoParams.Bias, 0.0f, 1.0f);
+	ImGui::SliderInt("BlurSize", &ssaoParams.BlurSize, 0, 10);
 	ImGui::End();
 
 	ImGui::Begin("Show Buffers");

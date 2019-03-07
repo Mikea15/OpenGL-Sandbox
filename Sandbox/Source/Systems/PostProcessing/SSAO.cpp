@@ -4,6 +4,8 @@
 
 #include "Managers/ShaderManager.h"
 
+float SSAO::s_MaxKernelSamples = 256;
+
 SSAO::SSAO()
 {
 }
@@ -13,19 +15,27 @@ SSAO::~SSAO()
 {
 }
 
-void SSAO::LoadShaders(ShaderManager& shaderManager)
+void SSAO::LoadShaders(ShaderManager& shaderManager, unsigned int width, unsigned int height)
 {
+	m_screenWidth = width;
+	m_screenHeight = height;
+
 	shaderSSAO = shaderManager.LoadShader("ssao", "screen/ssao.vs", "screen/ssao.fs");
 	shaderSSAO.Use();
 	shaderSSAO.SetInt("gPosition", 0);
 	shaderSSAO.SetInt("gNormal", 1);
 	shaderSSAO.SetInt("texNoise", 2);
+	shaderSSAO.SetInt("screenWidth", m_screenWidth);
+	shaderSSAO.SetInt("screenHeight", m_screenHeight);
 
 	shaderSSAOBlur = shaderManager.LoadShader("ssaoBlur", "screen/ssao.vs", "screen/ssao_blur.fs");
+	
+	shaderSSAOBlur.Use();
 	shaderSSAOBlur.SetInt("ssaoInput", 0);
+	shaderSSAOBlur.SetVec2("resolution", glm::vec2(width, height));
 }
 
-void SSAO::GenBuffers(unsigned int width, unsigned int height)
+void SSAO::GenBuffers()
 {
 	// also create framebuffer to hold SSAO processing stage 
 	// -----------------------------------------------------
@@ -34,7 +44,7 @@ void SSAO::GenBuffers(unsigned int width, unsigned int height)
 	// SSAO color buffer
 	glGenTextures(1, &m_colorBuffer);
 	glBindTexture(GL_TEXTURE_2D, m_colorBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_screenWidth, m_screenHeight, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorBuffer, 0);
@@ -47,7 +57,7 @@ void SSAO::GenBuffers(unsigned int width, unsigned int height)
 	// and blur stage
 	glGenTextures(1, &m_colorBlurBuffer);
 	glBindTexture(GL_TEXTURE_2D, m_colorBlurBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, width, height, 0, GL_RGB, GL_FLOAT, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, m_screenWidth, m_screenHeight, 0, GL_RGB, GL_FLOAT, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_colorBlurBuffer, 0);
@@ -65,6 +75,12 @@ void SSAO::GenSampleKernel()
 	// ----------------------
 	std::uniform_real_distribution<GLfloat> randomFloats(0.0, 1.0); // generates random floats between 0.0 and 1.0
 	std::default_random_engine generator;
+
+	if (m_params.KernelSize > s_MaxKernelSamples)
+	{
+		m_params.KernelSize = s_MaxKernelSamples;
+	}
+
 	for (unsigned int i = 0; i < static_cast<unsigned int>(m_params.KernelSize); ++i)
 	{
 		glm::vec3 sample(
@@ -83,6 +99,7 @@ void SSAO::GenSampleKernel()
 		ssaoKernel.push_back(sample);
 	}
 
+	shaderSSAO.Use();
 	// TODO: Can include this in previous loop.
 	// Send kernel + rotation 
 	for (unsigned int i = 0; i < static_cast<unsigned int>(m_params.KernelSize); ++i)
@@ -135,7 +152,7 @@ void SSAO::Process(const glm::mat4& projection, unsigned int gPosition, unsigned
 	glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, gNormal);
 	glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, m_noiseTexture);
 
-	quad.Draw();
+	Primitives::RenderQuad();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -145,10 +162,12 @@ void SSAO::Process(const glm::mat4& projection, unsigned int gPosition, unsigned
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	shaderSSAOBlur.Use();
+	shaderSSAOBlur.SetInt("blurSize", m_params.BlurSize);
 	// Send color buffer to blur phase.
 	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, m_colorBuffer);
 
-	quad.Draw();
+	Primitives::RenderQuad();
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

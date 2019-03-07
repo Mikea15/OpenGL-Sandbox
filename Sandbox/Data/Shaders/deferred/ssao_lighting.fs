@@ -28,7 +28,7 @@ void main()
 	float AmbientOcclusion = texture(ssao, TexCoords).r;
 
     // then calculate lighting as usual
-    vec3 lighting = Diffuse * 0.3 * AmbientOcclusion;
+    vec3 lighting = Diffuse * AmbientOcclusion;
     vec3 viewDir  = normalize(-FragPos);
 
     // diffuse
