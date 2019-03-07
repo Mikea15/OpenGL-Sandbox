@@ -13,6 +13,11 @@ uniform mat4 projection;
 
 void main()
 {
+	// aPos => Local Space
+	// model * aPos => World Space
+	// view * model * aPos => View Space
+	// projection * view * model * aPos => Clip Space
+
     vec4 worldPos = model * vec4(aPos, 1.0);
     FragPos = worldPos.xyz; 
     TexCoords = aTexCoords;

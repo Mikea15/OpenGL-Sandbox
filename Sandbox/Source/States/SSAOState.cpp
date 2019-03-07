@@ -59,7 +59,7 @@ void SSAOState::Init(Game* game)
 	// color + specular color buffer
 	glGenTextures(1, &gAlbedo);
 	glBindTexture(GL_TEXTURE_2D, gAlbedo);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_windowParams.Width, m_windowParams.Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_windowParams.Width, m_windowParams.Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, gAlbedo, 0);
@@ -81,7 +81,7 @@ void SSAOState::Init(Game* game)
 	ssaoFx.LoadShaders(shaderManager);
 	ssaoFx.GenBuffers(m_windowParams.Width, m_windowParams.Height);
 
-	shaderGeometryPass = shaderManager.LoadShader("ssao_geometry", "ssao_geometry.vs", "ssao_geometry.fs");
+	shaderGeometryPass = shaderManager.LoadShader("ssao_geometry", "deferred/ssao_geometryBuffer.vs", "deferred/ssao_geometryBuffer.fs");
 
 	shaderLightingPass = shaderManager.LoadShader("ssao_lighting", "screen/ssao.vs", "deferred/ssao_lighting.fs");
 	shaderLightingPass.Use();
@@ -110,7 +110,7 @@ void SSAOState::Render(float alpha)
 	
 	// render
 	// ------
-	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// 1. geometry pass: render scene's geometry/color data into gbuffer
@@ -132,10 +132,8 @@ void SSAOState::Render(float alpha)
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 	
-	if (enableSSAO) 
-	{
-		ssaoFx.Process(projection, gPosition, gNormal);
-	}
+	ssaoFx.Process(projection, gPosition, gNormal);
+	
 	// 2. lighting pass: calculate lighting by iterating over a screen filled quad pixel-by-pixel using the gbuffer's content.
 	// -----------------------------------------------------------------------------------------------------------------------
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -147,22 +145,20 @@ void SSAOState::Render(float alpha)
 
 	// send light relevant uniforms
 	// fill Light Struct
-	shaderLightingPass.SetVec3("light.Position", glm::vec3(0.2, 0.2, 0.7));
-	shaderLightingPass.SetVec3("light.Color", glm::vec3(0.2, 0.2, 0.7));
+	shaderLightingPass.SetVec3("light.Position", glm::vec3(0, 0, 0));
+	shaderLightingPass.SetVec3("light.Color", glm::vec3(1.0, 1.0, 1.0));
 
 	shaderLightingPass.SetFloat("light.Linear", linear);
 	shaderLightingPass.SetFloat("light.Quadratic", quadratic);
 
 	shaderLightingPass.SetVec3("viewPos", cameraPosition);
-	shaderLightingPass.SetBool("enableSSAO", enableSSAO);
-	shaderLightingPass.SetBool("ssaoIntensity", ssaoFx.GetParams().Intensity);
 
 	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, gPosition);
 	glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, gNormal);
 	glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, gAlbedo);
 	
 	ssaoFx.BindTextureMaps();
-	Primitives::RenderQuad();
+	q.Draw();
 }
 
 void SSAOState::RenderUI()
@@ -173,7 +169,7 @@ void SSAOState::RenderUI()
 	SSAO::Params ssaoParams = ssaoFx.GetParams();
 
 	ImGui::Checkbox("Enable", &enableSSAO);
-	ImGui::SliderFloat("Intensity", &ssaoParams.Intensity, 0.0f, 1.0f);
+	ImGui::SliderFloat("Intensity", &ssaoParams.Intensity, 0.0f, 3.0f);
 	ImGui::SliderInt("Kernel Size", &ssaoParams.KernelSize, 1, 512);
 	ImGui::SliderFloat("Kernel Radius", &ssaoParams.Radius, 0, 5);
 	ImGui::SliderFloat("Bias", &ssaoParams.Bias, 0.0f, 1.0f);

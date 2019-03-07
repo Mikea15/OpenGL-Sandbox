@@ -55,6 +55,12 @@ void SSAO::GenBuffers(unsigned int width, unsigned int height)
 		std::cout << "SSAO Blur Framebuffer not complete!" << std::endl;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+	GenSampleKernel();
+	GenNoiseTexture();
+}
+
+void SSAO::GenSampleKernel()
+{
 	// generate sample kernel
 	// ----------------------
 	std::uniform_real_distribution<GLfloat> randomFloats(0.0, 1.0); // generates random floats between 0.0 and 1.0
@@ -63,7 +69,7 @@ void SSAO::GenBuffers(unsigned int width, unsigned int height)
 	{
 		glm::vec3 sample(
 			randomFloats(generator) * 2.0f - 1.0f,
-			randomFloats(generator) * 2.0f - 1.0f, 
+			randomFloats(generator) * 2.0f - 1.0f,
 			randomFloats(generator)
 		);
 
@@ -83,11 +89,19 @@ void SSAO::GenBuffers(unsigned int width, unsigned int height)
 	{
 		shaderSSAO.SetVec3("samples[" + std::to_string(i) + "]", ssaoKernel[i]);
 	}
+}
+
+void SSAO::GenNoiseTexture()
+{
+	std::uniform_real_distribution<GLfloat> randomFloats(0.0, 1.0); // generates random floats between 0.0 and 1.0
+	std::default_random_engine generator;
 
 	// generate noise texture
 	// ----------------------
+	const int noiseTexSize = 4;
+	const int noiseTexSizeSq = 4 * 4;
 	std::vector<glm::vec3> ssaoNoise;
-	for (unsigned int i = 0; i < 16; i++)
+	for (unsigned int i = 0; i < noiseTexSizeSq; i++)
 	{
 		glm::vec3 noise(randomFloats(generator) * 2.0 - 1.0, randomFloats(generator) * 2.0 - 1.0, 0.0f); // rotate around z-axis (in tangent space)
 		ssaoNoise.push_back(noise);
@@ -95,7 +109,7 @@ void SSAO::GenBuffers(unsigned int width, unsigned int height)
 
 	glGenTextures(1, &m_noiseTexture);
 	glBindTexture(GL_TEXTURE_2D, m_noiseTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, 4, 4, 0, GL_RGB, GL_FLOAT, &ssaoNoise[0]);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, noiseTexSize, noiseTexSize, 0, GL_RGB, GL_FLOAT, &ssaoNoise[0]);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -115,12 +129,14 @@ void SSAO::Process(const glm::mat4& projection, unsigned int gPosition, unsigned
 	shaderSSAO.SetInt("kernelSize", m_params.KernelSize);
 	shaderSSAO.SetFloat("radius", m_params.Radius);
 	shaderSSAO.SetFloat("bias", m_params.Bias);
+	shaderSSAO.SetFloat("intensity", m_params.Intensity);
 
 	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, gPosition);
 	glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, gNormal);
 	glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, m_noiseTexture);
 
-	Primitives::RenderQuad();
+	quad.Draw();
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// 1.2. blur SSAO texture to remove noise
@@ -132,7 +148,7 @@ void SSAO::Process(const glm::mat4& projection, unsigned int gPosition, unsigned
 	// Send color buffer to blur phase.
 	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, m_colorBuffer);
 
-	Primitives::RenderQuad();
+	quad.Draw();
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

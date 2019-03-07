@@ -5,7 +5,7 @@
 #include <random>
 
 #include "Systems/Rendering/Shader.h"
-#include "Systems/Rendering/Primitives.h"
+#include "Systems/Rendering/Primitives/Quad.h"
 
 class ShaderManager;
 
@@ -15,9 +15,9 @@ public:
 	struct Params
 	{
 		float Intensity = 1.0f;
-		int KernelSize = 4;
-		float Radius = 0.5f;
-		float Bias = 0.025f;
+		int KernelSize = 128;
+		float Radius = 2.5f;
+		float Bias = 0.005f;
 
 		bool operator==(const Params& rhs) {
 			if (Intensity != rhs.Intensity) return false;
@@ -37,11 +37,16 @@ public:
 
 	void LoadShaders(ShaderManager& shaderManager);
 	void GenBuffers(unsigned int width, unsigned int height);
+	void GenSampleKernel();
+	void GenNoiseTexture();
 	void Process(const glm::mat4& projection, unsigned int gPosition, unsigned int gNormal);
 	void BindTextureMaps();
 
 	Params GetParams() const { return m_params; }
-	void SetParams(Params params) { m_params = params; }
+	void SetParams(Params params) { 
+		m_params = params;
+		GenSampleKernel();
+	}
 
 	unsigned int GetColorBuffer() const { return m_colorBuffer; }
 	unsigned int GetColorBufferBlur() const { return m_colorBlurBuffer; }
@@ -60,5 +65,7 @@ private:
 
 	Shader shaderSSAO;
 	Shader shaderSSAOBlur;
+
+	Quad quad;
 };
 
