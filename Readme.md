@@ -9,6 +9,8 @@ Do not expect optimized or neatly structured code here. I focus first on functio
 
 <img src="gifs/main_1.jpg" width="300">
 
+<img src="gifs/ssao.jpg" width="300">
+
 <img src="gifs/frustum_culling.gif" width="300">
 
 <img src="gifs/camera_interpolation.gif" width="300">

@@ -145,7 +145,8 @@ void SSAOState::Render(float alpha)
 
 	// send light relevant uniforms
 	// fill Light Struct
-	shaderLightingPass.SetVec3("light.Position", glm::vec3(0, 0, 0));
+	
+	shaderLightingPass.SetVec3("light.Position", glm::vec3(0, 0, 0)); // light position is from camera
 	shaderLightingPass.SetVec3("light.Color", glm::vec3(1.0, 1.0, 1.0));
 
 	shaderLightingPass.SetFloat("light.Linear", linear);
