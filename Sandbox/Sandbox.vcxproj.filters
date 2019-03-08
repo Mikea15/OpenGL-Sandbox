@@ -409,228 +409,228 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Source\Shaders\horizontal_gradient.fs">
+    <None Include="Source\Shaders\horizontal_gradient.frag">
       <Filter>Shaders\skybox</Filter>
     </None>
-    <None Include="Data\Shaders\lit\advancedLighting.fs">
+    <None Include="Data\Shaders\lit\advancedLighting.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\lit\blinnPhong.fs">
+    <None Include="Data\Shaders\lit\blinnPhong.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\lit\default.vs">
+    <None Include="Data\Shaders\lit\default.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\lit\default_simple.vs">
+    <None Include="Data\Shaders\lit\default_simple.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\lit\multiple_lights.fs">
+    <None Include="Data\Shaders\lit\multiple_lights.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\lit\multiple_lights.vs">
+    <None Include="Data\Shaders\lit\multiple_lights.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\lit\refraction.fs">
+    <None Include="Data\Shaders\lit\refraction.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\lit\refraction.vs">
+    <None Include="Data\Shaders\lit\refraction.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\lit\standard.vs">
+    <None Include="Data\Shaders\lit\standard.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\pbr\background.fs">
+    <None Include="Data\Shaders\pbr\background.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\pbr\background.vs">
+    <None Include="Data\Shaders\pbr\background.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\pbr\brdf.fs">
+    <None Include="Data\Shaders\pbr\brdf.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\pbr\brdf.vs">
+    <None Include="Data\Shaders\pbr\brdf.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\pbr\cubemap.vs">
+    <None Include="Data\Shaders\pbr\cubemap.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\pbr\equirectangular_to_cubemap.fs">
+    <None Include="Data\Shaders\pbr\equirectangular_to_cubemap.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\pbr\irradiance_convolution.fs">
+    <None Include="Data\Shaders\pbr\irradiance_convolution.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\pbr\pbr.fs">
+    <None Include="Data\Shaders\pbr\pbr.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\pbr\pbr.vs">
+    <None Include="Data\Shaders\pbr\pbr.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\pbr\prefilter.fs">
+    <None Include="Data\Shaders\pbr\prefilter.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\postfx\bloom.fs">
+    <None Include="Data\Shaders\postfx\bloom.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\postfx\bloom.vs">
+    <None Include="Data\Shaders\postfx\bloom.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\postfx\bloom_final.fs">
+    <None Include="Data\Shaders\postfx\bloom_final.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\postfx\bloom_final.vs">
+    <None Include="Data\Shaders\postfx\bloom_final.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\postfx\blur.fs">
+    <None Include="Data\Shaders\postfx\blur.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\postfx\blur.vs">
+    <None Include="Data\Shaders\postfx\blur.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\postfx\hdr.fs">
+    <None Include="Data\Shaders\postfx\hdr.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\postfx\hdr.vs">
+    <None Include="Data\Shaders\postfx\hdr.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\screen\framebuffer.fs">
+    <None Include="Data\Shaders\screen\framebuffer.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\screen\ssao.fs">
+    <None Include="Data\Shaders\screen\ssao.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\screen\ssao.vs">
+    <None Include="Data\Shaders\screen\ssao.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\screen\ssao_blur.fs">
+    <None Include="Data\Shaders\screen\ssao_blur.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\shadows\point_shadows_depth.fs">
+    <None Include="Data\Shaders\shadows\point_shadows_depth.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\shadows\point_shadows_depth.gs">
+    <None Include="Data\Shaders\shadows\point_shadows_depth.geom">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\shadows\point_shadows_depth.vs">
+    <None Include="Data\Shaders\shadows\point_shadows_depth.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\skybox\cubemaps.fs">
+    <None Include="Data\Shaders\skybox\cubemaps.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\skybox\cubemaps.vs">
+    <None Include="Data\Shaders\skybox\cubemaps.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\skybox\horizon_sun.fs">
+    <None Include="Data\Shaders\skybox\horizon_sun.frag">
       <Filter>Shaders\skybox</Filter>
     </None>
-    <None Include="Data\Shaders\skybox\horizontal_gradient.fs">
+    <None Include="Data\Shaders\skybox\horizontal_gradient.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\skybox\skybox.fs">
+    <None Include="Data\Shaders\skybox\skybox.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\skybox\skybox.vs">
+    <None Include="Data\Shaders\skybox\skybox.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\unlit\color.fs">
+    <None Include="Data\Shaders\unlit\color.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\unlit\simple.vs">
+    <None Include="Data\Shaders\unlit\simple.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\unlit\textured.fs">
+    <None Include="Data\Shaders\unlit\textured.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\advanced_glsl.vs">
+    <None Include="Data\Shaders\advanced_glsl.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\instancing.fs">
+    <None Include="Data\Shaders\instancing.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\instancing.vs">
+    <None Include="Data\Shaders\instancing.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\lamp.fs">
+    <None Include="Data\Shaders\lamp.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\lamp.vs">
+    <None Include="Data\Shaders\lamp.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\light_box.fs">
+    <None Include="Data\Shaders\light_box.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\lighting.fs">
+    <None Include="Data\Shaders\lighting.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\lighting.vs">
+    <None Include="Data\Shaders\lighting.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\lighting_casters.fs">
+    <None Include="Data\Shaders\lighting_casters.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\lighting_casters.vs">
+    <None Include="Data\Shaders\lighting_casters.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\lighting_maps.fs">
+    <None Include="Data\Shaders\lighting_maps.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\lighting_maps.vs">
+    <None Include="Data\Shaders\lighting_maps.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\model_loading.fs">
+    <None Include="Data\Shaders\model_loading.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\model_loading.vs">
+    <None Include="Data\Shaders\model_loading.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\point_shadows.fs">
+    <None Include="Data\Shaders\point_shadows.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\point_shadows.vs">
+    <None Include="Data\Shaders\point_shadows.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\simpleDepthShader.vs">
+    <None Include="Data\Shaders\simpleDepthShader.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\yellow.fs">
+    <None Include="Data\Shaders\yellow.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\deferred\deferred_shading.fs">
+    <None Include="Data\Shaders\deferred\deferred_shading.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\deferred\deferred_shading.vs">
+    <None Include="Data\Shaders\deferred\deferred_shading.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\deferred\gbuffer.fs">
+    <None Include="Data\Shaders\deferred\gbuffer.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\deferred\gbuffer.vs">
+    <None Include="Data\Shaders\deferred\gbuffer.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\deferred\deferred_light_box.fs">
+    <None Include="Data\Shaders\deferred\deferred_light_box.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\deferred\deferred_light_box.vs">
+    <None Include="Data\Shaders\deferred\deferred_light_box.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\basic.vs" />
-    <None Include="Data\Shaders\lit\blinn_phong_shadows.fs" />
-    <None Include="Data\Shaders\lit\blinn_phong.fs" />
-    <None Include="Data\Shaders\unlit\white.fs" />
-    <None Include="Data\Shaders\deferred\ssao_geometryBuffer.fs">
+    <None Include="Data\Shaders\basic.vert" />
+    <None Include="Data\Shaders\lit\blinn_phong_shadows.frag" />
+    <None Include="Data\Shaders\lit\blinn_phong.frag" />
+    <None Include="Data\Shaders\unlit\white.frag" />
+    <None Include="Data\Shaders\deferred\ssao_geometryBuffer.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\deferred\ssao_geometryBuffer.vs">
+    <None Include="Data\Shaders\deferred\ssao_geometryBuffer.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\screen\screen_texture.vs">
+    <None Include="Data\Shaders\screen\screen_texture.vert">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\screen\screen_texture.fs">
+    <None Include="Data\Shaders\screen\screen_texture.frag">
       <Filter>Shaders</Filter>
     </None>
-    <None Include="Data\Shaders\basic_texture.vs" />
-    <None Include="Data\Shaders\deferred\ssao_lighting.fs">
+    <None Include="Data\Shaders\basic_texture.vert" />
+    <None Include="Data\Shaders\deferred\ssao_lighting.frag">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>
