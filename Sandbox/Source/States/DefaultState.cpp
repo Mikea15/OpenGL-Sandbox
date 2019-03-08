@@ -54,9 +54,9 @@ void DefaultState::Init(Game* game)
 	m_skybox = Skybox();
 	m_skybox.SetTexture(skyboxTex);
 
-	skyboxShader = shaderManager.LoadShader("gradientSkybox", "skybox/skybox.vs", "skybox/horizon_sun.fs");
-	m_simpleShader = shaderManager.LoadShader("simple_textured", "model_loading.vs", "model_loading.fs");
-	// m_simpleShader = shaderManager.LoadShader("wireframeSimple", "unlit/simple.vs", "unlit/color.fs");
+	skyboxShader = shaderManager.LoadShader("gradientSkybox", "skybox/skybox.vert", "skybox/horizon_sun.frag");
+	m_simpleShader = shaderManager.LoadShader("simple_textured", "model_loading.vert", "model_loading.frag");
+	// m_simpleShader = shaderManager.LoadShader("wireframeSimple", "unlit/simple.vert", "unlit/color.frag");
 
 	m_model = m_assetManager->LoadModel("Data/Objects/nanosuit/nanosuit.obj");
 	m_model->Initialize();

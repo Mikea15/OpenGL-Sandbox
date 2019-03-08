@@ -16,9 +16,9 @@ void DeferredRendering::Init(Game* game)
 {
 	DefaultState::Init(game);
 
-	shaderGeometryPass	= shaderManager.LoadShader("gBuff",		"deferred/gbuffer.vs",				"deferred/gbuffer.fs");
-	shaderLightingPass	= shaderManager.LoadShader("lightPass",	"deferred/deferred_shading.vs",		"deferred/deferred_shading.fs");
-	shaderLightBox		= shaderManager.LoadShader("lighBox",	"deferred/deferred_light_box.vs",	"deferred/deferred_light_box.fs");
+	shaderGeometryPass	= shaderManager.LoadShader("gBuff",		"deferred/gbuffer.vert",				"deferred/gbuffer.frag");
+	shaderLightingPass	= shaderManager.LoadShader("lightPass",	"deferred/deferred_shading.vert",		"deferred/deferred_shading.frag");
+	shaderLightBox		= shaderManager.LoadShader("lighBox",	"deferred/deferred_light_box.vert",	"deferred/deferred_light_box.frag");
 
 	ent = Entity();
 	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj");

@@ -83,9 +83,9 @@ void SSAOState::Init(Game* game)
 	ssaoFx.LoadShaders(shaderManager, m_windowParams.Width, m_windowParams.Height);
 	ssaoFx.GenBuffers();
 
-	shaderGeometryPass = shaderManager.LoadShader("ssao_geometry", "deferred/ssao_geometryBuffer.vs", "deferred/ssao_geometryBuffer.fs");
+	shaderGeometryPass = shaderManager.LoadShader("ssao_geometry", "deferred/ssao_geometryBuffer.vert", "deferred/ssao_geometryBuffer.frag");
 
-	shaderLightingPass = shaderManager.LoadShader("ssao_lighting", "screen/ssao.vs", "deferred/ssao_lighting.fs");
+	shaderLightingPass = shaderManager.LoadShader("ssao_lighting", "screen/ssao.vert", "deferred/ssao_lighting.frag");
 	shaderLightingPass.Use();
 	shaderLightingPass.SetInt("gPosition", 0);
 	shaderLightingPass.SetInt("gNormal", 1);

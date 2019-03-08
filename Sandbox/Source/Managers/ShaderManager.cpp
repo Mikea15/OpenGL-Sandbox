@@ -3,12 +3,12 @@
 
 ShaderManager::ShaderManager()
 {
-	// LoadShader("default", "basic.vs", "unlit/color.fs");
-	// LoadShader("lighting", "lighting.vs", "lighting.fs");
-	// LoadShader("skybox", "skybox/skybox.vs", "skybox/skybox.fs");
-	// LoadShader("cubemaps", "skybox/cubemaps.vs", "skybox/cubemaps.fs");
-	// LoadShader("refraction", "lit/refraction.vs", "lit/refraction.fs");
-	// LoadShader("hdr", "postfx/hdr.vs", "postfx/hdr.fs");
+	// LoadShader("default", "basic.vert", "unlit/color.frag");
+	// LoadShader("lighting", "lighting.vert", "lighting.frag");
+	// LoadShader("skybox", "skybox/skybox.vert", "skybox/skybox.frag");
+	// LoadShader("cubemaps", "skybox/cubemaps.vert", "skybox/cubemaps.frag");
+	// LoadShader("refraction", "lit/refraction.vert", "lit/refraction.frag");
+	// LoadShader("hdr", "postfx/hdr.vert", "postfx/hdr.frag");
 }
 
 ShaderManager::~ShaderManager()

@@ -11,8 +11,8 @@ void InstancingState::Init(Game* game)
 {
 	DefaultState::Init(game);
 
-	asteroidShader = shaderManager.LoadShader("asteroidInstancing", "instancing.vs", "lit/blinn_phong.fs");
-	planetShader = shaderManager.LoadShader("planetShader", "lit/default_simple.vs", "unlit/blinn_phong_shadows.fs");
+	asteroidShader = shaderManager.LoadShader("asteroidInstancing", "instancing.vert", "lit/blinn_phong.frag");
+	planetShader = shaderManager.LoadShader("planetShader", "lit/default_simple.vert", "unlit/blinn_phong_shadows.frag");
 	
 	rockEnt = Entity();
 	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/rock/rock.obj");

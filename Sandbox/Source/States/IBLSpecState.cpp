@@ -36,19 +36,19 @@ void IBLSpecState::Init(Game* game)
 	m_qTree = QuadTree(glm::vec3(0.0f), 50.0f);
 	m_oTree = Octree(glm::vec3(0.0f), 50.0f);
 
-	debugInstanced = shaderManager.LoadShader("debugInstanced", "instancing.vs", "unlit/color.fs");
-	pbrShader = shaderManager.LoadShader("pbrShader", "pbr/pbr.vs", "pbr/pbr.fs");
+	debugInstanced = shaderManager.LoadShader("debugInstanced", "instancing.vert", "unlit/color.frag");
+	pbrShader = shaderManager.LoadShader("pbrShader", "pbr/pbr.vert", "pbr/pbr.frag");
 	
-	Shader equirectangularToCubemapShader = shaderManager.LoadShader("equirectangularToCubemapShader", "pbr/cubemap.vs", "pbr/equirectangular_to_cubemap.fs");
-	Shader irradianceShader = shaderManager.LoadShader("irradianceShader", "pbr/cubemap.vs", "pbr/irradiance_convolution.fs");
-	Shader prefilterShader = shaderManager.LoadShader("prefilterShader", "pbr/cubemap.vs", "pbr/prefilter.fs");
-	Shader brdfShader = shaderManager.LoadShader("brdfShader", "pbr/brdf.vs", "pbr/brdf.fs");
+	Shader equirectangularToCubemapShader = shaderManager.LoadShader("equirectangularToCubemapShader", "pbr/cubemap.vert", "pbr/equirectangular_to_cubemap.frag");
+	Shader irradianceShader = shaderManager.LoadShader("irradianceShader", "pbr/cubemap.vert", "pbr/irradiance_convolution.frag");
+	Shader prefilterShader = shaderManager.LoadShader("prefilterShader", "pbr/cubemap.vert", "pbr/prefilter.frag");
+	Shader brdfShader = shaderManager.LoadShader("brdfShader", "pbr/brdf.vert", "pbr/brdf.frag");
 
 	iblSkybox.SetShaders(irradianceShader, prefilterShader, brdfShader, equirectangularToCubemapShader);
 
-	backgroundShader = shaderManager.LoadShader("backgroundShader", "pbr/background.vs", "pbr/background.fs");
+	backgroundShader = shaderManager.LoadShader("backgroundShader", "pbr/background.vert", "pbr/background.frag");
 
-	wireframeShader = shaderManager.LoadShader("wireframeSimple", "unlit/simple.vs", "unlit/color.fs");
+	wireframeShader = shaderManager.LoadShader("wireframeSimple", "unlit/simple.vert", "unlit/color.frag");
 	wireframeShader.Use();
 	wireframeShader.SetVec3("Color", glm::vec3(0, 0, 1.0));
 
