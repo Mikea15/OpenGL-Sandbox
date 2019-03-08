@@ -4,7 +4,7 @@
 
 #include "Managers/ShaderManager.h"
 
-float SSAO::s_MaxKernelSamples = 256;
+int SSAO::s_MaxKernelSamples = 256;
 
 SSAO::SSAO()
 {
@@ -81,30 +81,24 @@ void SSAO::GenSampleKernel()
 		m_params.KernelSize = s_MaxKernelSamples;
 	}
 
+	shaderSSAO.Use();
+
+	ssaoKernel.clear();
 	for (unsigned int i = 0; i < static_cast<unsigned int>(m_params.KernelSize); ++i)
 	{
+		// scale samples s.t. they're more aligned to center of kernel
+		float scale = static_cast<float>(i / m_params.KernelSize);
+		scale = MathUtils::Lerp(0.01f, 1.0f, scale * scale);
+
 		glm::vec3 sample(
 			randomFloats(generator) * 2.0f - 1.0f,
 			randomFloats(generator) * 2.0f - 1.0f,
 			randomFloats(generator)
 		);
 
-		sample = glm::normalize(sample);
-		sample *= randomFloats(generator);
-		float scale = static_cast<float>(i / m_params.KernelSize);
-
-		// scale samples s.t. they're more aligned to center of kernel
-		scale = MathUtils::Lerp(0.1f, 1.0f, scale * scale);
-		sample *= scale;
+		sample = glm::normalize(sample) * randomFloats(generator) * scale;
+		
 		ssaoKernel.push_back(sample);
-	}
-
-	shaderSSAO.Use();
-	// TODO: Can include this in previous loop.
-	// Send kernel + rotation 
-	for (unsigned int i = 0; i < static_cast<unsigned int>(m_params.KernelSize); ++i)
-	{
-		shaderSSAO.SetVec3("samples[" + std::to_string(i) + "]", ssaoKernel[i]);
 	}
 }
 
@@ -143,6 +137,11 @@ void SSAO::Process(const glm::mat4& projection, unsigned int gPosition, unsigned
 	shaderSSAO.Use();
 	shaderSSAO.SetMat4("projection", projection);
 
+	for (unsigned int i = 0; i < static_cast<unsigned int>(m_params.KernelSize); ++i)
+	{
+		shaderSSAO.SetVec3("samples[" + std::to_string(i) + "]", ssaoKernel[i]);
+	}
+
 	shaderSSAO.SetInt("kernelSize", m_params.KernelSize);
 	shaderSSAO.SetFloat("radius", m_params.Radius);
 	shaderSSAO.SetFloat("bias", m_params.Bias);
@@ -169,9 +168,4 @@ void SSAO::Process(const glm::mat4& projection, unsigned int gPosition, unsigned
 	Primitives::RenderQuad();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void SSAO::BindTextureMaps()
-{
-	glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, m_colorBlurBuffer);
 }

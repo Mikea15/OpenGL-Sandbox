@@ -19,7 +19,8 @@ void SSAOState::Init(Game* game)
 	ent = Entity();
 	// std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/buddha/buddha.obj");
 	// std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/dragon/dragon.obj");
-	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj");
+	// std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj");
+	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/hairball/hairball.obj");
 	model->Initialize();
 	ent.SetModel(*model.get());
 	ent.GetTransform().SetScale(glm::vec3(0.1f));
@@ -147,7 +148,6 @@ void SSAOState::Render(float alpha)
 
 	// send light relevant uniforms
 	// fill Light Struct
-	
 	shaderLightingPass.SetVec3("light.Position", glm::vec3(0, 0, 0)); // light position is from camera
 	shaderLightingPass.SetVec3("light.Color", glm::vec3(1.0, 1.0, 1.0));
 
@@ -159,8 +159,7 @@ void SSAOState::Render(float alpha)
 	glActiveTexture(GL_TEXTURE0); glBindTexture(GL_TEXTURE_2D, gPosition);
 	glActiveTexture(GL_TEXTURE1); glBindTexture(GL_TEXTURE_2D, gNormal);
 	glActiveTexture(GL_TEXTURE2); glBindTexture(GL_TEXTURE_2D, gAlbedo);
-	
-	ssaoFx.BindTextureMaps();
+	glActiveTexture(GL_TEXTURE3); glBindTexture(GL_TEXTURE_2D, ssaoFx.GetColorBufferBlur());
 
 	Primitives::RenderQuad();
 

@@ -41,22 +41,23 @@ public:
 	void GenBuffers();
 	void GenSampleKernel();
 	void GenNoiseTexture();
+
 	void Process(const glm::mat4& projection, unsigned int gPosition, unsigned int gNormal);
-	void BindTextureMaps();
 
 	Params GetParams() const { return m_params; }
 	void SetParams(Params params) { 
 		m_params = params;
 		GenSampleKernel();
+		GenNoiseTexture();
 	}
 
 	unsigned int GetColorBuffer() const { return m_colorBuffer; }
 	unsigned int GetColorBufferBlur() const { return m_colorBlurBuffer; }
 
 private:
-	// ssao
+// ssao
 	std::vector<glm::vec3> ssaoKernel;
-
+	
 	unsigned int m_FBO;
 	unsigned int m_blurFBO;
 	unsigned int m_colorBuffer;
@@ -71,6 +72,6 @@ private:
 	Shader shaderSSAO;
 	Shader shaderSSAOBlur;
 
-	static float s_MaxKernelSamples;
+	static int s_MaxKernelSamples;
 };
 
