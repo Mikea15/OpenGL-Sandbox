@@ -94,7 +94,7 @@ void Material::BindTextures()
 	const unsigned int textureSize = static_cast<unsigned int>(m_textures.size());
 	for (unsigned int i = 0; i < textureSize; i++)
 	{
-		switch (m_textures[i].textureType)
+		switch (m_textures[i].GetType())
 		{
 		case TextureType::DiffuseMap:
 			glActiveTexture(GL_TEXTURE3);
@@ -127,11 +127,11 @@ void Material::BindTextures()
 		default: break;
 		}
 
-		glBindTexture(GL_TEXTURE_2D, m_textures[i].id);
+		glBindTexture(GL_TEXTURE_2D, m_textures[i].GetId());
 	}
 }
 
-void Material::AddTexture(Texture texture)
+void Material::AddTexture(TextureInfo texture)
 {
 	m_textures.push_back(texture);
 }

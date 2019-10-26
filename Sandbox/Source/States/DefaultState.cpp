@@ -93,6 +93,12 @@ void DefaultState::Render(float alpha)
 
 	m_sceneManager.Draw(camera);
 
+	Transform t;
+	t.RotateLocal(glm::vec3(1.0f, 0.0f, 0.0f), 90.0f);
+	t.Scale(10.0f);
+	m_simpleShader.SetMat4("model", t.GetModelMat());
+	Primitives::RenderQuad();
+
 	// render skybox last. but before transparent objects
 	skyboxShader.Use();
 	skyboxShader.SetMat4("projection", camera.GetProjection());

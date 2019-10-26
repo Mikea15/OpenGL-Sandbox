@@ -79,6 +79,10 @@
     <IntDir>$(SolutionDir)Intermediate\$(Configuration)_$(PlatformTarget)\</IntDir>
     <SourcePath>$(VC_SourcePath)/Source</SourcePath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)Builds\$(Configuration)_$(PlatformTarget)\</OutDir>
+    <IntDir>$(SolutionDir)Intermediate\$(Configuration)_$(PlatformTarget)\</IntDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>
@@ -135,12 +139,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\CodeLibraries\SDL2-2.0.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Work\Projects\Sandbox\Sandbox\Source;D:\CodeLibraries\SDL2-2.0.8\include;D:\CodeLibraries\glm;D:\CodeLibraries\glew-2.1.0\include;D:\CodeLibraries\assimp-4.1.0\include;D:\CodeLibraries\nlohmannJson;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;glew32.lib;SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glew32.lib;SDL2.lib;SDL2main.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\CodeLibraries\assimp-4.1.0\build\code\Debug;D:\CodeLibraries\glew-2.1.0\lib\Release\Win32;D:\CodeLibraries\SDL2-2.0.8\lib\x86;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -159,6 +166,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Source\Assets\AssimpImporter.cpp" />
+    <ClCompile Include="Source\Assets\Jobs\TextureLoaderJob.cpp" />
     <ClCompile Include="Source\Assets\SimpleTextureAssetJob.cpp" />
     <ClCompile Include="Source\Systems\Rendering\IBLSkybox.cpp" />
     <ClCompile Include="Source\Systems\Camera\CameraSnapshot.cpp" />
@@ -215,6 +223,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Assets\AssimpImporter.h" />
+    <ClInclude Include="Source\Assets\TextureManager.h" />
+    <ClInclude Include="Source\Assets\Jobs\Job.h" />
+    <ClInclude Include="Source\Assets\Jobs\TextureLoaderJob.h" />
     <ClInclude Include="Source\Assets\SimpleTextureAssetJob.h" />
     <ClInclude Include="Source\Systems\Rendering\IBLSkybox.h" />
     <ClInclude Include="Source\Systems\Camera\CameraSnapshot.h" />

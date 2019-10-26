@@ -18,10 +18,13 @@ void DeferredRendering::Init(Game* game)
 
 	shaderGeometryPass	= shaderManager.LoadShader("gBuff",		"deferred/gbuffer.vert",				"deferred/gbuffer.frag");
 	shaderLightingPass	= shaderManager.LoadShader("lightPass",	"deferred/deferred_shading.vert",		"deferred/deferred_shading.frag");
-	shaderLightBox		= shaderManager.LoadShader("lighBox",	"deferred/deferred_light_box.vert",	"deferred/deferred_light_box.frag");
+	shaderLightBox		= shaderManager.LoadShader("lighBox",	"deferred/deferred_light_box.vert",		"deferred/deferred_light_box.frag");
 
 	ent = Entity();
-	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj");
+	// std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj");
+	// std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/buddha/buddha.obj");
+	// std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/dragon/dragon.obj");
+	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/lpshead/head.obj");
 	model->Initialize();
 	ent.SetModel(*model.get());
 	ent.GetTransform().SetScale(glm::vec3(0.01f));
@@ -56,14 +59,25 @@ void DeferredRendering::Init(Game* game)
 	// tell OpenGL which color attachments we'll use (of this framebuffer) for rendering 
 	unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
 	glDrawBuffers(3, attachments);
+
 	// create and attach depth buffer (renderbuffer)
 	glGenRenderbuffers(1, &rboDepth);
 	glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_windowParams.Width, m_windowParams.Height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+
+	std::cout << "gPosition buffer: " << gPosition << std::endl;
+	std::cout << "gNormal buffer: " << gNormal << std::endl;
+	std::cout << "gAlbedoSpec buffer: " << gAlbedoSpec << std::endl;
+	std::cout << "rboDepth buffer: " << rboDepth << std::endl;
+
 	// finally check if framebuffer is complete
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		std::cout << "Framebuffer not complete!" << std::endl;
+	auto status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE)
+	{
+		std::cout << "Framebuffer not complete! Status: " << status << std::endl;
+	}
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// setup lighting

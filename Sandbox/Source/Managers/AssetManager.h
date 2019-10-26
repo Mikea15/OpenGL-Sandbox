@@ -18,6 +18,10 @@
 #include "Systems/Rendering/Texture.h"
 #include "Systems/Material.h"
 
+#include "Assets/Jobs/Job.h"
+#include "Assets/Jobs/TextureLoaderJob.h"
+#include "Assets/TextureManager.h"
+
 #include "Assets/AssimpImporter.h"
 #include "Assets/SimpleTextureAssetJob.h"
 
@@ -27,14 +31,14 @@ struct TextureAssetJob
 	TextureType textureType = TextureType::None;
 	std::vector<std::string> resourcePaths;
 	bool useGammaCorrection = true;
-	std::vector<TextureInfo> texDatas;
+	std::vector<TextureLoadData> texDatas;
 };
 
 struct TextureAssetJobResult
 {
 	unsigned int materialindex = 0;
 	TextureType textureType = TextureType::None;
-	std::vector<TextureInfo> textureInfos;
+	std::vector<TextureLoadData> textureInfos;
 };
 
 class Game;
@@ -42,12 +46,19 @@ class Game;
 class AssetManager
 {
 public:
+	struct Properties
+	{
+		bool m_gammaCorrection;
+		bool m_flipHDROnLoad;
+	};
+
 	AssetManager();
 	~AssetManager();
 
 	void Initialize();
 
-	void LoaderThread( const std::future<void>& futureObj );
+	void LoaderThread( );
+
 	void Update();
 
 	// Models
@@ -58,36 +69,36 @@ public:
 	void LoadTexture(Material& material);
 	
 	// Textures
-	Texture LoadTexture(const std::string& path, bool useGammaCorrection = false, TextureType type = TextureType::None);
-	void LoadTextureAsync(const std::string& path, bool gammaCorrection, unsigned int* outId);
+	TextureInfo LoadTexture(const std::string& path, TextureType type = TextureType::DiffuseMap);
+	void LoadTextureAsync(const std::string& path, unsigned int* outId);
 
 	// Cubemaps
 	unsigned int LoadCubemap(const std::string& cubemapName, const std::vector<std::string>& paths);
-	unsigned int LoadHDRTexure(const std::string& path);
+	
+	unsigned int GetHDRTexture(const std::string& path);
 
 private:
-	TextureInfo LoadTextureFromFile(const std::string& path, bool gammaCorrection = false);
-	Texture GenerateTexture(TextureInfo info, TextureType type = TextureType::None);
-	
-	std::vector<TextureInfo> LoadTexturesFromAssetJob(TextureAssetJob& job);
+	std::vector<TextureLoadData> LoadTexturesFromAssetJob(TextureAssetJob& job);
 
 	nlohmann::json ReadJsonFile(const std::string& path);
 	void SaveJsonFile(const std::string& path, const nlohmann::json& data);
 
+	void GetLowercase(std::string& path);
 
 private:
+	Properties m_properties;
+	TextureManager m_textureManager;
+
 	AssimpImporter m_assimpImporter;
 	std::vector<TextureType> m_supportedTextureTypes;
-
-	std::unordered_map<size_t, Texture> m_textureMap;
 
 	std::unordered_map<size_t, std::shared_ptr<Model>> m_modelsMap;
 	std::unordered_map<size_t, unsigned int> m_textureCubeMap;
 
-	static std::string s_assetDirectoryPath;
-	static std::string s_shaderDirectoryPath;
-
 	unsigned int m_defaultTex;
+
+	std::queue<std::shared_ptr<Job>> m_pendingJobs;
+	std::mutex m_pendingJobsMutex;
 
 	std::queue<SimpleTextureAssetJob> m_jobsSimpleTextureAsset;
 	std::queue<SimpleTextureAssetJobResult> m_jobsSimpleTextureResults;
@@ -98,14 +109,10 @@ private:
 	std::vector<std::shared_ptr<Mesh>> m_meshCache;
 	std::vector<std::shared_ptr<Material>> m_materialCache;
 
-	int m_minThreads = 1;
-	int m_maxThreads = 2;
+	int m_maxThreads = 6;
 
 	std::vector<std::thread> m_workerThreads;
 	std::unordered_map<std::thread::id, std::string> m_threadNames;
-
-	std::promise<void> threadExitSignal;
-	std::future<void> futureObj;
 
 	bool m_loadingThreadActive;
 	std::thread m_thread;
@@ -113,5 +120,11 @@ private:
 	std::mutex m_stbiMutex;
 	std::mutex m_setupTexMutex;
 	std::mutex m_workloadReadyMutex;
+
+	std::mutex m_outputMutex;
+
+	// ---
+	static const std::string s_assetDirectoryPath;
+	static const std::string s_shaderDirectoryPath;
 };
 

@@ -5,13 +5,17 @@
 #include <chrono>
 
 #define OPTIMON 1
+#define MULTITHREAD 0
 
-std::string AssetManager::s_assetDirectoryPath = "Data/";
-std::string AssetManager::s_shaderDirectoryPath = "Source/Shaders/";
+const std::string AssetManager::s_assetDirectoryPath = "Data/";
+const std::string AssetManager::s_shaderDirectoryPath = "Source/Shaders/";
 
 AssetManager::AssetManager()
 	: m_loadingThreadActive(true)
 {
+	m_properties.m_gammaCorrection = true;
+	m_properties.m_flipHDROnLoad = true;
+
 	m_supportedTextureTypes = {
 		TextureType::DiffuseMap,
 		TextureType::NormalMap,
@@ -22,11 +26,10 @@ AssetManager::AssetManager()
 		TextureType::AOMap,
 	};
 
-	futureObj = threadExitSignal.get_future();
-
+#if MULTITHREAD
 	for (int i = 0; i < m_maxThreads; ++i)
 	{
-		m_workerThreads.push_back(std::thread(&AssetManager::LoaderThread, this, std::move(futureObj)));
+		m_workerThreads.push_back(std::thread(&AssetManager::LoaderThread, this));
 	}
 
 	m_threadNames.emplace(std::this_thread::get_id(), "Main");
@@ -36,26 +39,28 @@ AssetManager::AssetManager()
 		std::string name = "Thread " + std::to_string(i);
 		m_threadNames.emplace(m_workerThreads[i].get_id(), name);
 	}
+#endif
 }
 
 AssetManager::~AssetManager()
 {
-	threadExitSignal.set_value();
+#if MULTITHREAD
 	m_loadingThreadActive = false;
 	for (int i = 0; i < m_maxThreads; ++i)
 	{
 		m_workerThreads[i].join();
 	}
+#endif
 }
 
 void AssetManager::Initialize()
 {
-	m_defaultTex = LoadTexture("Data/Images/default.jpg", false).id;
+	m_defaultTex = LoadTexture("Data/Images/default.jpg").GetId();
 }
 
-void AssetManager::LoaderThread(const std::future<void>& futureObj)
+void AssetManager::LoaderThread()
 {
-	std::this_thread::sleep_for(std::chrono::milliseconds(10000));
+	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 	while (m_loadingThreadActive)
 	{
 		bool hasTextureAssetJob = false;
@@ -66,7 +71,7 @@ void AssetManager::LoaderThread(const std::future<void>& futureObj)
 
 		unsigned int workLoadSizeRemaining = 0;
 
-		// scope the lock for reading, that is writen from another thread.
+		// scope the lock for reading, that is written from another thread.
 		{
 			std::scoped_lock<std::mutex> lock(m_mutex);
 			if (!m_jobsTextureAssets.empty())
@@ -102,16 +107,25 @@ void AssetManager::LoaderThread(const std::future<void>& futureObj)
 		{
 			SimpleTextureAssetJobResult jobResult;
 			jobResult.id = simpleJob.id;
-			jobResult.textureInfo = LoadTextureFromFile(simpleJob.path, simpleJob.useGammaCorrection);
-			if (jobResult.textureInfo.data != nullptr)
+
+			TextureLoadData textureLoadData;
+			m_textureManager.LoadTexture(simpleJob.path, textureLoadData);
+
+			jobResult.textureLoadData = textureLoadData;
+
+			if (jobResult.textureLoadData.HasData())
 			{
 				std::scoped_lock<std::mutex> lock(m_setupTexMutex);
 				m_jobsSimpleTextureResults.push(jobResult);
 			}
 		}
 
+		{
+			std::scoped_lock<std::mutex> lock(m_outputMutex);
+			std::cout << "[AssetManager][" << m_threadNames[std::this_thread::get_id()] << "] Jobs Remaining: " << workLoadSizeRemaining << '\n';
+		}
+
 		const int msToWait = workLoadSizeRemaining > 0 ? 10 : 2000;
-		std::cout << "[AssetManager][" << m_threadNames[std::this_thread::get_id()] << "] Jobs Remaining: " << workLoadSizeRemaining << std::endl;
 		std::this_thread::sleep_for(std::chrono::milliseconds(msToWait));
 	}
 }
@@ -123,11 +137,11 @@ void AssetManager::Update()
 		SimpleTextureAssetJobResult jobResult = m_jobsSimpleTextureResults.front();
 		m_jobsSimpleTextureResults.pop();
 
-		Texture texture = GenerateTexture(jobResult.textureInfo);
+		TextureInfo textureInfo = m_textureManager.GenerateTexture(jobResult.textureLoadData, TextureType::DiffuseMap, m_properties.m_gammaCorrection);
 
 		// this should update the pointer. must find a better way to return the value
 		// maybe a better approach would be using a callback.
-		*jobResult.id = texture.id;
+		*jobResult.id = textureInfo.GetId();
 	}
 
 	if (!m_jobsTextureAssetResults.empty())
@@ -140,9 +154,9 @@ void AssetManager::Update()
 			return;
 		}
 
-		for (TextureInfo ti : jobResult.textureInfos)
+		for (const TextureLoadData& textureLoadData : jobResult.textureInfos)
 		{
-			Texture texture = GenerateTexture(ti, jobResult.textureType);
+			TextureInfo texture = m_textureManager.GenerateTexture(textureLoadData, jobResult.textureType, m_properties.m_gammaCorrection);
 			m_materialCache[jobResult.materialindex]->AddTexture(texture);
 		}
 	}
@@ -155,66 +169,63 @@ std::shared_ptr<Model> AssetManager::LoadModel(const std::string& path)
 
 	size_t pathHash = std::hash<std::string>{}(lowercasePath);
 
-	// Synchronous Texture Loading
-	bool enableAsyncLoading = false;
-
 	std::shared_ptr<Model> model = m_assimpImporter.LoadModel(lowercasePath);
-	if (model) 
+	if (!model)
 	{
-		m_modelsMap.emplace(pathHash, model);
+		return std::shared_ptr<Model>();
+	}
 
-		std::cout << "[AssetManager] Model: " << lowercasePath << " loaded." << std::endl;
+	m_modelsMap.emplace(pathHash, model);
 
-		const auto& meshes = model->GetMeshes();
-		const unsigned int meshCount = static_cast<unsigned int>(meshes.size());
-		for (auto mesh : meshes)
+	std::cout << "[AssetManager] Model: " << lowercasePath << " loaded." << std::endl;
+
+	const auto& meshes = model->GetMeshes();
+	const unsigned int meshCount = static_cast<unsigned int>(meshes.size());
+	for (auto mesh : meshes)
+	{
+		unsigned int meshIndex = static_cast<unsigned int>(m_meshCache.size());
+		unsigned int materialIndex = static_cast<unsigned int>(m_materialCache.size());
+
+		auto material = mesh->GetMaterial();
+		for (auto textureType : m_supportedTextureTypes)
 		{
-			unsigned int meshIndex = static_cast<unsigned int>(m_meshCache.size());
-			unsigned int materialIndex = static_cast<unsigned int>(m_materialCache.size());
+			std::vector<std::string> texturePaths = material->GetTexturePaths(textureType);
 
-			auto material = mesh->GetMaterial();
-			for (auto textureType : m_supportedTextureTypes)
+#if MULTITHREAD
+			TextureAssetJob job;
+			job.materialIndex = materialIndex;
+			job.useGammaCorrection = false;
+			job.textureType = textureType;
+			job.resourcePaths = texturePaths;
+
+			std::scoped_lock<std::mutex> lock(m_mutex);
+			m_jobsTextureAssets.emplace(job);
+#else
+			for (const std::string& path : texturePaths)
 			{
-				std::vector<std::string> texturePaths = material->GetTexturePaths(textureType);
-				if (enableAsyncLoading)
+				TextureLoadData textureLoadData;
+				m_textureManager.LoadTexture(path, textureLoadData);
+				if (textureLoadData.HasData())
 				{
-					TextureAssetJob job;
-					job.materialIndex = materialIndex;
-					job.useGammaCorrection = false;
-					job.textureType = textureType;
-					job.resourcePaths = texturePaths;
+					continue;
+				}
 
-					std::scoped_lock<std::mutex> lock(m_mutex);
-					m_jobsTextureAssets.emplace(job);
-				}
-				else
+				TextureInfo textureInfo = m_textureManager.GenerateTexture(textureLoadData, textureType, m_properties.m_gammaCorrection);
+				if (textureInfo.IsValid())
 				{
-					for (const std::string& path : texturePaths)
-					{
-						Texture texture = LoadTexture(path, false, textureType);
-						material->AddTexture(texture);
-					}
+					continue;
 				}
+
+				material->AddTexture(textureInfo);
 			}
-
-			m_materialCache.push_back(material);
-			m_meshCache.push_back(mesh);
+#endif
 		}
 
-		return model;
+		m_materialCache.push_back(material);
+		m_meshCache.push_back(mesh);
 	}
 
-	return std::shared_ptr<Model>();
-}
-
-Material AssetManager::LoadMaterial(const std::string& materialPath)
-{
-	nlohmann::json data = ReadJsonFile(materialPath);
-	if (!data.is_null()) {
-		Material material = data;
-		return material;
-	}
-	return Material();
+	return model;
 }
 
 void AssetManager::LoadTexture(Material& material)
@@ -222,69 +233,73 @@ void AssetManager::LoadTexture(Material& material)
 	for (TextureType type : m_supportedTextureTypes)
 	{
 		auto texturePaths = material.GetTexturePaths(type);
-		for (auto path : texturePaths)
+		for (const std::string& path : texturePaths)
 		{
-			Texture tex = LoadTexture(path, true, type);
-			material.AddTexture(tex);
+			TextureLoadData textureLoadData;
+			m_textureManager.LoadTexture(path, textureLoadData);
+			if (!textureLoadData.HasData())
+			{
+				continue;
+			}
+			
+			TextureInfo texInfo = m_textureManager.GenerateTexture(textureLoadData, type, m_properties.m_gammaCorrection);
+			if (!texInfo.IsValid())
+			{
+				continue;
+			}
+
+			material.AddTexture(texInfo);
 		}
 	}
 }
 
-Texture AssetManager::LoadTexture(const std::string& path, bool useGammaCorrection, TextureType type)
+TextureInfo AssetManager::LoadTexture(const std::string& path, TextureType type)
 {
 	std::string lowercasePath = path;
-	std::transform(lowercasePath.begin(), lowercasePath.end(), lowercasePath.begin(), ::tolower);
-	size_t pathHash = std::hash<std::string>{}(lowercasePath);
+	GetLowercase(lowercasePath);
 
 #if OPTIMON
-	const auto findIt = m_textureMap.find(pathHash);
-	if (findIt != m_textureMap.end())
+	const TextureInfo texture = m_textureManager.FindTexture(lowercasePath);
+	if (texture.IsValid())
 	{
-		std::cout << "[AssetManager][" << m_threadNames[std::this_thread::get_id()] << "] Texture found." << std::endl;
-		return findIt->second;
+		std::cout << "[AssetManager][" << m_threadNames[std::this_thread::get_id()] << "] Texture found" << std::endl;
+		return texture;
 	}
 #endif
 
-	TextureInfo info = LoadTextureFromFile(lowercasePath, useGammaCorrection);
-	if (info.data != nullptr)
-	{
-		std::cout << "[AssetManager][" << m_threadNames[std::this_thread::get_id()] << "] Texture: " << path << " loaded." << std::endl;
-
-		Texture texture = GenerateTexture(info, type);
-		if (texture.id != 0)
-		{
-			m_textureMap.emplace(pathHash, texture);
-		}
-		return texture;
-	}
-	else
+	TextureLoadData textureData;
+	m_textureManager.LoadTexture(lowercasePath, textureData);
+	if (!textureData.HasData())
 	{
 		std::cout << "[AssetManager][Error][" << m_threadNames[std::this_thread::get_id()] << "] Texture: " << path << " failed to load." << std::endl;
+		return TextureInfo();
 	}
 
-	stbi_image_free(info.data);
-	return Texture();
+	std::cout << "[AssetManager][" << m_threadNames[std::this_thread::get_id()] << "] Texture: " << path << " loaded." << std::endl;
+	
+	return m_textureManager.GenerateTexture(textureData, type, m_properties.m_gammaCorrection);;
 }
 
-void AssetManager::LoadTextureAsync(const std::string& path, bool gammaCorrection, unsigned int* outId)
+
+void AssetManager::LoadTextureAsync(const std::string& path, unsigned int* outId)
 {
 	std::string lowercasePath = path;
-	std::transform(lowercasePath.begin(), lowercasePath.end(), lowercasePath.begin(), ::tolower);
-	size_t nameHash = std::hash<std::string>{}(lowercasePath);
+	GetLowercase(lowercasePath);
 
-	const auto findIt = m_textureMap.find(nameHash);
-	if (findIt != m_textureMap.end())
+#if OPTIMON
+	const TextureInfo texture = m_textureManager.FindTexture(lowercasePath);
+	if (texture.IsValid())
 	{
 		std::cout << "[AssetManager][" << m_threadNames[std::this_thread::get_id()] << "] Texture found" << std::endl;
-		*outId = findIt->second.id;
+		*outId = texture.GetId();
 		return;
 	}
+#endif
 
 	std::cout << "[AssetManager][" << m_threadNames[std::this_thread::get_id()] << "] Creating Simple Texture Asset Job" << std::endl;
 
 	SimpleTextureAssetJob job;
 	job.path = lowercasePath;
-	job.useGammaCorrection = gammaCorrection;
 	job.id = outId;
 
 	{
@@ -292,7 +307,7 @@ void AssetManager::LoadTextureAsync(const std::string& path, bool gammaCorrectio
 		m_jobsSimpleTextureAsset.push(job);
 	}
 
-	// return detault texture while we load the intended one.
+	// return default texture while we load the intended one.
 	// note: expand this to be handled by material, so we return
 	// a temporary material instead. ( which in turn, has the temp tex )
 	*outId = m_defaultTex;
@@ -301,31 +316,43 @@ void AssetManager::LoadTextureAsync(const std::string& path, bool gammaCorrectio
 unsigned int AssetManager::LoadCubemap(const std::string& cubemapName, const std::vector<std::string>& paths)
 {
 	unsigned int cubemapId = 0;
+	const size_t nameHash = std::hash<std::string>{}(cubemapName);
 
-	// std::transform(path.begin(), path.end(), path.begin(), ::tolower);
-	size_t nameHash = std::hash<std::string>{}(cubemapName);
+	const unsigned int imageListSize = static_cast<unsigned int>(paths.size());
+	std::vector<TextureLoadData> dataTextures;
+	dataTextures.resize(imageListSize);
+
+	bool success = true;
+	for (unsigned int i = 0; i < imageListSize; ++i)
+	{
+		m_textureManager.LoadTexture(paths[i], dataTextures[i]);
+		if (!dataTextures[i].HasData())
+		{
+			success = false;
+			break;
+		}
+	}
+
+	if (!success)
+	{
+		std::cout << "[AssetManager] One of the textures could not be loaded.\n";
+		return cubemapId;
+	}
 
 	glGenTextures(1, &cubemapId);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapId);
 
-	int width = 0, height = 0, nrChannels = 0;
-	const unsigned int imageListSize = static_cast<unsigned int>(paths.size());
 	for (unsigned int i = 0; i < imageListSize; ++i)
 	{
-		unsigned char *data = stbi_load(paths[i].c_str(), &width, &height, &nrChannels, 0);
-		if (data != nullptr)
-		{
-			std::cout << "[AssetManager] Cubemap texture: " << paths[i] << " loaded." << std::endl;
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB,
+			dataTextures[i].m_width, 
+			dataTextures[i].m_height, 
+			0, GL_RGB, GL_UNSIGNED_BYTE, 
+			dataTextures[i].m_dataPtr);
 
-			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-			stbi_image_free(data);
-		}
-		else
-		{
-			std::cout << "[AssetManager] Cubemap texture: " << paths[i] << " failed to load." << std::endl;
-			stbi_image_free(data);
-		}
+		stbi_image_free(dataTextures[i].m_dataPtr);
 	}
+
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -333,93 +360,42 @@ unsigned int AssetManager::LoadCubemap(const std::string& cubemapName, const std
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	m_textureCubeMap.emplace(nameHash, cubemapId);
-	return m_textureCubeMap[nameHash];
+	return cubemapId;
 }
 
-unsigned int AssetManager::LoadHDRTexure(const std::string& path)
+unsigned int AssetManager::GetHDRTexture(const std::string& path)
 {
-	unsigned int textureId = 0;
+	std::string lowercasePath = path;
+	GetLowercase(lowercasePath);
 
-	stbi_set_flip_vertically_on_load(true);
-	int width = 0, height = 0, nrChannels = 0;
-	float *data = stbi_loadf(path.c_str(), &width, &height, &nrChannels, 0);
-	if (data)
+#if OPTIMON
+	const TextureInfo texture = m_textureManager.FindTexture(lowercasePath);
+	if (texture.IsValid())
 	{
-		glGenTextures(1, &textureId);
-		glBindTexture(GL_TEXTURE_2D, textureId);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, width, height, 0, GL_RGB, GL_FLOAT, data); // note how we specify the texture's data value to be float
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		stbi_image_free(data);
+		std::cout << "[AssetManager][" << m_threadNames[std::this_thread::get_id()] << "] Texture found" << std::endl;
+		return texture.GetId();
 	}
-	else
+#endif
+
+	HDRTextureLoadData textureData;
+	m_textureManager.LoadHDRTexture(lowercasePath, textureData);
+	if (!textureData.HasData())
 	{
-		std::cout << "[AssetManager] Texture: " << path << " failed to load HDR." << std::endl;
+		std::cout << "[AssetManager][Error][" << m_threadNames[std::this_thread::get_id()] << "] Texture: " << path << " failed to load." << std::endl;
+		return 0;
 	}
 
-	return textureId;
+	return m_textureManager.GenerateHDRTexture(textureData, TextureType::DiffuseMap).GetId();
 }
 
-TextureInfo AssetManager::LoadTextureFromFile(const std::string& path, bool useGammaCorrection)
+std::vector<TextureLoadData> AssetManager::LoadTexturesFromAssetJob(TextureAssetJob& job)
 {
-	TextureInfo info;
-	info.path = path;
-	info.gammaCorrection = useGammaCorrection;
-	info.data = stbi_load(path.c_str(), &info.width, &info.height, &info.channels, 0);
-	return info;
-}
-
-// call on main thread
-Texture AssetManager::GenerateTexture(TextureInfo info, TextureType type)
-{
-	Texture texture;
-	texture.textureType = type;
-
-	GLenum internalFormat = 0;
-	GLenum dataFormat = 0;
-	if (info.channels == 1)
-	{
-		internalFormat = dataFormat = GL_RED;
-	}
-	else if (info.channels == 3)
-	{
-		internalFormat = info.gammaCorrection ? GL_SRGB : GL_RGB;
-		dataFormat = GL_RGB;
-	}
-	else if (info.channels == 4)
-	{
-		internalFormat = info.gammaCorrection ? GL_SRGB_ALPHA : GL_RGBA;
-		dataFormat = GL_RGBA;
-	}
-
-	glGenTextures(1, &texture.id);
-
-	glBindTexture(GL_TEXTURE_2D, texture.id);
-	glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, info.width, info.height, 0, dataFormat, GL_UNSIGNED_BYTE, info.data);
-
-	glGenerateMipmap(GL_TEXTURE_2D);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	stbi_image_free(info.data);
-
-	return texture;
-}
-
-std::vector<TextureInfo> AssetManager::LoadTexturesFromAssetJob(TextureAssetJob& job)
-{
-	std::vector<TextureInfo> textureInfos;
+	std::vector<TextureLoadData> textureInfos;
 	for (const auto& path : job.resourcePaths)
 	{
-		TextureInfo textureInfo = LoadTextureFromFile(path, job.useGammaCorrection);
-		if (textureInfo.data != nullptr)
+		TextureLoadData textureInfo;
+		m_textureManager.LoadTexture(path, textureInfo);
+		if (textureInfo.HasData())
 		{
 			textureInfos.push_back(textureInfo);
 		}
@@ -458,3 +434,7 @@ void AssetManager::SaveJsonFile(const std::string & path, const nlohmann::json& 
 	file.close();
 }
 
+void AssetManager::GetLowercase(std::string& path)
+{
+	std::transform(path.begin(), path.end(), path.begin(), ::tolower);
+}

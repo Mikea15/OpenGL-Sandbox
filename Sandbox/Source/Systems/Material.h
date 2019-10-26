@@ -6,6 +6,8 @@
 #include "Rendering/Shader.h"
 #include "Rendering/Texture.h"
 
+#include "Assets/TextureManager.h"
+
 #include "nlohmann/json.hpp"
 
 using namespace nlohmann;
@@ -34,7 +36,7 @@ public:
 
 	void BindTextures();
 
-	void AddTexture(Texture texture);
+	void AddTexture(TextureInfo texture);
 	void AddTexturePath(TextureType type, const std::string& path);
 	void AddTexturePaths(TextureType type, const std::vector<std::string>& paths);
 
@@ -51,7 +53,7 @@ public:
 
 private:
 	Shader m_shader;
-	std::vector<Texture> m_textures;
+	std::vector<TextureInfo> m_textures;
 
 	std::unordered_map<TextureType, std::vector<std::string>> m_texturePathPerType;
 

@@ -17,6 +17,7 @@
 #include "Systems/Rendering/Skybox.h"
 #include "Systems/Rendering/Primitives.h"
 #include "Systems/Rendering/Primitives/Quad.h"
+#include "Systems/Rendering/Terrain.h"
 
 #include "Components/System/SceneCameraComponent.h"
 

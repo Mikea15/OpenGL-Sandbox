@@ -266,9 +266,8 @@ __pycache__/
 .mayaSwatches/
 autosave/
 workspace.mel
-[Dd]ata/*
-[Dd]ata/Objects
-[Dd]ata/Images
+[Dd]ata/[Oo]bjects/
+[Dd]ata/[Ii]mages/
 [Bb]uilds/
 [Ii]ntermediate/
 [Ii]ntermediate/[Dd]ebug_x86/
@@ -277,3 +276,5 @@ workspace.mel
 [Bb]uilds/[Dd]ebug_x64/
 [Dd]ebug_x86/
 [Dd]ebug_x64/
+
+VTune Amplifier Results/

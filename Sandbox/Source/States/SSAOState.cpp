@@ -17,13 +17,12 @@ void SSAOState::Init(Game* game)
 	DefaultState::Init(game);
 
 	ent = Entity();
-	// std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/buddha/buddha.obj");
-	// std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/dragon/dragon.obj");
-	// std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj");
-	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/hairball/hairball.obj");
+	
+	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj");
+
 	model->Initialize();
 	ent.SetModel(*model.get());
-	ent.GetTransform().SetScale(glm::vec3(0.1f));
+	// ent.GetTransform().SetScale(glm::vec3(0.1f));
 
 	// objectPositions.push_back(glm::vec3(-3.0, -3.0, -3.0));
 	// objectPositions.push_back(glm::vec3(0.0, -3.0, -3.0));
