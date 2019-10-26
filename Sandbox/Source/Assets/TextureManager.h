@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <queue>
 #include <algorithm>
 #include <string>
@@ -57,6 +58,8 @@ public:
 
 	void LoadTexture(const std::string& path, TextureLoadData& outData)
 	{
+		std::cout << "[TextureManager] Loading " << path << "\n";
+
 		int height = 0, width = 0, channels = 0;
 		unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 
@@ -72,6 +75,8 @@ public:
 
 	void LoadHDRTexture(const std::string& path, HDRTextureLoadData& outData, bool flipVertically = false)
 	{
+		std::cout << "[TextureManager] Loading " << path << "\n";
+
 		stbi_set_flip_vertically_on_load(flipVertically);
 
 		int width = 0, height = 0, channels = 0;
@@ -88,6 +93,8 @@ public:
 
 	TextureInfo GenerateTexture(TextureLoadData textureData, TextureType type, bool useGammaCorrection)
 	{
+		std::cout << "[TextureManager] Generating Texture " << textureData.m_path << "\n";
+
 		TextureInfo texInfo;
 		texInfo.m_textureType = type;
 
@@ -117,14 +124,14 @@ public:
 			0, dataFormat, GL_UNSIGNED_BYTE, 
 			textureData.m_dataPtr);
 
-		stbi_image_free(textureData.m_dataPtr);
-
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		stbi_image_free(textureData.m_dataPtr);
 
 		if (texInfo.IsValid())
 		{
@@ -138,6 +145,8 @@ public:
 
 	TextureInfo GenerateHDRTexture(HDRTextureLoadData textureData, TextureType type)
 	{
+		std::cout << "[TextureManager] Generating Texture " << textureData.m_path << "\n";
+
 		TextureInfo texInfo;
 		texInfo.m_textureType = type;
 
@@ -156,6 +165,8 @@ public:
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		stbi_image_free(textureData.m_dataPtr);
 
 		if (texInfo.IsValid())
 		{

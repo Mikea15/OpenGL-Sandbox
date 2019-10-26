@@ -65,7 +65,6 @@ public:
 	std::shared_ptr<Model> LoadModel(const std::string& path);
 
 	// Materials
-	Material LoadMaterial(const std::string& materialPath);
 	void LoadTexture(Material& material);
 	
 	// Textures
@@ -80,10 +79,7 @@ public:
 private:
 	std::vector<TextureLoadData> LoadTexturesFromAssetJob(TextureAssetJob& job);
 
-	nlohmann::json ReadJsonFile(const std::string& path);
-	void SaveJsonFile(const std::string& path, const nlohmann::json& data);
-
-	void GetLowercase(std::string& path);
+	std::string GetLowercase(const std::string& path);
 
 private:
 	Properties m_properties;
@@ -109,8 +105,7 @@ private:
 	std::vector<std::shared_ptr<Mesh>> m_meshCache;
 	std::vector<std::shared_ptr<Material>> m_materialCache;
 
-	int m_maxThreads = 6;
-
+	int m_maxThreads = 2;
 	std::vector<std::thread> m_workerThreads;
 	std::unordered_map<std::thread::id, std::string> m_threadNames;
 

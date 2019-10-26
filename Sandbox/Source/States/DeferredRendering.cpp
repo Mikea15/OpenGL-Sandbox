@@ -21,10 +21,10 @@ void DeferredRendering::Init(Game* game)
 	shaderLightBox		= shaderManager.LoadShader("lighBox",	"deferred/deferred_light_box.vert",		"deferred/deferred_light_box.frag");
 
 	ent = Entity();
-	// std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj");
+	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/sponza/sponza.obj");
 	// std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/buddha/buddha.obj");
 	// std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/dragon/dragon.obj");
-	std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/lpshead/head.obj");
+	// std::shared_ptr<Model> model = m_assetManager->LoadModel("Data/Objects/lpshead/head.obj");
 	model->Initialize();
 	ent.SetModel(*model.get());
 	ent.GetTransform().SetScale(glm::vec3(0.01f));
