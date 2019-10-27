@@ -29,8 +29,8 @@ std::shared_ptr<Model> AssimpImporter::LoadModel(const std::string& path)
 	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		std::cout << "[AssetManager] Model: " << path << " failed to load." << std::endl;
-		std::cout << "[Error] Assimp: " << importer.GetErrorString() << std::endl;
+		std::cout << "[AssetManager] Model: " << path << " failed to load.\n";
+		std::cout << "[Error] Assimp: " << importer.GetErrorString() << "\n";
 		return std::shared_ptr<Model>();
 	}
 

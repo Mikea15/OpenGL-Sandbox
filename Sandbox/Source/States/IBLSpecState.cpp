@@ -217,7 +217,7 @@ void IBLSpecState::Init(Game* game)
 
 	// finally check if framebuffer is complete
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		std::cout << "Framebuffer not complete!" << std::endl;
+		std::cout << "Framebuffer not complete!\n";
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	topDownCamera.SetFov(m_sceneCamera->GetCamera().GetFov());

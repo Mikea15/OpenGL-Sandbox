@@ -227,6 +227,7 @@
     <ClInclude Include="Source\Assets\Jobs\Job.h" />
     <ClInclude Include="Source\Assets\Jobs\TextureLoaderJob.h" />
     <ClInclude Include="Source\Assets\SimpleTextureAssetJob.h" />
+    <ClInclude Include="Source\Assets\ThreadSafeQueue.h" />
     <ClInclude Include="Source\Systems\Rendering\IBLSkybox.h" />
     <ClInclude Include="Source\Systems\Camera\CameraSnapshot.h" />
     <ClInclude Include="Source\Dependencies\imgui\imconfig.h" />

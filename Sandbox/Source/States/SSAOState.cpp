@@ -77,7 +77,7 @@ void SSAOState::Init(Game* game)
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, renderBufferObjectDepth);
 	// finally check if framebuffer is complete
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-		std::cout << "Framebuffer not complete!" << std::endl;
+		std::cout << "Framebuffer not complete!\n";
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	ssaoFx.LoadShaders(shaderManager, m_windowParams.Width, m_windowParams.Height);

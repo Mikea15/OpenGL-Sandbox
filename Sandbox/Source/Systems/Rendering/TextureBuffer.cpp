@@ -24,7 +24,7 @@ void TextureBuffer::CreateFrameBuffer(int width, int height,
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureId, 0);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthTextureId);
 	// if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-	// 	std::cout << "Framebuffer not complete!" << std::endl;
+	// 	std::cout << "Framebuffer not complete!\n";
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

@@ -12,6 +12,8 @@
 
 #include "Dependencies/std_image/stb_image.h"
 
+#include "ShaderManager.h"
+
 #include "Systems/Rendering/Shader.h"
 
 #include "Systems/Model.h"
@@ -25,12 +27,13 @@
 #include "Assets/AssimpImporter.h"
 #include "Assets/SimpleTextureAssetJob.h"
 
+#include "Assets/ThreadSafeQueue.h"
+
 struct TextureAssetJob
 {
 	unsigned int materialIndex = 0;
 	TextureType textureType = TextureType::None;
 	std::vector<std::string> resourcePaths;
-	bool useGammaCorrection = true;
 	std::vector<TextureLoadData> texDatas;
 };
 
@@ -66,6 +69,9 @@ public:
 
 	// Materials
 	void LoadTexture(Material& material);
+
+	// Shaders
+	void LoadShader();
 	
 	// Textures
 	TextureInfo LoadTexture(const std::string& path, TextureType type = TextureType::DiffuseMap);
@@ -84,42 +90,33 @@ private:
 private:
 	Properties m_properties;
 	TextureManager m_textureManager;
+	ShaderManager m_shaderManager;
 
 	AssimpImporter m_assimpImporter;
 	std::vector<TextureType> m_supportedTextureTypes;
 
 	std::unordered_map<size_t, std::shared_ptr<Model>> m_modelsMap;
-	std::unordered_map<size_t, unsigned int> m_textureCubeMap;
 
 	unsigned int m_defaultTex;
 
-	std::queue<std::shared_ptr<Job>> m_pendingJobs;
-	std::mutex m_pendingJobsMutex;
+	ThreadSafeQueue<SimpleTextureAssetJob> m_simpleTextureAssetJobQueue;
+	ThreadSafeQueue<SimpleTextureAssetJobResult> m_simpleTextureAssetJobResultQueue;
 
-	std::queue<SimpleTextureAssetJob> m_jobsSimpleTextureAsset;
-	std::queue<SimpleTextureAssetJobResult> m_jobsSimpleTextureResults;
-
-	std::queue<TextureAssetJob> m_jobsTextureAssets;
-	std::queue<TextureAssetJobResult> m_jobsTextureAssetResults;
+	ThreadSafeQueue<TextureAssetJob> m_textureAssetJobQueue;
+	ThreadSafeQueue<TextureAssetJobResult> m_textureAssetJobResultQueue;
 
 	std::vector<std::shared_ptr<Mesh>> m_meshCache;
 	std::vector<std::shared_ptr<Material>> m_materialCache;
 
-	int m_maxThreads = 2;
+	int m_maxThreads = 6;
 	std::vector<std::thread> m_workerThreads;
 	std::unordered_map<std::thread::id, std::string> m_threadNames;
 
-	bool m_loadingThreadActive;
-	std::thread m_thread;
-	std::mutex m_mutex;
-	std::mutex m_stbiMutex;
-	std::mutex m_setupTexMutex;
-	std::mutex m_workloadReadyMutex;
+	std::atomic<bool> m_loadingThreadActive;
 
 	std::mutex m_outputMutex;
 
 	// ---
 	static const std::string s_assetDirectoryPath;
-	static const std::string s_shaderDirectoryPath;
 };
 

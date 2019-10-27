@@ -66,16 +66,16 @@ void DeferredRendering::Init(Game* game)
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_windowParams.Width, m_windowParams.Height);
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
 
-	std::cout << "gPosition buffer: " << gPosition << std::endl;
-	std::cout << "gNormal buffer: " << gNormal << std::endl;
-	std::cout << "gAlbedoSpec buffer: " << gAlbedoSpec << std::endl;
-	std::cout << "rboDepth buffer: " << rboDepth << std::endl;
+	std::cout << "gPosition buffer: " << gPosition << "\n";
+	std::cout << "gNormal buffer: " << gNormal << "\n";
+	std::cout << "gAlbedoSpec buffer: " << gAlbedoSpec << "\n";
+	std::cout << "rboDepth buffer: " << rboDepth << "\n";
 
 	// finally check if framebuffer is complete
 	auto status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE)
 	{
-		std::cout << "Framebuffer not complete! Status: " << status << std::endl;
+		std::cout << "Framebuffer not complete! Status: " << status << "\n";
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

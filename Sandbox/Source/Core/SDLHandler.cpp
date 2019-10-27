@@ -24,7 +24,7 @@ bool SDLHandler::Init()
 {
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) != 0)
 	{
-		std::cerr << "SDL Init Error" << std::endl;
+		std::cerr << "SDL Init Error\n";
 		return false;
 	}
 

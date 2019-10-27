@@ -178,6 +178,41 @@ public:
 		return TextureInfo();
 	}
 
+	TextureInfo GenerateCubemapTexture(const std::string& cubemapName, std::vector<TextureLoadData>& textureData)
+	{
+		TextureInfo texInfo;
+		
+		glGenTextures(1, &texInfo.m_id);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, texInfo.m_id);
+
+		const unsigned int size = textureData.size();
+		for (unsigned int i = 0; i < size; ++i)
+		{
+			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB,
+				textureData[i].m_width,
+				textureData[i].m_height,
+				0, GL_RGB, GL_UNSIGNED_BYTE,
+				textureData[i].m_dataPtr);
+
+			stbi_image_free(textureData[i].m_dataPtr);
+		}
+
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
+		if (texInfo.IsValid())
+		{
+			const size_t pathHash = std::hash<std::string>{}(cubemapName);
+			m_textureMap.emplace(pathHash, texInfo);
+			return texInfo;
+		}
+
+		return TextureInfo();
+	}
+
 	TextureInfo FindTexture(const std::string& path) const
 	{
 		const size_t pathHash = std::hash<std::string>{}(path);

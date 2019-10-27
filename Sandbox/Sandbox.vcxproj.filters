@@ -419,6 +419,9 @@
     <ClInclude Include="Source\Assets\TextureManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Assets\ThreadSafeQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Shaders\horizontal_gradient.frag">
