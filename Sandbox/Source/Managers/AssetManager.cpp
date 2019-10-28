@@ -6,7 +6,7 @@
 #include <thread>
 #include <future>
 
-#define MULTITHREAD 0
+#define MULTITHREAD 1
 
 const std::string AssetManager::s_assetDirectoryPath = "Data/";
 
@@ -69,7 +69,7 @@ void AssetManager::LoaderThread()
 		if (m_textureAssetJobQueue.TryPop(textureAssetJob))
 		{
 			TextureAssetJobResult jobResult;
-			jobResult.materialindex = textureAssetJob.materialIndex;
+			jobResult.material = textureAssetJob.material;
 			jobResult.textureInfos = LoadTexturesFromAssetJob(textureAssetJob);
 			jobResult.textureType = textureAssetJob.textureType;
 
@@ -118,15 +118,10 @@ void AssetManager::Update()
 	TextureAssetJobResult textureAssetJobResult;
 	if (!m_textureAssetJobResultQueue.TryPop(textureAssetJobResult))
 	{
-		if (textureAssetJobResult.materialindex >= m_materialCache.size()) 
-		{
-			return;
-		}
-
 		for (const TextureLoadData& textureLoadData : textureAssetJobResult.textureInfos)
 		{
 			TextureInfo texture = m_textureManager.GenerateTexture(textureLoadData, textureAssetJobResult.textureType, m_properties.m_gammaCorrection);
-			m_materialCache[textureAssetJobResult.materialindex]->AddTexture(texture);
+			textureAssetJobResult.material->AddTexture(texture);
 		}
 	}
 }
@@ -143,38 +138,31 @@ std::shared_ptr<Model> AssetManager::LoadModel(const std::string& path)
 	}
 
 	m_modelsMap.emplace(pathHash, model);
-
-	std::cout << "[AssetManager] Model: " << lowercasePath << " loaded.\n";
 	
 	const std::vector<std::shared_ptr<Mesh>>& meshes = model->GetMeshes();
 	const unsigned int meshCount = static_cast<unsigned int>(meshes.size());
 	for (const std::shared_ptr<Mesh>& mesh : meshes)
 	{
 		const std::shared_ptr<Material>& material = mesh->GetMaterial();
-		unsigned int materialIndex = static_cast<unsigned int>(m_materialCache.size());
+		m_materialCache.push_back(material);
+
+		std::shared_ptr<Material> materialRef = m_materialCache.back();
 
 		for (TextureType textureType : m_supportedTextureTypes)
 		{
 			std::vector<std::string> texturePaths = material->GetTexturePaths(textureType);
 
 #if MULTITHREAD
+			TextureAssetJob job;
+			job.material = materialRef;
+			job.textureType = textureType;
+
 			for (const std::string& path : texturePaths)
 			{
-				TextureInfo textureInfo = m_textureManager.FindTexture(path);
-				if (textureInfo.IsValid())
-				{
-					material->AddTexture(textureInfo);
-				}
-				else
-				{
-					TextureAssetJob job;
-					job.materialIndex = materialIndex;
-					job.textureType = textureType;
-					job.resourcePaths.push_back(path);
-
-					m_textureAssetJobQueue.Push(job);
-				}
+				job.resourcePaths.push_back(path);
 			}
+
+			m_textureAssetJobQueue.Push(job);
 #else
 			for (const std::string& path : texturePaths)
 			{
@@ -185,7 +173,7 @@ std::shared_ptr<Model> AssetManager::LoadModel(const std::string& path)
 
 		}
 		
-		m_materialCache.push_back(material);
+		
 		m_meshCache.push_back(mesh);
 	}
 
