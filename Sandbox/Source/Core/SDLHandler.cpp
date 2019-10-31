@@ -47,6 +47,9 @@ bool SDLHandler::Init()
 
 	// have this by default
 	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+	glDepthFunc(GL_LEQUAL);
+	glDepthRange(0.0f, 1.0f);
 
 	m_uiHandler = IMGUIHandler();
 	m_uiHandler.Initialize(m_window, &m_glContext, m_glslVersion);
@@ -158,7 +161,7 @@ void SDLHandler::FindDisplayModes()
 			+ std::to_string(mode.h)
 			+ std::string(" @ ")
 			+ std::to_string(mode.refresh_rate)
-			+ std::string("hz ")
+			+ std::string(" hz ")
 			+ std::to_string(mode.format);
 
 		m_displayModeIndexToName.emplace(i, st);

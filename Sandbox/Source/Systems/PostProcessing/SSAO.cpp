@@ -88,7 +88,7 @@ void SSAO::GenSampleKernel()
 	{
 		// scale samples s.t. they're more aligned to center of kernel
 		float scale = static_cast<float>(i / m_params.KernelSize);
-		scale = MathUtils::Lerp(0.01f, 1.0f, scale * scale);
+		scale = Utils::Lerp(0.01f, 1.0f, scale * scale);
 
 		glm::vec3 sample(
 			randomFloats(generator) * 2.0f - 1.0f,
