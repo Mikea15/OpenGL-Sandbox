@@ -1,6 +1,6 @@
 #pragma once
 
-namespace MathUtils
+namespace Utils
 {
 	static float Lerp(float a, float b, float t)
 	{

@@ -46,10 +46,6 @@ private:
 	Material granite;
 	Material leather;
 
-
-	std::vector<glm::vec3> lightPositions;
-	std::vector<glm::vec3> lightColors;
-
 	Cube cube;
 
 	IBLSkybox iblSkybox;
@@ -73,5 +69,11 @@ private:
 	bool includeCamPosIntoTrees = false;
 	float includeFreq = 0.3f;
 	float camPushPosTime = 0.0f;
+
+	bool renderTopDownBuffer = false;
+	bool drawSkybox = true;
+	bool showSpheres = false;
+	bool showSpheresTextured = true;
+	bool showLines = false;
 };
 

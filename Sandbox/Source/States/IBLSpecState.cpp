@@ -29,7 +29,9 @@ void IBLSpecState::Init(Game* game)
 	DefaultState::Init(game);
 
 	// set depth function to less than AND equal for skybox depth trick.
-	glDepthFunc(GL_LEQUAL);
+	//glDepthFunc(GL_LEQUAL);
+	glEnable(GL_DEPTH_TEST);
+
 	// enable seamless cubemap sampling for lower mip levels in the pre-filter map.
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
@@ -38,6 +40,7 @@ void IBLSpecState::Init(Game* game)
 
 	debugInstanced = shaderManager.LoadShader("debugInstanced", "instancing.vert", "unlit/color.frag");
 	pbrShader = shaderManager.LoadShader("pbrShader", "pbr/pbr.vert", "pbr/pbr.frag");
+	// pbrShader = shaderManager.LoadShader("pbrShader", "model_loading.vert", "model_loading.frag");
 	
 	Shader equirectangularToCubemapShader = shaderManager.LoadShader("equirectangularToCubemapShader", "pbr/cubemap.vert", "pbr/equirectangular_to_cubemap.frag");
 	Shader irradianceShader = shaderManager.LoadShader("irradianceShader", "pbr/cubemap.vert", "pbr/irradiance_convolution.frag");
@@ -48,7 +51,7 @@ void IBLSpecState::Init(Game* game)
 
 	backgroundShader = shaderManager.LoadShader("backgroundShader", "pbr/background.vert", "pbr/background.frag");
 
-	wireframeShader = shaderManager.LoadShader("wireframeSimple", "unlit/simple.vert", "unlit/color.frag");
+	wireframeShader = shaderManager.LoadShader("wireframeSimple", "basic.vert", "unlit/color.frag");
 	wireframeShader.Use();
 	wireframeShader.SetVec3("Color", glm::vec3(0, 0, 1.0));
 
@@ -68,91 +71,84 @@ void IBLSpecState::Init(Game* game)
 	backgroundShader.SetInt("environmentMap", 0);
 
 	// load PBR material textures
-	// --------------------------
-	// rusted iron
-	iron.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/rusted_iron/albedo.png");
-	iron.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/rusted_iron/normal.png");
-	iron.AddTexturePath(TextureType::MetallicMap, "Data/Images/pbr/rusted_iron/metallic.png");
-	iron.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/rusted_iron/roughness.png");
-	iron.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/rusted_iron/ao.png");
-	iron.SetShader(pbrShader);
-	m_assetManager->LoadTexture(iron);
+	{
+		// --------------------------
+		// rusted iron
+		iron.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/rusted_iron/albedo.png");
+		iron.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/rusted_iron/normal.png");
+		iron.AddTexturePath(TextureType::MetallicMap, "Data/Images/pbr/rusted_iron/metallic.png");
+		iron.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/rusted_iron/roughness.png");
+		iron.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/rusted_iron/ao.png");
+		iron.SetShader(wireframeShader);
+		m_assetManager->LoadTexture(iron);
 
-	// gold
-	gold.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/gold/albedo.png");
-	gold.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/gold/normal.png");
-	gold.AddTexturePath(TextureType::MetallicMap, "Data/Images/pbr/gold/metallic.png");
-	gold.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/gold/roughness.png");
-	gold.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/gold/ao.png");
-	gold.SetShader(pbrShader);
-	m_assetManager->LoadTexture(gold);
+		// gold
+		gold.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/gold/albedo.png");
+		gold.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/gold/normal.png");
+		gold.AddTexturePath(TextureType::MetallicMap, "Data/Images/pbr/gold/metallic.png");
+		gold.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/gold/roughness.png");
+		gold.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/gold/ao.png");
+		gold.SetShader(pbrShader);
+		m_assetManager->LoadTexture(gold);
 
-	// grass
-	grass.AddTexturePath(TextureType::DiffuseMap,"Data/Images/pbr/grass/albedo.png");
-	grass.AddTexturePath(TextureType::NormalMap,"Data/Images/pbr/grass/normal.png");
-	grass.AddTexturePath(TextureType::MetallicMap,"Data/Images/pbr/grass/metallic.png");
-	grass.AddTexturePath(TextureType::RoughnessMap,"Data/Images/pbr/grass/roughness.png");
-	grass.AddTexturePath(TextureType::AOMap,"Data/Images/pbr/grass/ao.png");
-	grass.SetShader(pbrShader);
-	m_assetManager->LoadTexture(grass);
+		// grass
+		grass.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/grass/albedo.png");
+		grass.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/grass/normal.png");
+		grass.AddTexturePath(TextureType::MetallicMap, "Data/Images/pbr/grass/metallic.png");
+		grass.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/grass/roughness.png");
+		grass.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/grass/ao.png");
+		grass.SetShader(pbrShader);
+		m_assetManager->LoadTexture(grass);
 
-	// plastic
-	plastic.AddTexturePath(TextureType::DiffuseMap,"Data/Images/pbr/plastic/albedo.png");
-	plastic.AddTexturePath(TextureType::NormalMap,"Data/Images/pbr/plastic/normal.png");
-	plastic.AddTexturePath(TextureType::MetallicMap,"Data/Images/pbr/plastic/metallic.png");
-	plastic.AddTexturePath(TextureType::RoughnessMap,"Data/Images/pbr/plastic/roughness.png");
-	plastic.AddTexturePath(TextureType::AOMap,"Data/Images/pbr/plastic/ao.png");
-	plastic.SetShader(pbrShader);
-	m_assetManager->LoadTexture(plastic);
+		// plastic
+		plastic.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/plastic/albedo.png");
+		plastic.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/plastic/normal.png");
+		plastic.AddTexturePath(TextureType::MetallicMap, "Data/Images/pbr/plastic/metallic.png");
+		plastic.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/plastic/roughness.png");
+		plastic.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/plastic/ao.png");
+		plastic.SetShader(pbrShader);
+		m_assetManager->LoadTexture(plastic);
 
-	// wall
-	wall.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/wall/albedo.png");
-	wall.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/wall/normal.png");
-	wall.AddTexturePath(TextureType::MetallicMap, "Data/Images/pbr/wall/metallic.png");
-	wall.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/wall/roughness.png");
-	wall.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/wall/ao.png");
-	wall.SetShader(pbrShader);
-	m_assetManager->LoadTexture(wall);
+		// wall
+		wall.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/wall/albedo.png");
+		wall.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/wall/normal.png");
+		wall.AddTexturePath(TextureType::MetallicMap, "Data/Images/pbr/wall/metallic.png");
+		wall.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/wall/roughness.png");
+		wall.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/wall/ao.png");
+		wall.SetShader(pbrShader);
+		m_assetManager->LoadTexture(wall);
 
-	// marble
-	marble.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/marble/albedo.png");
-	marble.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/marble/normal.png");
-	marble.AddTexturePath(TextureType::HeightMap, "Data/Images/pbr/marble/height.png");
-	marble.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/marble/roughness.png");
-	marble.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/marble/ao.png");
-	marble.SetShader(pbrShader);
-	m_assetManager->LoadTexture(marble);
+		// marble
+		marble.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/marble/albedo.png");
+		marble.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/marble/normal.png");
+		marble.AddTexturePath(TextureType::HeightMap, "Data/Images/pbr/marble/height.png");
+		marble.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/marble/roughness.png");
+		marble.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/marble/ao.png");
+		marble.SetShader(pbrShader);
+		m_assetManager->LoadTexture(marble);
 
-	// granite
-	granite.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/cliffgranite/albedo.png");
-	granite.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/cliffgranite/normal.png");
-	granite.AddTexturePath(TextureType::HeightMap, "Data/Images/pbr/cliffgranite/height.png");
-	granite.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/cliffgranite/roughness.png");
-	granite.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/cliffgranite/ao.png");
-	granite.SetShader(pbrShader);
-	m_assetManager->LoadTexture(granite);
+		// granite
+		granite.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/cliffgranite/albedo.png");
+		granite.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/cliffgranite/normal.png");
+		granite.AddTexturePath(TextureType::HeightMap, "Data/Images/pbr/cliffgranite/height.png");
+		granite.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/cliffgranite/roughness.png");
+		granite.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/cliffgranite/ao.png");
+		granite.SetShader(pbrShader);
+		m_assetManager->LoadTexture(granite);
 
-	// leather
-	leather.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/leather/albedo.png");
-	leather.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/leather/normal.png");
-	leather.AddTexturePath(TextureType::HeightMap, "Data/Images/pbr/leather/height.png");
-	leather.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/leather/roughness.png");
-	leather.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/leather/ao.png");
-	leather.SetShader(pbrShader);
-	m_assetManager->LoadTexture(leather);
+		// leather
+		leather.AddTexturePath(TextureType::DiffuseMap, "Data/Images/pbr/leather/albedo.png");
+		leather.AddTexturePath(TextureType::NormalMap, "Data/Images/pbr/leather/normal.png");
+		leather.AddTexturePath(TextureType::HeightMap, "Data/Images/pbr/leather/height.png");
+		leather.AddTexturePath(TextureType::RoughnessMap, "Data/Images/pbr/leather/roughness.png");
+		leather.AddTexturePath(TextureType::AOMap, "Data/Images/pbr/leather/ao.png");
+		leather.SetShader(pbrShader);
+		m_assetManager->LoadTexture(leather);
+	}
 
-	lightPositions.push_back(glm::vec3(-10.0f, 10.0f, 10.0f));
-	lightPositions.push_back(glm::vec3(10.0f, 10.0f, 10.0f));
-	lightPositions.push_back(glm::vec3(-10.0f, -10.0f, 10.0f));
-	lightPositions.push_back(glm::vec3(10.0f, -10.0f, 10.0f));
 
-	lightColors.push_back(glm::vec3(300.0f, 300.0f, 300.0f));
-	lightColors.push_back(glm::vec3(300.0f, 300.0f, 300.0f));
-	lightColors.push_back(glm::vec3(300.0f, 300.0f, 300.0f));
-	lightColors.push_back(glm::vec3(300.0f, 300.0f, 300.0f));
-
-	unsigned int skyboxTex = m_assetManager->GetHDRTexture("Data/Images/pbr/newport_loft.hdr");
-	iblSkybox.GenBuffers(skyboxTex, 2048);
+	unsigned int skyboxTex = m_assetManager->LoadHDRTexure("Data/Images/pbr/newport_loft.hdr");
+	iblSkybox.GenBuffers(skyboxTex, 512);
 
 	// initialize static shader uniforms before rendering
 	// --------------------------------------------------
@@ -160,6 +156,7 @@ void IBLSpecState::Init(Game* game)
 
 	pbrShader.Use();
 	pbrShader.SetMat4("projection", projection);
+
 	backgroundShader.Use();
 	backgroundShader.SetMat4("projection", projection);
 
@@ -229,6 +226,11 @@ void IBLSpecState::Init(Game* game)
 	
 	cc.SetNearFarPlane(ccCamNearPlane, ccCamFarPlane);
 	cc.SetFov(ccCamFov);
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+	glDepthFunc(GL_LEQUAL);
+	glDepthRange(0.0f, 1.0f);
 }
 
 void IBLSpecState::HandleInput(SDL_Event* event)
@@ -275,12 +277,23 @@ void IBLSpecState::Render(float alpha)
 	glm::mat4 projection = m_sceneCamera->GetCamera().GetProjection();
 	glm::vec3 cameraPosition = m_sceneCamera->GetCamera().GetPosition();
 
+	// have this by default
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+	glDepthFunc(GL_LEQUAL);
+	glDepthRange(0.0f, 1.0f);
+
 	// render
 	// ------
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClearColor(0.5f, 0.3f, 0.5f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	bool showLines = true;
+	if (drawSkybox)
+	{
+		iblSkybox.DrawSkybox(backgroundShader, view, projection);
+		vertexCountStats += Primitives::cube.GetVertexCount();
+	}
+	
 	if (showLines)
 	{
 		wireframeShader.Use();
@@ -295,31 +308,42 @@ void IBLSpecState::Render(float alpha)
 		wireframeShader.SetMat4("model", t.GetModelMat());
 		Primitives::RenderPoint(10);
 
-		t.SetPosition(glm::vec3(0.0f, 1.0f, 0.0f));
-		wireframeShader.SetVec3("Color", glm::vec3(0.0f, 1.0f, 0.0f));
-		wireframeShader.SetMat4("model", t.GetModelMat());
-		Primitives::RenderPoint(10);
-
-		t.SetPosition(glm::vec3(0.0f));
-		wireframeShader.SetMat4("model", t.GetModelMat());
-		Primitives::RenderLine(glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
+		// red
 		t.SetPosition(glm::vec3(1.0f, 0.0f, 0.0f));
 		wireframeShader.SetVec3("Color", glm::vec3(1.0f, 0.0f, 0.0f));
 		wireframeShader.SetMat4("model", t.GetModelMat());
 		Primitives::RenderPoint(10);
 
-		t.SetPosition(glm::vec3(0.0f));
+		// green
+		t.SetPosition(glm::vec3(0.0f, 1.0f, 0.0f));
+		wireframeShader.SetVec3("Color", glm::vec3(0.0f, 1.0f, 0.0f));
 		wireframeShader.SetMat4("model", t.GetModelMat());
-		Primitives::RenderLine(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		Primitives::RenderPoint(10);
 
+		// blue
 		t.SetPosition(glm::vec3(0.0f, 0.0f, 1.0f));
 		wireframeShader.SetVec3("Color", glm::vec3(0.0f, 0.0f, 1.0f));
 		wireframeShader.SetMat4("model", t.GetModelMat());
 		Primitives::RenderPoint(10);
 
+
+		t.SetPosition(glm::vec3(0.0f));
 		wireframeShader.SetMat4("model", t.GetModelMat());
+		wireframeShader.SetVec3("Color", glm::vec3(0.0f, 1.0f, 0.0f));
+		Primitives::RenderLine(glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+		t.SetPosition(glm::vec3(0.0f));
+		wireframeShader.SetMat4("model", t.GetModelMat());
+		wireframeShader.SetVec3("Color", glm::vec3(1.0f, 0.0f, 0.0f));
+		Primitives::RenderLine(glm::vec3(0.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+		t.SetPosition(glm::vec3(0.0f));
+		wireframeShader.SetMat4("model", t.GetModelMat());
+		wireframeShader.SetVec3("Color", glm::vec3(0.0f, 0.0f, 1.0f));
+		Primitives::RenderLine(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 		
+
+		wireframeShader.SetMat4("model", t.GetModelMat());
 		glm::vec3 ccP = cc.GetPosition();
 		auto points = cc.GetBoundingFrustum().GetCorners();
 		// near
@@ -339,11 +363,8 @@ void IBLSpecState::Render(float alpha)
 		Primitives::RenderLine(points[1], points[5]);
 		Primitives::RenderLine(points[2], points[6]);
 		Primitives::RenderLine(points[3], points[7]);
-
-		Primitives::RenderLine(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	}
 
-	bool showSpheresTextured = true;
 	if (showSpheresTextured)
 	{
 		// render scene, supplying the convoluted irradiance map to the final shader.
@@ -438,32 +459,12 @@ void IBLSpecState::Render(float alpha)
 		}
 	}
 
-	bool showLights = true;
-	if (showLights)
-	{
-
-		// render light source (simply re-render sphere at light positions)
-		// this looks a bit off as we use the same shader, but it'll make their positions obvious and 
-		// keeps the codeprint small.
-		for (unsigned int i = 0; i < lightPositions.size(); ++i)
-		{
-			Transform lightTransform;
-			lightTransform.SetPosition(lightPositions[i]);
-
-			pbrShader.SetMat4("model", lightTransform.GetModelMat());
-			pbrShader.SetVec3("lightPositions[" + std::to_string(i) + "]", lightPositions[i]);
-			pbrShader.SetVec3("lightColors[" + std::to_string(i) + "]", lightColors[i]);
-
-			Primitives::RenderSphere();
-			vertexCountStats += Primitives::sphere.GetVertexCount();
-		}
-	}
-
-	bool showSpheres = true;
 	if (showSpheres)
 	{
 		// draw 3d grid of cubes.
 		const unsigned int size = static_cast<unsigned int>(positions.size());
+		vertexCountStats += Primitives::sphere.GetVertexCount() * size;
+
 		for (unsigned int i = 0; i < size; ++i)
 		{
 			scratchTransform.SetPosition(positions[i]);
@@ -500,8 +501,6 @@ void IBLSpecState::Render(float alpha)
 				pbrShader.SetMat4("model", scratchTransform.GetModelMat());
 				Primitives::RenderSphere(false);
 			}
-			
-			vertexCountStats += Primitives::sphere.GetVertexCount();
 		}
 	}
 
@@ -552,18 +551,14 @@ void IBLSpecState::Render(float alpha)
 		}
 	}
 
-	bool drawSkybox = true;
-	if (drawSkybox) 
-	{
-		iblSkybox.DrawSkybox(backgroundShader, view, projection);
-		vertexCountStats += Primitives::cube.GetVertexCount();
-	}
+	
+
 	// render BRDF map to screen
 	// brdfShader.Use();
 	// Primitives::RenderQuad();
 
 	// render top down view in wireframe
-	bool renderTopDownBuffer = true;
+	
 	if( renderTopDownBuffer )
 	{
 		// 1. render scene into floating point framebuffer
@@ -639,6 +634,16 @@ void IBLSpecState::RenderUI()
 
 	ImGui::Checkbox("Show Quadtree", &showQtree);
 	ImGui::Checkbox("Show Octree", &showOctree);
+
+	ImGui::End();
+
+	ImGui::Begin("IBL Scene Render Options");
+
+	ImGui::Checkbox("Show TopDown Buffer", &renderTopDownBuffer);
+	ImGui::Checkbox("Show Skybox", &drawSkybox);
+	ImGui::Checkbox("Show Spheres", &showSpheres);
+	ImGui::Checkbox("Show Spheres Textured", &showSpheresTextured);
+	ImGui::Checkbox("Show Lines", &showLines);
 
 	ImGui::End();
 	

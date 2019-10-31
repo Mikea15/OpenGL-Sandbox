@@ -2,7 +2,7 @@
 #include "Sphere.h"
 
 Sphere::Sphere()
-	: Sphere(64, 64)
+	: Sphere(32, 32)
 {
 
 }
