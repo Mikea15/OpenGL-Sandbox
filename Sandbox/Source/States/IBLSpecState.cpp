@@ -147,7 +147,7 @@ void IBLSpecState::Init(Game* game)
 	}
 
 
-	unsigned int skyboxTex = m_assetManager->LoadHDRTexure("Data/Images/pbr/newport_loft.hdr");
+	unsigned int skyboxTex = m_assetManager->GetHDRTexture("Data/Images/pbr/newport_loft.hdr");
 	iblSkybox.GenBuffers(skyboxTex, 512);
 
 	// initialize static shader uniforms before rendering
@@ -422,7 +422,7 @@ void IBLSpecState::Render(float alpha)
 		wall.BindTextures();
 		{
 			Transform t;
-			t.SetPosition(glm::vec3(3.0, 0.0, 2.0));
+			t.SetPosition(glm::vec3(-5.0, 2.0, 2.0));
 			pbrShader.SetMat4("model", t.GetModelMat());
 			Primitives::RenderSphere();
 			vertexCountStats += Primitives::sphere.GetVertexCount();
@@ -432,7 +432,7 @@ void IBLSpecState::Render(float alpha)
 		marble.BindTextures();
 		{
 			Transform t;
-			t.SetPosition(glm::vec3(-1.0, 2.0, 2.0));
+			t.SetPosition(glm::vec3(-3.0, 2.0, 2.0));
 			pbrShader.SetMat4("model", t.GetModelMat());
 			Primitives::RenderSphere();
 			vertexCountStats += Primitives::sphere.GetVertexCount();
@@ -452,7 +452,7 @@ void IBLSpecState::Render(float alpha)
 		leather.BindTextures();
 		{
 			Transform t;
-			t.SetPosition(glm::vec3(3.0, 2.0, 2.0));
+			t.SetPosition(glm::vec3(1.0, 2.0, 2.0));
 			pbrShader.SetMat4("model", t.GetModelMat());
 			Primitives::RenderSphere();
 			vertexCountStats += Primitives::sphere.GetVertexCount();
