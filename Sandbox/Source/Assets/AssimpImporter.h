@@ -23,7 +23,7 @@ public:
 	std::shared_ptr<Material> LoadMaterial( const aiMaterial* material, const std::string& dir);
 
 	TextureType GetTextureTypeFrom(aiTextureType type);
-	std::vector<aiTextureType> GetSupportedTypes() { return m_supportedTypes; }
+	std::vector<aiTextureType> GetSupportedTypes() const { return m_supportedTypes; }
 
 private:
 	void ProcessModelNode(const aiScene* scene, aiNode* node, std::shared_ptr<Model> model, const std::string& directory);

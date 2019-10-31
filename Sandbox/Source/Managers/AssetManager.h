@@ -31,7 +31,7 @@
 
 struct TextureAssetJob
 {
-	unsigned int materialIndex = 0;
+	std::shared_ptr<Material> material;
 	TextureType textureType = TextureType::None;
 	std::vector<std::string> resourcePaths;
 	std::vector<TextureLoadData> texDatas;
@@ -39,7 +39,7 @@ struct TextureAssetJob
 
 struct TextureAssetJobResult
 {
-	unsigned int materialindex = 0;
+	std::shared_ptr<Material> material;
 	TextureType textureType = TextureType::None;
 	std::vector<TextureLoadData> textureInfos;
 };
@@ -108,7 +108,7 @@ private:
 	std::vector<std::shared_ptr<Mesh>> m_meshCache;
 	std::vector<std::shared_ptr<Material>> m_materialCache;
 
-	int m_maxThreads = 6;
+	int m_maxThreads = 1;
 	std::vector<std::thread> m_workerThreads;
 	std::unordered_map<std::thread::id, std::string> m_threadNames;
 

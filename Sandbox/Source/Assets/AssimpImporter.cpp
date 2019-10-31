@@ -29,12 +29,12 @@ std::shared_ptr<Model> AssimpImporter::LoadModel(const std::string& path)
 	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		std::cout << "[AssetManager] Model: " << path << " failed to load.\n";
-		std::cout << "[Error] Assimp: " << importer.GetErrorString() << "\n";
-		return std::shared_ptr<Model>();
+		std::cerr << "[AssetManager] Model: " << path << " failed to load.\n";
+		std::cerr << "[Error] Assimp: " << importer.GetErrorString() << "\n";
+		return model;
 	}
 
-	std::string currentDirectory = path.substr(0, path.find_last_of('/') + 1);
+	const std::string currentDirectory = path.substr(0, path.find_last_of('/') + 1);
 
 	ProcessModelNode(scene, scene->mRootNode, model, currentDirectory);
 
@@ -119,7 +119,7 @@ void AssimpImporter::ProcessModelNode(const aiScene* scene, aiNode* node, std::s
 	{
 		const aiMesh* currentMesh = scene->mMeshes[node->mMeshes[i]];
 		std::shared_ptr<Mesh> loadedMesh = LoadMesh(scene, currentMesh);
-		
+
 		const aiMaterial* currentMaterial = scene->mMaterials[currentMesh->mMaterialIndex];
 		std::shared_ptr<Material> loadedMaterial = LoadMaterial(currentMaterial, directory);
 
@@ -132,3 +132,5 @@ void AssimpImporter::ProcessModelNode(const aiScene* scene, aiNode* node, std::s
 		ProcessModelNode(scene, node->mChildren[i], model, directory);
 	}
 }
+
+
